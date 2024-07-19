@@ -1,0 +1,26 @@
+{
+  "name": "ryanair-power-search",
+  "version": "1.0.0",
+  "description": "Improves and extensively customize the Ryanair search for the best flight",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/marco-luzzara/ryanair-power-search.git"
+  },
+  "author": "Marco Luzzara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
+  },
+  "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.5.3"
+  }
+}

@@ -1,0 +1,86 @@
+[
+    {
+        "code": "AAL",
+        "name": "Aalborg",
+        "seoName": "aalborg",
+        "aliases": [],
+        "base": false,
+        "city": {
+            "name": "Aalborg",
+            "code": "AALBORG"
+        },
+        "region": {
+            "name": "North Denmark",
+            "code": "NORTH_DENMARK"
+        },
+        "country": {
+            "code": "dk",
+            "iso3code": "DNK",
+            "name": "Denmark",
+            "currency": "DKK",
+            "defaultAirportCode": "BLL",
+            "schengen": true
+        },
+        "coordinates": {
+            "latitude": 57.0534,
+            "longitude": 9.5057
+        },
+        "timeZone": "Europe/Copenhagen"
+    },
+    {
+        "code": "AAR",
+        "name": "Aarhus",
+        "seoName": "aarhus",
+        "aliases": [],
+        "base": false,
+        "city": {
+            "name": "Aarhus",
+            "code": "AARHUS"
+        },
+        "region": {
+            "name": "East Jutland",
+            "code": "EAST_JUTLAND"
+        },
+        "country": {
+            "code": "dk",
+            "iso3code": "DNK",
+            "name": "Denmark",
+            "currency": "DKK",
+            "defaultAirportCode": "BLL",
+            "schengen": true
+        },
+        "coordinates": {
+            "latitude": 56.3,
+            "longitude": 10.619
+        },
+        "timeZone": "Europe/Copenhagen"
+    },
+    {
+        "code": "ABZ",
+        "name": "Aberdeen",
+        "seoName": "aberdeen",
+        "aliases": [],
+        "base": false,
+        "city": {
+            "name": "Aberdeen",
+            "code": "ABERDEEN"
+        },
+        "region": {
+            "name": "Scotland",
+            "code": "SCOTLAND"
+        },
+        "country": {
+            "code": "gb",
+            "iso3code": "GBR",
+            "name": "United Kingdom",
+            "currency": "GBP",
+            "defaultAirportCode": "STN",
+            "schengen": false
+        },
+        "coordinates": {
+            "latitude": 57.2019,
+            "longitude": -2.19778
+        },
+        "timeZone": "Europe/London"
+    }
+]

@@ -1,6 +1,8 @@
 {
   "name": "ryanair-power-search",
   "version": "1.0.0",
+  "type": "module",
+  "module": "es2022",
   "description": "Improves and extensively customize the Ryanair search for the best flight",
   "main": "index.js",
   "scripts": {
@@ -21,6 +23,10 @@
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.2"
   }
 }

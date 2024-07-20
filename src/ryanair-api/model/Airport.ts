@@ -1,4 +1,4 @@
-import { Country } from "./Country"
+import { Country } from "./Country.js"
 
 export interface Airport {
     code: string

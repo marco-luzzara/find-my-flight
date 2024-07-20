@@ -1,14 +1,15 @@
-import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder"
-import { listAirports } from "../../../src/ryanair-api/apis/airports"
-import { ApiUnavailable } from "../../../src/ryanair-api/errors"
-import { API_SAVED_RESPONSES } from "../test-utils/constants"
-import { MockUtils } from "../test-utils/mock"
+import { jest } from '@jest/globals';
+import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder.js"
+import { listAirports } from "../../../src/ryanair-api/apis/airports.js"
+import { ApiUnavailable } from "../../../src/ryanair-api/errors.js"
+import { API_SAVED_RESPONSES } from "../test-utils/constants.js"
+import { MockUtils } from "../test-utils/mock.js"
 
-global.fetch = jest.fn()
+jest.mock('axios');
 
 test('listAirports should return list of airports', async () => {
     const endpoint = ApiEndpointBuilder.listAirports('en')
-    MockUtils.mockFetch(endpoint, `${API_SAVED_RESPONSES}/list-airports/ok.json`)
+    MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/list-airports/ok.json`)
 
     const airports = await listAirports('en')
 
@@ -18,7 +19,7 @@ test('listAirports should return list of airports', async () => {
 
 test('when GET /airports fails, then listAirports returns ApiUnavailable', async () => {
     const endpoint = ApiEndpointBuilder.listAirports('en')
-    MockUtils.mockFetch(endpoint, '', 500)
+    MockUtils.mockHttpGet(endpoint, '', 500)
 
     return await expect(listAirports('en')).rejects.toBeInstanceOf(ApiUnavailable)
 })

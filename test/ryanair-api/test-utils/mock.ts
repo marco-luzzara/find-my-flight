@@ -1,27 +1,19 @@
 import * as fs from 'node:fs/promises'
+import { jest } from '@jest/globals';
+import axios from 'axios';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 export class MockUtils {
-    public static mockFetch(endpoint: string, jsonResponsePath: string = '', statusCode: number = 200): jest.Mock {
-        const fetchMock = jest.fn()
-        global.fetch = fetchMock
-
-        fetchMock.mockImplementation((url) => {
-            if (url === endpoint) {
-                return Promise.resolve({
-                    status: statusCode,
-                    json: async () => {
-                        return jsonResponsePath === '' ?
-                            Promise.resolve('') :
-                            JSON.parse(
-                                await fs.readFile(jsonResponsePath, { encoding: 'utf8' })
-                            )
-                    }
-                });
-            }
-            else
-                return Promise.reject(`Mocked \`fetch\` expects an endpoint (${endpoint}) that has not been called`)
-        });
-
-        return fetchMock
+    public static async mockHttpGet(endpoint: string, jsonResponsePath: string = '', statusCode: number = 200) {
+        mockedAxios.get.mockResolvedValue({
+            data: jsonResponsePath === '' ?
+                jsonResponsePath :
+                JSON.parse(
+                    await fs.readFile(jsonResponsePath, { encoding: 'utf8' })
+                ),
+            status: statusCode
+        })
     }
 }

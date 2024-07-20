@@ -4,7 +4,19 @@
         "src/**/*",
         "test/**/*"
     ],
+    // "ts-node": {
+    //     "moduleTypes": {
+    //         "jest.config.ts": "cjs"
+    //     }
+    // },
     "compilerOptions": {
+        "esModuleInterop": true,
+        "module": "NodeNext",
+        // "resolveJsonModule": true,
+        "target": "ES2022",
+        "removeComments": true,
+        "moduleResolution": "NodeNext",
+        // "target": "ES2022",
         // Tells TypeScript to read JS files, as
         // normally they are ignored as source files
         "allowJs": true,
@@ -13,6 +25,12 @@
         // Types should go into this directory.
         // Removing this would place the .d.ts files
         // next to the .js files
-        "outDir": "dist"
+        "outDir": "dist",
+        "sourceMap": false,
+        "types": [
+            "node",
+            "jest"
+        ],
+        "strict": false
     }
 }

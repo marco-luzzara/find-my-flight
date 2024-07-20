@@ -1,15 +1,15 @@
-import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable } from "../errors";
-import { Airport } from "../model/Airport";
+import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
+import { ApiUnavailable } from "../errors.js";
+import { Airport } from "../model/Airport.js";
+import axios, { AxiosResponse } from "axios";
 
 export async function listAirports(languageLocale: string = 'en'): Promise<Array<Airport>> {
     const endpoint = ApiEndpointBuilder.listAirports(languageLocale)
     try {
-        const response = await fetch(endpoint)
-        const content: Array<any> = await response.json()
-
+        const response: AxiosResponse<Array<Airport>> = await axios.get(endpoint)
         // TODO: use worker threads to convert json to Airport model (almost 7000 json objects)
         // See example here: https://nodejs.org/api/worker_threads.html
+        const content = response.data
         return content.map(elem => ({
             code: elem.code,
             name: elem.name,

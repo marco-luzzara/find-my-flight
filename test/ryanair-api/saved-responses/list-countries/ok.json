@@ -1,0 +1,26 @@
+[
+    {
+        "code": "dk",
+        "iso3code": "DNK",
+        "name": "Denmark",
+        "currency": "DKK",
+        "defaultAirportCode": "BLL",
+        "schengen": true
+    },
+    {
+        "code": "gb",
+        "iso3code": "GBR",
+        "name": "United Kingdom",
+        "currency": "GBP",
+        "defaultAirportCode": "STN",
+        "schengen": false
+    },
+    {
+        "code": "es",
+        "iso3code": "ESP",
+        "name": "Spain",
+        "currency": "EUR",
+        "defaultAirportCode": "BCN",
+        "schengen": true
+    }
+]

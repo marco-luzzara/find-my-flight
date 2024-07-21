@@ -1,7 +1,20 @@
 import * as fs from 'node:fs/promises'
+import * as assert from 'node:assert'
 
 export class MockUtils {
-    public static mockFetch(endpoint: string, jsonResponsePath: string = '', statusCode: number = 200): jest.Mock {
+    public static async mockHttpGet(endpoint: string, jsonResponsePath: string = '', statusCode: number = 200): Promise<jest.Mock> {
+        let jsonBody: any
+        if (jsonResponsePath !== '') {
+            const fileStat = await fs.stat(jsonResponsePath);
+            assert(fileStat.isFile())
+
+            jsonBody = JSON.parse(
+                await fs.readFile(jsonResponsePath, { encoding: 'utf8' })
+            )
+        }
+        else
+            jsonBody = {}
+
         const fetchMock = jest.fn()
         global.fetch = fetchMock
 
@@ -9,13 +22,7 @@ export class MockUtils {
             if (url === endpoint) {
                 return Promise.resolve({
                     status: statusCode,
-                    json: async () => {
-                        return jsonResponsePath === '' ?
-                            Promise.resolve('') :
-                            JSON.parse(
-                                await fs.readFile(jsonResponsePath, { encoding: 'utf8' })
-                            )
-                    }
+                    json: () => Promise.resolve(jsonBody)
                 });
             }
             else

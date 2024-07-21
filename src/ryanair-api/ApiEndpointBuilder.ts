@@ -6,4 +6,8 @@ export default class ApiEndpointBuilder {
     public static listCountries(languageLocale: string): string {
         return `https://www.ryanair.com/api/views/locate/3/countries/${languageLocale}`
     }
+
+    public static listDestinationAirports(originAirportCode: string, languageLocale: string): string {
+        return `https://www.ryanair.com/api/views/locate/searchWidget/routes/${languageLocale}/airport/${originAirportCode}`
+    }
 }

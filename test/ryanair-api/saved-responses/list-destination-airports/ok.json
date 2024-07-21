@@ -1,0 +1,104 @@
+[
+    {
+        "arrivalAirport": {
+            "code": "ACE",
+            "name": "Lanzarote",
+            "seoName": "lanzarote",
+            "aliases": [],
+            "base": true,
+            "city": {
+                "name": "Lanzarote",
+                "code": "LANZAROTE"
+            },
+            "region": {
+                "name": "Canary Isles",
+                "code": "CANARY_ISLES"
+            },
+            "country": {
+                "code": "es",
+                "iso3code": "ESP",
+                "name": "Spain",
+                "currency": "EUR",
+                "defaultAirportCode": "BCN",
+                "schengen": true
+            },
+            "coordinates": {
+                "latitude": 28.9455,
+                "longitude": -13.6052
+            },
+            "timeZone": "Atlantic/Canary"
+        },
+        "recent": false,
+        "seasonal": false,
+        "operator": "FR",
+        "tags": []
+    },
+    {
+        "arrivalAirport": {
+            "code": "AGA",
+            "name": "Agadir",
+            "seoName": "agadir",
+            "aliases": [],
+            "base": true,
+            "city": {
+                "name": "Agadir",
+                "code": "AGADIR"
+            },
+            "region": {
+                "name": "Souss-Massa",
+                "code": "SOUSS-MASSA"
+            },
+            "country": {
+                "code": "ma",
+                "iso3code": "MAR",
+                "name": "Morocco",
+                "currency": "MAD",
+                "defaultAirportCode": "FEZ",
+                "schengen": false
+            },
+            "coordinates": {
+                "latitude": 30.325,
+                "longitude": -9.41307
+            },
+            "timeZone": "Africa/Casablanca"
+        },
+        "recent": false,
+        "seasonal": false,
+        "operator": "FR",
+        "tags": []
+    },
+    {
+        "arrivalAirport": {
+            "code": "AGP",
+            "name": "Malaga",
+            "seoName": "malaga",
+            "aliases": [],
+            "base": true,
+            "city": {
+                "name": "Malaga",
+                "code": "MALAGA"
+            },
+            "region": {
+                "name": "Costa del Sol",
+                "code": "COSTA_DE_SOL"
+            },
+            "country": {
+                "code": "es",
+                "iso3code": "ESP",
+                "name": "Spain",
+                "currency": "EUR",
+                "defaultAirportCode": "BCN",
+                "schengen": true
+            },
+            "coordinates": {
+                "latitude": 36.6749,
+                "longitude": -4.49911
+            },
+            "timeZone": "Europe/Madrid"
+        },
+        "recent": false,
+        "seasonal": false,
+        "operator": "FR",
+        "tags": []
+    }
+]

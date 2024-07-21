@@ -1,3 +1,4 @@
+import { GeoPosition } from "./base-types"
 import { Country } from "./Country"
 
 export interface Airport {
@@ -8,9 +9,4 @@ export interface Airport {
     country: Country
     coordinates: GeoPosition
     timeZone: string
-}
-
-interface GeoPosition {
-    latitude: number
-    longitude: number
 }

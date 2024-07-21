@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises'
-import * as assert from 'node:assert'
+import assert from 'node:assert'
 
 export class MockUtils {
     public static async mockHttpGet(endpoint: string, jsonResponsePath: string = '', statusCode: number = 200): Promise<jest.Mock> {
@@ -20,10 +20,12 @@ export class MockUtils {
 
         fetchMock.mockImplementation((url) => {
             if (url === endpoint) {
-                return Promise.resolve({
-                    status: statusCode,
-                    json: () => Promise.resolve(jsonBody)
-                });
+                return String(statusCode).match(/2\d{2}/) ?
+                    Promise.resolve({
+                        status: statusCode,
+                        json: () => Promise.resolve(jsonBody)
+                    }) :
+                    Promise.reject(new Error(`API failed with ${statusCode}`))
             }
             else
                 return Promise.reject(`Mocked \`fetch\` expects an endpoint (${endpoint}) that has not been called`)

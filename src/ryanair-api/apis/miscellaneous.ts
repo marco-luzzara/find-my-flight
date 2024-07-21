@@ -1,6 +1,7 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable } from "../errors";
 import { Country } from "../model/Country";
+import Currency from "../model/Currency";
 
 export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {
     const endpoint = ApiEndpointBuilder.listCountries(languageLocale)
@@ -16,6 +17,23 @@ export async function listCountries(languageLocale: string = 'en'): Promise<Arra
             name: elem.name,
             currency: elem.currency,
             defaultAirportCode: elem.defaultAirportCode
+        }));
+    }
+    catch (error) {
+        throw new ApiUnavailable(endpoint, { error: error })
+    }
+}
+
+export async function listCurrencies(): Promise<Array<Currency>> {
+    const endpoint = ApiEndpointBuilder.listCurrencies()
+    try {
+        const response = await fetch(endpoint)
+        const content: Map<string, any> = await response.json()
+
+        return Object.values(content).map(elem => ({
+            code: elem.code,
+            name: elem.name,
+            symbol: elem.symbol
         }));
     }
     catch (error) {

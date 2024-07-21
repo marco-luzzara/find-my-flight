@@ -10,4 +10,8 @@ export default class ApiEndpointBuilder {
     public static listDestinationAirports(originAirportCode: string, languageLocale: string): string {
         return `https://www.ryanair.com/api/views/locate/searchWidget/routes/${languageLocale}/airport/${originAirportCode}`
     }
+
+    public static listCurrencies(): string {
+        return `https://www.ryanair.com/api/booking/v4/en-ie/res/currencies`
+    }
 }

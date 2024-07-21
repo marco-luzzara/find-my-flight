@@ -1,0 +1,20 @@
+{
+    "AED": {
+        "code": "AED",
+        "name": "UAE Dirham",
+        "precision": 2,
+        "symbol": "Dhs"
+    },
+    "AUD": {
+        "code": "AUD",
+        "name": "Australian Dollar",
+        "precision": 2,
+        "symbol": "A$"
+    },
+    "BRL": {
+        "code": "BRL",
+        "name": "Brazilian Real",
+        "precision": 2,
+        "symbol": "R$"
+    }
+}

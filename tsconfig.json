@@ -5,6 +5,9 @@
         "test/**/*"
     ],
     "compilerOptions": {
+        "module": "NodeNext",
+        "target": "ES2023",
+        "moduleResolution": "NodeNext",
         // Tells TypeScript to read JS files, as
         // normally they are ignored as source files
         "allowJs": true,

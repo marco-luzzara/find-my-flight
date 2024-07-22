@@ -35,7 +35,7 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Array
 }
 
 export async function listDestinationAirports(originAirport: Airport, languageLocale: string = 'en'): Promise<Array<Airport>> {
-    const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport.code, languageLocale)
+    const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport, languageLocale)
     try {
         const response = await fetch(endpoint)
         const content: Array<any> = await response.json()

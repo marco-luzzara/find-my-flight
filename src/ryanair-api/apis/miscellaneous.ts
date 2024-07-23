@@ -2,6 +2,7 @@ import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable } from "../errors";
 import { Country } from "../model/Country";
 import Currency from "../model/Currency";
+import * as cookie from 'cookie'
 
 export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {
     const endpoint = ApiEndpointBuilder.listCountries(languageLocale)
@@ -35,6 +36,20 @@ export async function listCurrencies(): Promise<Array<Currency>> {
             name: elem.name,
             symbol: elem.symbol
         }));
+    }
+    catch (error) {
+        throw new ApiUnavailable(endpoint, { error: error })
+    }
+}
+
+export type Cookie = Record<string, string>
+export async function createSession(): Promise<Array<Cookie>> {
+    const endpoint = ApiEndpointBuilder.createSession()
+    try {
+        const response = await fetch(endpoint)
+        const cookies = response.headers.getSetCookie().map(elem => cookie.parse(elem))
+
+        return cookies
     }
     catch (error) {
         throw new ApiUnavailable(endpoint, { error: error })

@@ -2,6 +2,7 @@ import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder"
 import { listAirports, listDestinationAirports } from "../../../src/ryanair-api/apis/airports"
 import { ApiUnavailable } from "../../../src/ryanair-api/errors"
 import { Airport } from "../../../src/ryanair-api/model/Airport"
+import { AirportFactory } from "../test-factories/AirportFactory"
 import { API_SAVED_RESPONSES } from "../test-utils/constants"
 import { MockUtils } from "../test-utils/mock"
 
@@ -27,9 +28,7 @@ describe('listAirports', () => {
 })
 
 describe('listDestinationAirports', () => {
-    const originAirport: Airport = {
-        code: 'BGY'
-    } as Airport
+    const originAirport: Airport = AirportFactory.buildAirport('AAA')
 
     test('listDestinationAirports should return list of airports', async () => {
         const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport, 'en')

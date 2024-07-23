@@ -22,5 +22,9 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.2.2",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "@types/cookie": "^0.6.0",
+    "cookie": "^0.6.0"
   }
 }

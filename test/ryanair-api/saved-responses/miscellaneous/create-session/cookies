@@ -1,0 +1,3 @@
+fr-correlation-id=fr-correlation-id-cookie; path=/; domain=.ryanair.com; secure; SameSite=Strict
+rid=rid-cookie; path=/; expires=Wed, 23 Jul 2025 00:00:00 GMT; domain=.ryanair.com; secure; httponly; SameSite=Strict
+rid.sig=rid.sig-cookie; path=/; expires=Wed, 23 Jul 2025 00:00:00 GMT; domain=.ryanair.com; secure; httponly; SameSite=Strict

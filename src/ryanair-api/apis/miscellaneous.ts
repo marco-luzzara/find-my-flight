@@ -1,5 +1,6 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable } from "../errors";
+import { Session } from "../model/base-types";
 import { Country } from "../model/Country";
 import Currency from "../model/Currency";
 import * as cookie from 'cookie'
@@ -42,8 +43,7 @@ export async function listCurrencies(): Promise<Array<Currency>> {
     }
 }
 
-export type Cookie = Record<string, string>
-export async function createSession(): Promise<Array<Cookie>> {
+export async function createSession(): Promise<Session> {
     const endpoint = ApiEndpointBuilder.createSession()
     try {
         const response = await fetch(endpoint)

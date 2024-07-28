@@ -1,5 +1,5 @@
 import { Airport } from "./model/Airport"
-import { ListRoundTripFaresParams } from "./model/Fare"
+import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "./model/Fare"
 
 export default class ApiEndpointBuilder {
     // ******** AIRPORTS ********
@@ -30,5 +30,37 @@ export default class ApiEndpointBuilder {
 
     public static listAvailableDatesForFare(originAirport: Airport, destinationAirport: Airport): string {
         return `https://www.ryanair.com/api/farfnd/v4/oneWayFares/${originAirport.code}/${destinationAirport.code}/availabilities`
+    }
+
+    public static listAvailableFlights(
+        params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
+    ): string {
+        const baseParams = {
+            'ADT': params.adults,
+            'CHD': params.children,
+            'TEEN': params.teenagers,
+            'INF': params.infants,
+            'DateOut': params.dateOut.getStringedDateOnly(),
+            'Destination': params.destination.code,
+            'Origin': params.origin.code,
+            'promoCode': params.promoCode,
+            'IncludeConnectingFlights': params.includeConnectingFlights,
+            'FlexDaysBeforeOut': params.flexDaysBeforeOut,
+            'FlexDaysOut': params.flexDaysOut,
+            'RoundTrip': params.roundTrip,
+            'ToUs': 'AGREED'
+        }
+        let roundTripParams = {}
+        if (params.roundTrip === true) {
+            roundTripParams = {
+                'DateIn': params.dateIn,
+                'FlexDaysBeforeIn': params.flexDaysBeforeIn,
+                'FlexDaysIn': params.flexDaysIn
+            }
+        }
+        const paramsMap = { ...baseParams, ...roundTripParams }
+        const urlParams = new URLSearchParams(paramsMap as any).toString()
+
+        return `https://www.ryanair.com/api/booking/v4/${params.fullLocale}/availability?${urlParams}`
     }
 }

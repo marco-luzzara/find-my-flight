@@ -1,23 +1,46 @@
 import { Airport } from "./Airport";
-import { DayOfWeek, Time } from "./base-types";
+import { DayOfWeek, FlightDate, Time } from "./base-types";
 import Currency from "./Currency";
 
-export interface ListRoundTripFaresParams {
-    languageLocale: string;
-    priceForAdults: number;
-    outboundDepartureDateFrom: Date;
-    outboundDepartureDateTo: Date;
-    inboundDepartureDateFrom: Date;
-    inboundDepartureDateTo: Date;
-    outboundDepartureTimeFrom?: Time;
-    outboundDepartureTimeTo?: Time;
-    inboundDepartureTimeFrom?: Time;
-    inboundDepartureTimeTo?: Time;
-    durationFrom?: number;
-    durationTo?: number;
-    outboundDepartureDaysOfWeek?: DayOfWeek;
-    priceValueTo?: number;
-    currency: Currency;
-    departureAirport: Airport;
-    arrivalAirport: Airport;
+export type ListAvailableFlightsBaseParams = {
+    fullLocale: string;
+    adults: number;
+    children: number;
+    teenagers: number;
+    infants: number;
+    dateOut: FlightDate;
+    destination: Airport;
+    origin: Airport;
+    promoCode: string;
+    roundTrip: boolean;
+    includeConnectingFlights: boolean;
+    /**
+     * Number of days to check before the specified departure date 
+     * (do you want to depart from origin `FlexDaysBeforeOut` days before?) 
+     */
+    flexDaysBeforeOut: number;
+    /**
+     * Number of days to check after the specified departure date
+     * (do you want to depart from origin `FlexDaysOut` days later?) 
+     */
+    flexDaysOut: number;
+}
+
+export type ListAvailableOneWayFlightsParams = ListAvailableFlightsBaseParams & {
+    roundTrip: false;
+}
+
+export type ListAvailableRoundTripFlightsParams = ListAvailableFlightsBaseParams & {
+    roundTrip: true;
+    dateIn: FlightDate;
+    /**
+     * Number of days to check before the specified arrival date 
+     * (do you want to depart from destination `FlexDaysBeforeIn` days before?) 
+     */
+    flexDaysBeforeIn: number;
+    /**
+     * Number of days to check after the specified arrival date
+     * (do you want to depart from destination `FlexDaysIn` days later?) 
+     */
+    flexDaysIn: number;
 }

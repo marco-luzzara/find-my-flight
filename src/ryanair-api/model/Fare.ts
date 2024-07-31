@@ -1,17 +1,17 @@
 import { Airport } from "./Airport";
-import { DayOfWeek, FlightDate, Time } from "./base-types";
+import { FlightDate } from "./base-types";
 import Currency from "./Currency";
 
 export type ListAvailableFlightsBaseParams = {
     fullLocale: string;
     adults: number;
-    children: number;
-    teenagers: number;
-    infants: number;
+    children?: number;
+    teenagers?: number;
+    infants?: number;
     dateOut: FlightDate;
     destination: Airport;
     origin: Airport;
-    promoCode: string;
+    promoCode?: string;
     roundTrip: boolean;
     includeConnectingFlights: boolean;
     /**

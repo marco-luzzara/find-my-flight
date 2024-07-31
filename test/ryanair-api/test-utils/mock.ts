@@ -20,12 +20,11 @@ export class MockUtils {
 
         fetchMock.mockImplementation((url) => {
             if (url === endpoint) {
-                return String(statusCode).match(/2\d{2}/) ?
-                    Promise.resolve({
-                        status: statusCode,
-                        json: () => Promise.resolve(jsonBody)
-                    }) :
-                    Promise.reject(new Error(`API failed with ${statusCode}`))
+                const response = {
+                    status: statusCode,
+                    json: () => Promise.resolve(jsonBody)
+                } as Response
+                return Promise.resolve(response)
             }
             else
                 return Promise.reject(`Mocked \`fetch\` expects an endpoint (${endpoint}) that has not been called`)

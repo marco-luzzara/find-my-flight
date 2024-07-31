@@ -5,10 +5,6 @@ export class AirportFactory {
         return {
             city: 'CityA',
             code: code,
-            coordinates: {
-                latitude: 1.0,
-                longitude: 1.0
-            },
             country: {
                 name: 'CountryA0',
                 code: 'CountryACode',

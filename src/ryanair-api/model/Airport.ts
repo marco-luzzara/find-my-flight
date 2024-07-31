@@ -1,4 +1,3 @@
-import { GeoPosition } from "./base-types"
 import { Country } from "./Country"
 
 export interface Airport {
@@ -7,6 +6,5 @@ export interface Airport {
     city: string
     region: string
     country: Country
-    coordinates: GeoPosition
     timeZone: string
 }

@@ -37,13 +37,13 @@ export default class ApiEndpointBuilder {
     ): string {
         const baseParams = {
             'ADT': params.adults,
-            'CHD': params.children,
-            'TEEN': params.teenagers,
-            'INF': params.infants,
-            'DateOut': params.dateOut.getStringedDateOnly(),
+            'CHD': params.children || 0,
+            'TEEN': params.teenagers || 0,
+            'INF': params.infants || 0,
+            'DateOut': params.dateOut.toCustomStringDate(),
             'Destination': params.destination.code,
             'Origin': params.origin.code,
-            'promoCode': params.promoCode,
+            'promoCode': params.promoCode || '',
             'IncludeConnectingFlights': params.includeConnectingFlights,
             'FlexDaysBeforeOut': params.flexDaysBeforeOut,
             'FlexDaysOut': params.flexDaysOut,

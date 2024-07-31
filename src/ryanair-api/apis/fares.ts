@@ -1,5 +1,5 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable } from "../errors";
+import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession } from "../errors";
 import { Airport } from "../model/Airport";
 import { FlightDuration, PassengerType, PriceDetails, Session } from "../model/base-types";
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/Fare";
@@ -7,14 +7,15 @@ import { Flight, FlightSchedule } from "../model/Flight";
 
 export async function listAvailableDatesForFare(origin: Airport, destination: Airport): Promise<Array<Date>> {
     const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(origin, destination)
-    try {
-        const response = await fetch(endpoint)
-        const content: Array<string> = await response.json()
-
-        return content.map(elem => new Date(elem));
-    }
-    catch (error) {
-        throw new ApiUnavailable(endpoint, { error: error })
+    const response = await fetch(endpoint)
+    switch (response.status) {
+        case 200:
+            const content: Array<string> = await response.json()
+            return content.map(elem => new Date(elem))
+        case 500:
+            throw new ApiUnavailable(endpoint)
+        default:
+            throw new UnexpectedStatusCode(endpoint, response)
     }
 }
 
@@ -49,34 +50,48 @@ export async function listAvailableFlights(
     fromDestination: FlightSchedule
 }> {
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
-    try {
-        const headers = new Headers()
-        headers.append('Cookie', session.join('; '))
+    const headers = new Headers()
+    headers.append('Cookie', session.join('; '))
 
-        const response = await fetch(endpoint, { headers })
-        const content: Array<any> = await response.json()
-
-        if (params.roundTrip === false) {
-            const responseTripDates = content['trips'][0]['dates']
-            return processTripDates(responseTripDates, params.origin, params.destination)
-        }
-        else {
-            const originToDestTrip = content['trips'][0]['origin'] === params.origin.code ?
-                content['trips'][0] :
-                content['trips'][1]
-
-            const destToOriginTrip = content['trips'][0]['origin'] === params.destination.code ?
-                content['trips'][0] :
-                content['trips'][1]
-
-            return {
-                fromOrigin: processTripDates(originToDestTrip['dates'], params.origin, params.destination),
-                fromDestination: processTripDates(destToOriginTrip['dates'], params.destination, params.origin)
-            }
-        }
+    const response = await fetch(endpoint, { headers })
+    switch (response.status) {
+        case 200:
+            return processListAvailableFlightsResponse(response, params)
+        case 409:
+            throw new UninitializedSession(endpoint)
+        case 500:
+            throw new ApiUnavailable(endpoint)
+        default:
+            throw new UnexpectedStatusCode(endpoint, response)
     }
-    catch (error) {
-        throw new ApiUnavailable(endpoint, { error: error })
+}
+
+async function processListAvailableFlightsResponse(
+    response: Response,
+    params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
+): Promise<FlightSchedule | {
+    fromOrigin: FlightSchedule,
+    fromDestination: FlightSchedule
+}> {
+    const content: Array<any> = await response.json()
+
+    if (params.roundTrip === false) {
+        const responseTripDates = content['trips'][0]['dates']
+        return processTripDates(responseTripDates, params.origin, params.destination)
+    }
+    else {
+        const originToDestTrip = content['trips'][0]['origin'] === params.origin.code ?
+            content['trips'][0] :
+            content['trips'][1]
+
+        const destToOriginTrip = content['trips'][0]['origin'] === params.destination.code ?
+            content['trips'][0] :
+            content['trips'][1]
+
+        return {
+            fromOrigin: processTripDates(originToDestTrip['dates'], params.origin, params.destination),
+            fromDestination: processTripDates(destToOriginTrip['dates'], params.destination, params.origin)
+        }
     }
 }
 
@@ -84,14 +99,14 @@ function processTripDates(responseTripDates: [{
     dateOut: string,
     flights: any
 }], origin: Airport, destination: Airport): FlightSchedule {
-    return Object.fromEntries(responseTripDates.map(x => [
-        x.dateOut,
+    return new Map(responseTripDates.map(x => [
+        new Date(x.dateOut).toISOString(),
         x.flights.map(f => ({
             flightNumber: f.flightNumber as string,
             origin: origin,
             destination: destination,
-            departureDate: new Date(f.segments[0].time[0]),
-            arrivalDate: new Date(f.segments[0].time[1]),
+            departureDate: new Date(f.time[0]),
+            arrivalDate: new Date(f.time[1]),
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,
             infantsLeft: (f.infantsLeft === -1 ? undefined : f.infantsLeft) as number,
             prices: f.regularFare.fares.map(fare => ({

@@ -1,0 +1,186 @@
+{
+    "termsOfUse": "https://www.ryanair.com/ie/en/corporate/terms-of-use=AGREED",
+    "currency": "EUR",
+    "currPrecision": 2,
+    "routeGroup": "DOMESTIC",
+    "tripType": "CITY_BREAK",
+    "upgradeType": "PLUS",
+    "trips": [
+        {
+            "origin": "AAA",
+            "originName": "Airport A",
+            "destination": "BBB",
+            "destinationName": "Airport B",
+            "routeGroup": "DOMESTIC",
+            "tripType": "CITY_BREAK",
+            "upgradeType": "PLUS",
+            "dates": [
+                {
+                    "dateOut": "2024-07-29T00:00:00.000",
+                    "flights": []
+                },
+                {
+                    "dateOut": "2024-07-30T00:00:00.000",
+                    "flights": [
+                        {
+                            "faresLeft": 4,
+                            "flightKey": "FR~3151~ ~~AAA~07/30/2024 22:15~BBB~07/30/2024 23:45~~",
+                            "infantsLeft": 15,
+                            "regularFare": {
+                                "fareKey": "QVS2SWOKVJ2UHBZOI32V6UY3EYTRCADECTF6ILXZGQKONS6MR4PEAUYAQMFKTKFRWKLWTQDUVLKR6GV4RHEI33MGVUCFP7NB26WMT6DY6KTSGKVTQ33BAJ6VFQQXCPANCVJQL4ID2UKHH7C6GZ3FRC4DA2WQ3ZXJXNL4F2T7LP7BI62AOE42HQTPJ7OX6QROMCI5ARE6XP4GZQNI7TJ6ZYINMK54FDWDLXVOJXDE5GXVAPPFOTGNNTCAT2PJ54WO7V6OHKARTDYC2TP3DTXRBLM2G6DXVJIDRREMBZOAYFAKMPO2HE3JYTY5O7Z7GECRLVEYNVHYRWZS3N3BWWRVKT54MRET5ZARHSEYW2I",
+                                "fareClass": "Q",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 274.49,
+                                        "count": 1,
+                                        "hasDiscount": false,
+                                        "publishedFare": 274.49,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 0,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "AAA",
+                                    "destination": "BBB",
+                                    "flightNumber": "FR 3151",
+                                    "time": [
+                                        "2024-07-30T22:15:00.000",
+                                        "2024-07-30T23:45:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-07-30T20:15:00.000Z",
+                                        "2024-07-30T21:45:00.000Z"
+                                    ],
+                                    "duration": "01:30"
+                                }
+                            ],
+                            "flightNumber": "FR 3151",
+                            "time": [
+                                "2024-07-30T22:15:00.000",
+                                "2024-07-30T23:45:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-07-30T20:15:00.000Z",
+                                "2024-07-30T21:45:00.000Z"
+                            ],
+                            "duration": "01:30"
+                        }
+                    ]
+                },
+                {
+                    "dateOut": "2024-07-31T00:00:00.000",
+                    "flights": [
+                        {
+                            "faresLeft": -1,
+                            "flightKey": "FR~3151~ ~~AAA~07/31/2024 17:45~BBB~07/31/2024 19:15~~",
+                            "infantsLeft": 16,
+                            "regularFare": {
+                                "fareKey": "YSJ3ZHCATNJMBVINOZKL5HKPJVSUN7L5MTPHIR7WWZONDLDOCPPBCD6AHQN5HEL6Y6H72WQG4ANGUXSCT36Q7Q3FDYMQPCTBYTC4C46ES3NUZ2HX2KOQCEEBN2M5EC4UTL7CQGWHMQRBADKLSNZYECHGDJVKRNDQNKDMG2QJUTKILXBSN5AXEBAXLLOEZPA3OF7QKJ5EDVHYHXZML64KQO5VTRCRZOU3SZR747PTQWEOF47456EYOL4TTFPFFZFVX6EJRNUSIIIXNQ27G6DTCZY7K2KXURVN3JLJPENHPHVPGWEOYPRVENE6RVHCQR4M6J4NF44VME2E5ENFH3XDXKEU5YJKXPOMBHDGCTQ",
+                                "fareClass": "S",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 308.63,
+                                        "count": 1,
+                                        "hasDiscount": false,
+                                        "publishedFare": 308.63,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 0,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "AAA",
+                                    "destination": "BBB",
+                                    "flightNumber": "FR 3151",
+                                    "time": [
+                                        "2024-07-31T17:45:00.000",
+                                        "2024-07-31T19:15:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-07-31T15:45:00.000Z",
+                                        "2024-07-31T17:15:00.000Z"
+                                    ],
+                                    "duration": "01:30"
+                                }
+                            ],
+                            "flightNumber": "FR 3151",
+                            "time": [
+                                "2024-07-31T17:45:00.000",
+                                "2024-07-31T19:15:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-07-31T15:45:00.000Z",
+                                "2024-07-31T17:15:00.000Z"
+                            ],
+                            "duration": "01:30"
+                        },
+                        {
+                            "faresLeft": 5,
+                            "flightKey": "FR~3151~ ~~AAA~07/31/2024 12:15~BBB~07/31/2024 13:45~~",
+                            "infantsLeft": 14,
+                            "regularFare": {
+                                "fareKey": "PDXZ7C7MWTU4KJAFH42DQKMKSK5MNLNKYCL65LZ5MAVB6O65LN46VPWXPTZLWQPS6RCPSWQ6YUJJESEM23VCFP4XDOSTWRM2N6IKRCV2UGVL2RFZETNXONNBT3ABPS5UVJUMEPCRT277OJO6TEPSYCRU4YWHV6APLPQMW77S56EJXMPCCG4ECL4CQUN22VJCHMCUAKC3GMKFHCVTBZAOGSCEO5TYKLF4KYFIECVCPLYB2PA7YCQ2TTAD7I4CCOCB7OBCDO4TXY6TQTZIQKHW3KS2AJ4DDJQ4MQA5RGXDKHT6Y6XMYF2Q",
+                                "fareClass": "P",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 130.99,
+                                        "count": 1,
+                                        "hasDiscount": true,
+                                        "publishedFare": 135.9,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 4.91,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "AAA",
+                                    "destination": "BBB",
+                                    "flightNumber": "FR 3151",
+                                    "time": [
+                                        "2024-07-31T12:15:00.000",
+                                        "2024-07-31T13:45:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-07-31T10:15:00.000Z",
+                                        "2024-07-31T11:45:00.000Z"
+                                    ],
+                                    "duration": "01:30"
+                                }
+                            ],
+                            "flightNumber": "FR 3152",
+                            "time": [
+                                "2024-07-31T12:15:00.000",
+                                "2024-07-31T13:45:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-07-31T10:15:00.000Z",
+                                "2024-07-31T11:45:00.000Z"
+                            ],
+                            "duration": "01:30"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "serverTimeUTC": "2024-07-22T08:07:10.148Z"
+}

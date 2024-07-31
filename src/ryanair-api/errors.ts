@@ -21,3 +21,17 @@ export class ApiUnavailable extends ApiError {
         super(`The API with endpoint ${endpoint} is not currently available`, endpoint, options);
     }
 }
+
+export class UninitializedSession extends ApiError {
+    constructor(endpoint: string, options: { error?: Error, context?: SerializableDictionary } = {}) {
+        super(`The API with endpoint ${endpoint} cannot be called without a valid session.` +
+            `(Save the session retrieved from \`createSession()\`)`, endpoint, options);
+    }
+}
+
+export class UnexpectedStatusCode extends ApiError {
+    constructor(endpoint: string, response: Response, options: { error?: Error, context?: SerializableDictionary } = {}) {
+        options.context['response'] = JSON.stringify(response)
+        super(`The API with endpoint ${endpoint} returned an unexpected status code: ${response.status}`, endpoint, options);
+    }
+}

@@ -1,9 +1,7 @@
 import { Airport } from "./Airport";
 import { FlightDate, FlightDuration, PriceDetails } from "./base-types";
 
-export type FlightSchedule = {
-    [date: string]: Flight[]
-}
+export type FlightSchedule = Map<string, Flight[]>
 
 export type Flight = {
     flightNumber: string

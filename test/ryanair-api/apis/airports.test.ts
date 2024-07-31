@@ -22,7 +22,7 @@ describe('listAirports', () => {
         await MockUtils.mockHttpGet(endpoint, '', 500)
 
         return await expect(listAirports('en')).rejects.toEqual(
-            new ApiUnavailable(endpoint, { error: new Error(`API failed with 500`) })
+            new ApiUnavailable(endpoint)
         )
     })
 })
@@ -45,7 +45,7 @@ describe('listDestinationAirports', () => {
         await MockUtils.mockHttpGet(endpoint, '', 500)
 
         return await expect(listDestinationAirports(originAirport, 'en')).rejects.toEqual(
-            new ApiUnavailable(endpoint, { error: new Error(`API failed with 500`) })
+            new ApiUnavailable(endpoint)
         )
     })
 })

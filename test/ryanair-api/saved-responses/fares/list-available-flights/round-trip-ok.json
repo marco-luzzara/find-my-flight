@@ -1,0 +1,209 @@
+{
+    "termsOfUse": "htBBB://www.ryanair.com/ie/en/corporate/terms-of-use=AGREED",
+    "currency": "EUR",
+    "currPrecision": 2,
+    "routeGroup": "DOMESTIC",
+    "tripType": "OTHER",
+    "upgradeType": "PLUS",
+    "trips": [
+        {
+            "origin": "AAA",
+            "originName": "Airport A",
+            "destination": "BBB",
+            "destinationName": "Airport B",
+            "routeGroup": "DOMESTIC",
+            "tripType": "OTHER",
+            "upgradeType": "PLUS",
+            "dates": [
+                {
+                    "dateOut": "2024-07-29T00:00:00.000",
+                    "flights": []
+                },
+                {
+                    "dateOut": "2024-07-30T00:00:00.000",
+                    "flights": [
+                        {
+                            "faresLeft": -1,
+                            "flightKey": "FR~4650~ ~~AAA~09/13/2024 06:15~BBB~09/13/2024 07:55~~",
+                            "infantsLeft": 18,
+                            "regularFare": {
+                                "fareKey": "H4GMZOXUVWWGWWWKH7LKXOWZRREKKILO37IK7ZVMWEOSNDFMLOTBCRQGRCJFFLJZBKXDZ6XZPQY67KQLNMGN42JKWXWS6CEYNPKDOIEATVSKLQPK5TNB3JW7F6Y6Z33J7GE3WHKPM7EKU4PXTG5F3EGTDNZKATC6OJ5MQPNVMHMQFXIEKVQ4CC6C4AEZAIX2AA2WUDDTFW4EOXBRZH6VIYEC26CLZLIWNFRMIAS7MEDPHWCL2PPLGHGIJD464R6L",
+                                "fareClass": "J",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 42.89,
+                                        "count": 1,
+                                        "hasDiscount": false,
+                                        "publishedFare": 42.89,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 0,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "AAA",
+                                    "destination": "BBB",
+                                    "flightNumber": "FR 4650",
+                                    "time": [
+                                        "2024-07-30T06:15:00.000",
+                                        "2024-07-30T07:55:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-07-30T04:15:00.000Z",
+                                        "2024-07-30T05:55:00.000Z"
+                                    ],
+                                    "duration": "01:40"
+                                }
+                            ],
+                            "flightNumber": "FR 4650",
+                            "time": [
+                                "2024-07-30T06:15:00.000",
+                                "2024-07-30T07:55:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-07-30T04:15:00.000Z",
+                                "2024-07-30T05:55:00.000Z"
+                            ],
+                            "duration": "01:40"
+                        }
+                    ]
+                },
+                {
+                    "dateOut": "2024-07-31T00:00:00.000",
+                    "flights": []
+                }
+            ]
+        },
+        {
+            "origin": "BBB",
+            "originName": "Airport B",
+            "destination": "AAA",
+            "destinationName": "Airport A",
+            "routeGroup": "DOMESTIC",
+            "tripType": "OTHER",
+            "upgradeType": "PLUS",
+            "dates": [
+                {
+                    "dateOut": "2024-08-20T00:00:00.000",
+                    "flights": [
+                        {
+                            "faresLeft": -1,
+                            "flightKey": "FR~4651~ ~~BBB~09/16/2024 13:45~AAA~09/16/2024 15:25~~",
+                            "infantsLeft": 16,
+                            "regularFare": {
+                                "fareKey": "RJ2GYYYJH6UJRR3I6CEYIIU7I7WETAH6DFBMT72BXAVBP5OR4C7TM53MTDWZVS7WVNW2ZB6PFMXPXE4UCO2D2KGLCJ24DA2PVA5GBXZETNGGLBOUZRWAGDEGXJFDCG5NHL7I2CGE7F7COJLM7ZJX6VCW7UPX5XHT2R64ZBQD6JOQJACWFN2TO4SWKDOEZ3OVEBK4FUH4YRR5LEO2RG5MLCUTUORSMESNXHVRGP2TZKT5UVZMNZGRLUPRJ2TAYMUK5JZQ3JUSG3DV77SDPSORHFVPPQ",
+                                "fareClass": "A",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 57.35,
+                                        "count": 1,
+                                        "hasDiscount": false,
+                                        "publishedFare": 57.35,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 0,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "BBB",
+                                    "destination": "AAA",
+                                    "flightNumber": "FR 4651",
+                                    "time": [
+                                        "2024-08-20T13:45:00.000",
+                                        "2024-08-20T15:25:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-08-20T11:45:00.000Z",
+                                        "2024-08-20T13:25:00.000Z"
+                                    ],
+                                    "duration": "01:40"
+                                }
+                            ],
+                            "flightNumber": "FR 4651",
+                            "time": [
+                                "2024-08-20T13:45:00.000",
+                                "2024-08-20T15:25:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-08-20T11:45:00.000Z",
+                                "2024-08-20T13:25:00.000Z"
+                            ],
+                            "duration": "01:40"
+                        },
+                        {
+                            "faresLeft": -1,
+                            "flightKey": "FR~4699~ ~~BBB~09/16/2024 23:05~AAA~09/17/2024 00:40~~",
+                            "infantsLeft": 18,
+                            "regularFare": {
+                                "fareKey": "H4GMZOXUVWWGWWWKH7LKXOWZRREKKILO37IK7ZVMWEOSNDFMLOTDWGHK33ESEH3GPNGLTKEXQFKMIFZJX4JW4VIWPJOOI5OFOMKZI6J2PNV3WMBDZOMMJR53VWAQEZSDAE6HNYRVT4WSN37QIKSUNPMI7OTMELGZBLGPIFYNHFYP5BKB4TDKCS5TDFCJRTXJS7ZFIZWCVM4UVQWDQRI6PKY6HIOOAANKIX3JTFWUFPLEGEZURFCPT4BSZXYPHJURVDBGWIAM2PNMLUK6N2DPAUKDNA",
+                                "fareClass": "J",
+                                "fares": [
+                                    {
+                                        "type": "ADT",
+                                        "amount": 49.69,
+                                        "count": 1,
+                                        "hasDiscount": false,
+                                        "publishedFare": 49.69,
+                                        "discountInPercent": 0,
+                                        "hasPromoDiscount": false,
+                                        "discountAmount": 0,
+                                        "hasBogof": false
+                                    }
+                                ]
+                            },
+                            "operatedBy": "Malta Air",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "BBB",
+                                    "destination": "AAA",
+                                    "flightNumber": "FR 4699",
+                                    "time": [
+                                        "2024-08-20T23:05:00.000",
+                                        "2024-08-21T00:40:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-08-20T21:05:00.000Z",
+                                        "2024-08-20T22:40:00.000Z"
+                                    ],
+                                    "duration": "01:35"
+                                }
+                            ],
+                            "flightNumber": "FR 4699",
+                            "time": [
+                                "2024-08-20T23:05:00.000",
+                                "2024-08-21T00:40:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-08-20T21:05:00.000Z",
+                                "2024-08-20T22:40:00.000Z"
+                            ],
+                            "duration": "01:35"
+                        }
+                    ]
+                },
+                {
+                    "dateOut": "2024-08-21T00:00:00.000",
+                    "flights": []
+                },
+                {
+                    "dateOut": "2024-08-22T00:00:00.000",
+                    "flights": []
+                }
+            ]
+        }
+    ],
+    "serverTimeUTC": "2024-07-22T08:17:27.998Z"
+}

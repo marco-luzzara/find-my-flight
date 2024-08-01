@@ -40,7 +40,7 @@ export default class ApiEndpointBuilder {
             'CHD': params.children || 0,
             'TEEN': params.teenagers || 0,
             'INF': params.infants || 0,
-            'DateOut': params.dateOut.toCustomStringDate(),
+            'DateOut': ApiEndpointBuilder.toRyanAirStringDate(params.dateOut),
             'Destination': params.destination.code,
             'Origin': params.origin.code,
             'promoCode': params.promoCode || '',
@@ -53,7 +53,7 @@ export default class ApiEndpointBuilder {
         let roundTripParams = {}
         if (params.roundTrip === true) {
             roundTripParams = {
-                'DateIn': params.dateIn,
+                'DateIn': ApiEndpointBuilder.toRyanAirStringDate(params.dateIn),
                 'FlexDaysBeforeIn': params.flexDaysBeforeIn,
                 'FlexDaysIn': params.flexDaysIn
             }
@@ -61,6 +61,13 @@ export default class ApiEndpointBuilder {
         const paramsMap = { ...baseParams, ...roundTripParams }
         const urlParams = new URLSearchParams(paramsMap as any).toString()
 
-        return `https://www.ryanair.com/api/booking/v4/${params.fullLocale}/availability?${urlParams}`
+        return `https://www.ryanair.com/api/booking/v4/en-EN/availability?${urlParams}`
+    }
+
+    private static toRyanAirStringDate(date: Date): string {
+        const year = date.getFullYear()
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2, '0')
+        return `${year}-${month}-${day}`;
     }
 }

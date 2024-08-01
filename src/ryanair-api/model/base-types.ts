@@ -1,17 +1,14 @@
-export class FlightDate extends Date {
-    toCustomStringDate(): string {
-        const year = this.getFullYear()
-        const month = (this.getMonth() + 1).toString().padStart(2, '0')
-        const day = this.getDate().toString().padStart(2, '0')
-        return `${year}-${month}-${day}`;
-    }
-}
-
 export type PassengerType = 'ADT' | 'TEEN' | 'CHD' | 'INF'
 
 export type PriceDetails = {
     passengerType: PassengerType
     price: number
+}
+
+export enum ComparisonResult {
+    GREATER,
+    EQUAL,
+    SMALLER
 }
 
 export class FlightDuration {
@@ -23,16 +20,15 @@ export class FlightDuration {
         this.hours = parseInt(durationSegments[0])
         this.minutes = parseInt(durationSegments[1])
     }
-}
 
-export enum DayOfWeek {
-    Monday = "MONDAY",
-    Tuesday = "TUESDAY",
-    Wednesday = "WEDNESDAY",
-    Thursday = "THURSDAY",
-    Friday = "FRIDAY",
-    Saturday = "SATURDAY",
-    Sunday = "SUNDAY"
+    public compare(other: FlightDuration): ComparisonResult {
+        if (this.hours > other.hours || (this.hours === other.hours && this.minutes > other.minutes))
+            return ComparisonResult.GREATER
+        else if (this.hours < other.hours || (this.hours === other.hours && this.minutes < other.minutes))
+            return ComparisonResult.SMALLER
+        else
+            return ComparisonResult.EQUAL
+    }
 }
 
 export type Cookie = Record<string, string>

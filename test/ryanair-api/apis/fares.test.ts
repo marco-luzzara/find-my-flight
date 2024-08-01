@@ -2,7 +2,7 @@ import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder"
 import { listAvailableDatesForFare, listAvailableFlights } from "../../../src/ryanair-api/apis/fares"
 import { ApiUnavailable, UninitializedSession } from "../../../src/ryanair-api/errors"
 import { Airport } from "../../../src/ryanair-api/model/Airport"
-import { FlightDate, Session } from "../../../src/ryanair-api/model/base-types"
+import { Session } from "../../../src/ryanair-api/model/base-types"
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../../../src/ryanair-api/model/Fare"
 import { AirportFactory } from "../test-factories/AirportFactory"
 import { API_SAVED_RESPONSES } from "../test-utils/constants"
@@ -35,7 +35,7 @@ describe('listAvailableDatesForFare', () => {
 describe('listAvailableFlights', () => {
     const originAirport: Airport = AirportFactory.buildAirport('AAA')
     const destinationAirport: Airport = AirportFactory.buildAirport('BBB')
-    const dateOut = new FlightDate('2024-07-29T00:00:00.000')
+    const dateOut = new Date('2024-07-29T00:00:00.000')
     const session: Session = [
         {
             cookie1: 'test_val'
@@ -48,7 +48,6 @@ describe('listAvailableFlights', () => {
         destination: destinationAirport,
         flexDaysBeforeOut: 1,
         flexDaysOut: 1,
-        fullLocale: 'it-IT',
         includeConnectingFlights: false,
         roundTrip: false
     }
@@ -62,12 +61,12 @@ describe('listAvailableFlights', () => {
 
         expect(flightSchedule.size).toEqual(3)
         expect(flightSchedule.get(dateOut.toISOString()).length).toEqual(0)
-        expect(flightSchedule.get(new FlightDate('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
-        expect(flightSchedule.get(new FlightDate('2024-07-31T00:00:00.000').toISOString()).length).toEqual(2)
+        expect(flightSchedule.get(new Date('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
+        expect(flightSchedule.get(new Date('2024-07-31T00:00:00.000').toISOString()).length).toEqual(2)
     })
 
     test('when round trip, listAvailableFlights should return 2 FlightSchedules', async () => {
-        const dateIn = new FlightDate('2024-08-20T00:00:00.000')
+        const dateIn = new Date('2024-08-20T00:00:00.000')
         const roundTripParams: ListAvailableRoundTripFlightsParams = {
             adults: 1,
             dateOut,
@@ -75,7 +74,6 @@ describe('listAvailableFlights', () => {
             destination: destinationAirport,
             flexDaysBeforeOut: 1,
             flexDaysOut: 1,
-            fullLocale: 'it-IT',
             includeConnectingFlights: false,
             roundTrip: true,
             dateIn,
@@ -88,9 +86,9 @@ describe('listAvailableFlights', () => {
         const flightSchedules = await listAvailableFlights(roundTripParams, session)
 
         expect(flightSchedules.fromOrigin.size).toEqual(3)
-        expect(flightSchedules.fromOrigin.get(new FlightDate('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
+        expect(flightSchedules.fromOrigin.get(new Date('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
         expect(flightSchedules.fromDestination.size).toEqual(3)
-        expect(flightSchedules.fromDestination.get(new FlightDate('2024-08-20T00:00:00.000').toISOString()).length).toEqual(2)
+        expect(flightSchedules.fromDestination.get(new Date('2024-08-20T00:00:00.000').toISOString()).length).toEqual(2)
     })
 
     test('when HTTP request fails, then listAvailableFlights returns ApiUnavailable', async () => {

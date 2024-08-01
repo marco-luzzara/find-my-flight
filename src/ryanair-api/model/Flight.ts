@@ -1,5 +1,5 @@
 import { Airport } from "./Airport";
-import { FlightDate, FlightDuration, PriceDetails } from "./base-types";
+import { FlightDuration, PriceDetails } from "./base-types";
 
 export type FlightSchedule = Map<string, Flight[]>
 

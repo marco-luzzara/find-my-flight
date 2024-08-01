@@ -5,7 +5,15 @@ import { FlightDuration, PassengerType, PriceDetails, Session } from "../model/b
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/Fare";
 import { Flight, FlightSchedule } from "../model/Flight";
 
-export async function listAvailableDatesForFare(origin: Airport, destination: Airport): Promise<Array<Date>> {
+
+/**
+ * List the available dates for the flights from origin to destination. In the returned dates,
+ * Ryanair has the schedule ready.
+ * @param origin 
+ * @param destination 
+ * @returns The dates for the scheduled flights
+ */
+export async function listAvailableDatesForFare(origin: Airport, destination: Airport): Promise<Date[]> {
     const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(origin, destination)
     const response = await fetch(endpoint)
     switch (response.status) {
@@ -19,11 +27,23 @@ export async function listAvailableDatesForFare(origin: Airport, destination: Ai
     }
 }
 
+
+/**
+ * List the available one-way flights (from origin to destination)
+ * @param params 
+ * @param session The `Session` retrieved after calling `createSession()` 
+ */
 export async function listAvailableFlights(
     params: ListAvailableOneWayFlightsParams,
     session: Session
 ): Promise<FlightSchedule>;
 
+
+/**
+ * List the available round-trip flights (from origin to destination and vice-versa)
+ * @param params 
+ * @param session The `Session` retrieved after calling `createSession()` 
+ */
 export async function listAvailableFlights(
     params: ListAvailableRoundTripFlightsParams,
     session: Session
@@ -41,7 +61,6 @@ export async function listAvailableFlights(
 //         fromOrigin: FlightSchedule,
 //         fromDestination: FlightSchedule
 //     } : never)> {}
-
 export async function listAvailableFlights(
     params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams,
     session: Session
@@ -66,6 +85,7 @@ export async function listAvailableFlights(
     }
 }
 
+
 async function processListAvailableFlightsResponse(
     response: Response,
     params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
@@ -75,7 +95,7 @@ async function processListAvailableFlightsResponse(
 }> {
     const content: Array<any> = await response.json()
 
-    if (params.roundTrip === false) {
+    if (!params.roundTrip) {
         const responseTripDates = content['trips'][0]['dates']
         return processTripDates(responseTripDates, params.origin, params.destination)
     }
@@ -95,6 +115,7 @@ async function processListAvailableFlightsResponse(
     }
 }
 
+
 function processTripDates(responseTripDates: [{
     dateOut: string,
     flights: any
@@ -105,8 +126,8 @@ function processTripDates(responseTripDates: [{
             flightNumber: f.flightNumber as string,
             origin: origin,
             destination: destination,
-            departureDate: new Date(f.time[0]),
-            arrivalDate: new Date(f.time[1]),
+            departureDate: new Date(f.timeUTC[0]),
+            arrivalDate: new Date(f.timeUTC[1]),
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,
             infantsLeft: (f.infantsLeft === -1 ? undefined : f.infantsLeft) as number,
             prices: f.regularFare.fares.map(fare => ({
@@ -116,4 +137,10 @@ function processTripDates(responseTripDates: [{
             duration: new FlightDuration(f.duration as string)
         }))
     ]))
+}
+
+function validateListAvailableFlightsParams(
+    params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
+) {
+
 }

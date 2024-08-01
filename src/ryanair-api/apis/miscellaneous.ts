@@ -28,7 +28,7 @@ export async function listCountries(languageLocale: string = 'en'): Promise<Arra
     }
 }
 
-export async function listCurrencies(): Promise<Array<Currency>> {
+export async function listCurrencies(): Promise<Currency[]> {
     const endpoint = ApiEndpointBuilder.listCurrencies()
     const response = await fetch(endpoint)
 

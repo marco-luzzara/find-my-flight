@@ -1,6 +1,10 @@
 import { Airport } from "./Airport";
 import { FlightDuration, PriceDetails } from "./base-types";
 
+/**
+ * a map where the key is a stringed date and the value is an array
+ * containing all the flights for the corresponding date
+ */
 export type FlightSchedule = Map<string, Flight[]>
 
 export type Flight = {

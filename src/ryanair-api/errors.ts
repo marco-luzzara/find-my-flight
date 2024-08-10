@@ -35,3 +35,11 @@ export class UnexpectedStatusCode extends ApiError {
         super(`The API with endpoint ${endpoint} returned an unexpected status code: ${response.status}`, endpoint, options);
     }
 }
+
+
+export class ValidationError extends Error {
+    constructor(paramName: string, actual: any, expected: string) {
+        super(`'${paramName}' is initialized to: ${actual}\n` +
+            `But the expected value is: ${expected}`)
+    }
+}

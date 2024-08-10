@@ -2,9 +2,21 @@ import { Airport } from "./Airport";
 import Currency from "./Currency";
 
 export type ListAvailableFlightsBaseParams = {
+    /**
+     * age >= 16
+     */
     adults: number;
+    /**
+     * 2 <= age <= 11
+     */
     children?: number;
+    /**
+     * 12 <= age <= 15
+     */
     teenagers?: number;
+    /**
+     * age < 2
+     */
     infants?: number;
     dateOut: Date;
     destination: Airport;

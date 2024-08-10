@@ -12,7 +12,17 @@ export class IntegerInterval {
     }
 }
 
-export enum SortDirection {
+export type Locale = {
+    languageCode: string
+    LCID: string
+}
+
+export type ResultsSort = {
+    by: SortBy,
+    order: SortOrder
+}
+
+export enum SortOrder {
     ASCENDING,
     DESCENDING
 }

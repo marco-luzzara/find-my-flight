@@ -1,8 +1,8 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession } from "../errors";
+import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationError } from "../errors";
 import { Airport } from "../model/Airport";
 import { FlightDuration, PassengerType, PriceDetails, Session } from "../model/base-types";
-import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/Fare";
+import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/ListAvailableFlightParams";
 import { Flight, FlightSchedule } from "../model/Flight";
 
 
@@ -68,6 +68,8 @@ export async function listAvailableFlights(
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
 }> {
+    validateListAvailableFlightsParams(params)
+
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
     const headers = new Headers()
     headers.append('Cookie', session.join('; '))
@@ -131,16 +133,67 @@ function processTripDates(responseTripDates: [{
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,
             infantsLeft: (f.infantsLeft === -1 ? undefined : f.infantsLeft) as number,
             prices: f.regularFare.fares.map(fare => ({
-                passengerType: fare.type as PassengerType,
+                passengerType: convertFareTypeToPassengerType(fare.type),
                 price: fare.amount as number
-            })) as PriceDetails[],
+            })),
             duration: new FlightDuration(f.duration as string)
         }))
     ]))
 }
 
+
+function convertFareTypeToPassengerType(fareType: string): PassengerType {
+    switch (fareType) {
+        case 'ADT':
+            return PassengerType.ADULT
+        case 'TEEN':
+            return PassengerType.TEENAGER
+        case 'CHD':
+            return PassengerType.CHILD
+        case 'INF':
+            return PassengerType.INFANT
+        default:
+            throw new Error(`Cannot handle passenger type ${fareType}`)
+    }
+}
+
+
+// TODO: tests?
 function validateListAvailableFlightsParams(
     params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
 ) {
+    if (params.adults <= 0)
+        throw new ValidationError('adults', params.adults, '>= 1')
+    if (params.children && params.children < 0)
+        throw new ValidationError('children', params.children, '>= 0')
+    if (params.teenagers && params.teenagers < 0)
+        throw new ValidationError('teenagers', params.teenagers, '>= 0')
+    if (params.infants && params.infants < 0)
+        throw new ValidationError('infants', params.infants, '>= 0')
 
+    if (params.dateOut <= new Date())
+        throw new ValidationError('dateOut', params.dateOut, `> ${new Date().toLocaleDateString()}`)
+
+    if (params.flexDaysBeforeOut < 0 || params.flexDaysBeforeOut > 6)
+        throw new ValidationError('flexDaysBeforeOut', params.flexDaysBeforeOut, '[0, 6]')
+
+    if (params.flexDaysOut < 0 || params.flexDaysOut > 6)
+        throw new ValidationError('flexDaysOut', params.flexDaysOut, '[0, 6]')
+
+    if (params.flexDaysBeforeOut + params.flexDaysOut > 6)
+        throw new ValidationError('flexDaysBeforeOut + flexDaysOut', params.flexDaysBeforeOut + params.flexDaysOut, '[0, 6]')
+
+    if (params.roundTrip) {
+        if (params.dateIn <= params.dateOut)
+            throw new ValidationError('dateIn', params.dateIn, `> dateOut`)
+
+        if (params.flexDaysBeforeIn < 0 || params.flexDaysBeforeIn > 6)
+            throw new ValidationError('flexDaysBeforeIn', params.flexDaysBeforeIn, '[0, 6]')
+
+        if (params.flexDaysIn < 0 || params.flexDaysIn > 6)
+            throw new ValidationError('flexDaysIn', params.flexDaysIn, '[0, 6]')
+
+        if (params.flexDaysBeforeIn + params.flexDaysIn > 6)
+            throw new ValidationError('flexDaysBeforeIn + flexDaysIn', params.flexDaysBeforeIn + params.flexDaysIn, '[0, 6]')
+    }
 }

@@ -1,6 +1,6 @@
-import { Airport } from "../../ryanair-api/model/Airport"
-import { FlightDuration } from "../../ryanair-api/model/base-types";
+import { Airport } from "./Airport";
 import { IntegerInterval } from "./base-types";
+import { TravelCompany } from "./TravelCompany";
 
 export type SearchOneWayParams = {
     languageLocale: string
@@ -13,36 +13,29 @@ export type SearchOneWayParams = {
      */
     destinations: Airport[]
     /**
-     * Number of adults
+     * age of the people traveling
      */
-    adults: number
-    /**
-     * Number of teenagers (between 12 and 16 years old)
-     */
-    teenagers: number
-    /**
-     * Number of children (between 2 and 12 years old)
-     */
-    children: number
-    /**
-     * Number of infants (<2 years old)
-     */
-    infants: number
+    passengersAge: number[]
     /**
      * The available dates you can fly from an origin airport 
      */
-    startDates: Date[]
+    departureDates: Date[]
     /**
-     * The hours in a day of the start flight
+     * The hours in a day you want your flight to depart
      */
-    startTimeInterval: IntegerInterval
+    departureTimeInterval: IntegerInterval
     /**
-     * Maximum duration of the flight
+     * Maximum duration of the flight in minutes
      */
-    maxFlightDuration: FlightDuration
+    maxFlightDuration?: number
+    /**
+     * search results can come from these travel companies exclusively
+     */
+    travelCompanies: TravelCompany[]
 }
 
 export type SearchRoundTripParams = SearchOneWayParams & {
+    roundTrip: true
     /**
      * The available dates of the return flight 
      */
@@ -60,4 +53,8 @@ export type SearchRoundTripParams = SearchOneWayParams & {
      * that the number of days from the start flight to the return flight can range between 4 and 7
      */
     daysRange: IntegerInterval
+    /**
+     * Maximum duration of the return flight in minutes
+     */
+    maxEndFlightDuration?: number
 }

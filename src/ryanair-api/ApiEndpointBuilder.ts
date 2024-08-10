@@ -1,5 +1,5 @@
 import { Airport } from "./model/Airport"
-import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "./model/Fare"
+import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "./model/ListAvailableFlightParams"
 
 export default class ApiEndpointBuilder {
     // ******** AIRPORTS ********

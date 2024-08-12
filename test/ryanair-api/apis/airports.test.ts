@@ -28,7 +28,7 @@ describe('listAirports', () => {
 })
 
 describe('listDestinationAirports', () => {
-    const originAirport: Airport = AirportFactory.buildAirport('AAA')
+    const originAirport: Airport = AirportFactory.build('A')
 
     test('listDestinationAirports should return list of airports', async () => {
         const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport, 'en')

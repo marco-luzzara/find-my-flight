@@ -1,9 +1,8 @@
 import { Airport } from "./Airport";
-import { IntegerInterval } from "./base-types";
+import { DayInterval, HourInterval } from "./base-types";
 import { TravelCompany } from "./TravelCompany";
 
 export type SearchOneWayParams = {
-    languageLocale: string
     /**
      * The possible airports where the flight starts
      */
@@ -23,7 +22,7 @@ export type SearchOneWayParams = {
     /**
      * The hours in a day you want your flight to depart
      */
-    departureTimeInterval: IntegerInterval
+    departureTimeInterval: HourInterval
     /**
      * Maximum duration of the flight in minutes
      */
@@ -43,7 +42,7 @@ export type SearchRoundTripParams = SearchOneWayParams & {
     /**
      * The hours in a day of the return flight
      */
-    endTimeInterval: IntegerInterval
+    endTimeInterval: HourInterval
     /**
      * The starting airport and the destination airport of the return trip must be the same 
      */
@@ -52,7 +51,7 @@ export type SearchRoundTripParams = SearchOneWayParams & {
      * The range of days from the start flight to the end flight. `IntegerInterval(4, 7)` means 
      * that the number of days from the start flight to the return flight can range between 4 and 7
      */
-    daysRange: IntegerInterval
+    daysRange: DayInterval
     /**
      * Maximum duration of the return flight in minutes
      */

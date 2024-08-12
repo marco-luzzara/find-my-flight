@@ -38,8 +38,12 @@ export class UnexpectedStatusCode extends ApiError {
 
 
 export class ValidationError extends Error {
+    errorParamName: string
+
     constructor(paramName: string, actual: any, expected: string) {
         super(`'${paramName}' is initialized to: ${actual}\n` +
             `But the expected value is: ${expected}`)
+
+        this.errorParamName = paramName
     }
 }

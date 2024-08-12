@@ -29,7 +29,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         this.airports = airports
     }
 
-    static async create(locale: Locale): Promise<RyanairIntegration> {
+    static async create(locale: Locale = { languageCode: 'en', BCP47LangCode: 'en-US' }): Promise<RyanairIntegration> {
         const session = await createSession()
         const airports = await listAirports(locale.languageCode)
 

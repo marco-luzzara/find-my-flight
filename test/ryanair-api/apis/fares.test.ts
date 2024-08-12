@@ -9,8 +9,8 @@ import { API_SAVED_RESPONSES } from "../test-utils/constants"
 import { MockUtils } from "../test-utils/mock"
 
 describe('listAvailableDatesForFare', () => {
-    const originAirport: Airport = AirportFactory.buildAirport('AAA')
-    const destinationAirport: Airport = AirportFactory.buildAirport('BBB')
+    const originAirport: Airport = AirportFactory.build('A')
+    const destinationAirport: Airport = AirportFactory.build('B')
 
     test('listAvailableDatesForFare should return list of Dates', async () => {
         const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirport, destinationAirport)
@@ -33,8 +33,8 @@ describe('listAvailableDatesForFare', () => {
 })
 
 describe('listAvailableFlights', () => {
-    const originAirport: Airport = AirportFactory.buildAirport('AAA')
-    const destinationAirport: Airport = AirportFactory.buildAirport('BBB')
+    const originAirport: Airport = AirportFactory.build('A')
+    const destinationAirport: Airport = AirportFactory.build('B')
     let dateOut = new Date()
     dateOut.setDate(dateOut.getDate() + 1)
     const session: Session = [
@@ -76,9 +76,9 @@ describe('listAvailableFlights', () => {
         const flightSchedule = await listAvailableFlights(oneWayParams, session)
 
         expect(flightSchedule.size).toEqual(3)
-        expect(flightSchedule.get(new Date('2024-07-29T00:00:00.000').toISOString()).length).toEqual(0)
-        expect(flightSchedule.get(new Date('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
-        expect(flightSchedule.get(new Date('2024-07-31T00:00:00.000').toISOString()).length).toEqual(2)
+        expect(flightSchedule.get('2024-07-29T00:00:00.000').length).toEqual(0)
+        expect(flightSchedule.get('2024-07-30T00:00:00.000').length).toEqual(1)
+        expect(flightSchedule.get('2024-07-31T00:00:00.000').length).toEqual(2)
     })
 
     test('when round trip, listAvailableFlights should return 2 FlightSchedules', async () => {
@@ -88,9 +88,9 @@ describe('listAvailableFlights', () => {
         const flightSchedules = await listAvailableFlights(roundTripParams, session)
 
         expect(flightSchedules.fromOrigin.size).toEqual(3)
-        expect(flightSchedules.fromOrigin.get(new Date('2024-07-30T00:00:00.000').toISOString()).length).toEqual(1)
+        expect(flightSchedules.fromOrigin.get('2024-07-30T00:00:00.000').length).toEqual(1)
         expect(flightSchedules.fromDestination.size).toEqual(3)
-        expect(flightSchedules.fromDestination.get(new Date('2024-08-20T00:00:00.000').toISOString()).length).toEqual(2)
+        expect(flightSchedules.fromDestination.get('2024-08-20T00:00:00.000').length).toEqual(2)
     })
 
     test('when HTTP request fails, then listAvailableFlights returns ApiUnavailable', async () => {

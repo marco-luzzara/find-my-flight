@@ -123,13 +123,13 @@ function processTripDates(responseTripDates: [{
     flights: any
 }], origin: Airport, destination: Airport): FlightSchedule {
     return new Map(responseTripDates.map(x => [
-        new Date(x.dateOut).toISOString(),
+        x.dateOut,
         x.flights.map(f => ({
             flightNumber: f.flightNumber as string,
             origin: origin,
             destination: destination,
-            departureDate: new Date(f.timeUTC[0]),
-            arrivalDate: new Date(f.timeUTC[1]),
+            departureDate: new Date(f.time[0]),
+            arrivalDate: new Date(f.time[1]),
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,
             infantsLeft: (f.infantsLeft === -1 ? undefined : f.infantsLeft) as number,
             prices: f.regularFare.fares.map(fare => ({

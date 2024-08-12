@@ -1,20 +1,29 @@
 import { Airport } from "../../../src/ryanair-api/model/Airport";
 
 export class AirportFactory {
-    public static buildAirport(code: string): Airport {
+    /**
+     * build an test airport using a seed letter
+     * @param seed a letter used to generate the airport data
+     * @returns an Airport
+     */
+    public static build(seed: string): Airport {
+        if (seed.length > 1)
+            throw new Error('seed must be a single letter')
+
+        const airportCode = seed.repeat(3)
         return {
-            city: 'CityA',
-            code: code,
+            city: 'City' + seed,
+            code: airportCode,
             country: {
-                name: 'CountryA0',
-                code: 'CountryACode',
-                currency: 'CurrencyA',
-                defaultAirportCode: code,
-                iso3code: 'iso3codeA'
+                name: 'Country' + seed,
+                code: `Country${seed}Code`,
+                currency: 'Currency' + seed,
+                defaultAirportCode: airportCode,
+                iso3code: 'iso3code' + seed
             },
-            name: 'AirportA',
-            region: 'RegionA',
-            timeZone: 'TimeZoneA'
+            name: 'Airport' + seed,
+            region: 'Region' + seed,
+            timeZone: 'TimeZone' + seed
         }
     }
 }

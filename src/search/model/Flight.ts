@@ -8,3 +8,11 @@ export type Flight = {
     arrivalDate: Date
     price: number
 }
+
+/**
+ * returns the duration of a flight in minutes
+ * @param flight 
+ */
+export function getFlightDuration(flight: Flight): number {
+    return (flight.arrivalDate.valueOf() - flight.departureDate.valueOf()) / (60 * 1000)
+}

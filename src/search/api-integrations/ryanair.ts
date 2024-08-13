@@ -5,7 +5,7 @@ import { Airport } from "../../ryanair-api/model/Airport";
 import { PassengerType, PriceDetails, Session } from "../../ryanair-api/model/base-types";
 import { FlightSchedule } from "../../ryanair-api/model/Flight";
 import { Locale } from "../model/base-types";
-import { Flight } from "../model/Flight";
+import { Flight, getFlightDuration } from "../model/Flight";
 import { SearchOneWayParams } from "../model/SearchParams";
 import { TravelCompanyIntegration } from "./TravelCompanyIntegration";
 
@@ -61,7 +61,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                         promoCode: ''
                     }, this.session)
 
-                    flights.push(...Array.from(newFlights.values()).flatMap(fs => fs)
+                    flights.push(...this.filterFlights(Array.from(newFlights.values()).flatMap(fs => fs)
                         .map(f => ({
                             flightNumber: f.flightNumber,
                             origin,
@@ -69,7 +69,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                             departureDate: f.departureDate,
                             arrivalDate: f.arrivalDate,
                             price: this.computeTotalPrice(passengersCount, f.priceDetails)
-                        }))
+                        })), params)
                     )
                 }
             }
@@ -118,6 +118,22 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         return groups
     }
 
+
+    /**
+     * filter out flights whose departure date is not included in the accepted one and those ones
+     * that have a duration too high
+     * @param flights 
+     * @param params 
+     * @returns the acceptable flights
+     */
+    private filterFlights(flights: Flight[], params: SearchOneWayParams): Flight[] {
+        return flights.filter(flight =>
+            getFlightDuration(flight) < (params.maxFlightDuration ?? Number.MAX_SAFE_INTEGER) &&
+            params.departureTimeInterval.isIncluded(flight.departureDate.getHours())
+        )
+    }
+
+
     /**
      * count the number of each passenger type starting from the age of each passenger
      * @param ages 
@@ -137,11 +153,18 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         }
     }
 
+
+    /**
+     * compute the total price of the flight: it includes the price of each passenger
+     * @param passengersCount the count of each passenger type
+     * @param priceDetails the price of the flight ticket for each passenger type (or 0 if not present)
+     * @returns the total price
+     */
     private computeTotalPrice(passengersCount: PassengersCount, priceDetails: PriceDetails): number {
         let totalPrice = 0
 
         for (let passengerType in passengersCount) {
-            totalPrice += (priceDetails[passengerType] || 0) * (passengersCount[passengerType] || 0)
+            totalPrice += (priceDetails[passengerType] ?? 0) * (passengersCount[passengerType] ?? 0)
         }
 
         return totalPrice

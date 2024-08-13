@@ -1,5 +1,5 @@
 import { Airport } from "./Airport";
-import { FlightDuration, PriceDetails } from "./base-types";
+import { PriceDetails } from "./base-types";
 
 /**
  * a map where the key is a stringed date and the value is an array
@@ -15,6 +15,6 @@ export type Flight = {
     arrivalDate: Date
     seatLeft?: number
     infantsLeft?: number
-    prices: Array<PriceDetails>
-    duration: FlightDuration
+    priceDetails: PriceDetails
+    duration: number
 }

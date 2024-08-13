@@ -1,7 +1,7 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationError } from "../errors";
 import { Airport } from "../model/Airport";
-import { FlightDuration, PassengerType, PriceDetails, Session } from "../model/base-types";
+import { PassengerType, PriceDetails, Session } from "../model/base-types";
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/ListAvailableFlightParams";
 import { Flight, FlightSchedule } from "../model/Flight";
 
@@ -33,10 +33,39 @@ export async function listAvailableDatesForFare(origin: Airport, destination: Ai
  * @param params 
  * @param session The `Session` retrieved after calling `createSession()` 
  */
-export async function listAvailableFlights(
+export async function listAvailableOneWayFlights(
     params: ListAvailableOneWayFlightsParams,
     session: Session
-): Promise<FlightSchedule>;
+): Promise<FlightSchedule> {
+    validateListAvailableFlightsParams(params)
+
+    const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
+    const headers = new Headers()
+    headers.append('Cookie', session.join('; '))
+
+    const response = await fetch(endpoint, { headers })
+    switch (response.status) {
+        case 200:
+            return processListAvailableOneWayFlightsResponse(response, params)
+        case 409:
+            throw new UninitializedSession(endpoint)
+        case 500:
+            throw new ApiUnavailable(endpoint)
+        default:
+            throw new UnexpectedStatusCode(endpoint, response)
+    }
+}
+
+
+async function processListAvailableOneWayFlightsResponse(
+    response: Response,
+    params: ListAvailableOneWayFlightsParams
+): Promise<FlightSchedule> {
+    const content: Array<any> = await response.json()
+    const responseTripDates = content['trips'][0]['dates']
+
+    return processTripDates(responseTripDates, params.origin, params.destination)
+}
 
 
 /**
@@ -44,27 +73,10 @@ export async function listAvailableFlights(
  * @param params 
  * @param session The `Session` retrieved after calling `createSession()` 
  */
-export async function listAvailableFlights(
+export async function listAvailableRoundTripFlights(
     params: ListAvailableRoundTripFlightsParams,
     session: Session
 ): Promise<{
-    fromOrigin: FlightSchedule,
-    fromDestination: FlightSchedule
-}>;
-
-// TODO: find out why it does not work with conditional types instead of function overloading
-// export async function listAvailableFlights<T extends ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams>(
-//     params: T
-// ): Promise<T extends ListAvailableOneWayFlightsParams ?
-//     FlightSchedule :
-//     (T extends ListAvailableRoundTripFlightsParams ? {
-//         fromOrigin: FlightSchedule,
-//         fromDestination: FlightSchedule
-//     } : never)> {}
-export async function listAvailableFlights(
-    params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams,
-    session: Session
-): Promise<FlightSchedule | {
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
 }> {
@@ -77,7 +89,7 @@ export async function listAvailableFlights(
     const response = await fetch(endpoint, { headers })
     switch (response.status) {
         case 200:
-            return processListAvailableFlightsResponse(response, params)
+            return processListAvailableRoundTripFlightsResponse(response, params)
         case 409:
             throw new UninitializedSession(endpoint)
         case 500:
@@ -88,32 +100,26 @@ export async function listAvailableFlights(
 }
 
 
-async function processListAvailableFlightsResponse(
+async function processListAvailableRoundTripFlightsResponse(
     response: Response,
-    params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
-): Promise<FlightSchedule | {
+    params: ListAvailableRoundTripFlightsParams
+): Promise<{
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
 }> {
     const content: Array<any> = await response.json()
 
-    if (!params.roundTrip) {
-        const responseTripDates = content['trips'][0]['dates']
-        return processTripDates(responseTripDates, params.origin, params.destination)
-    }
-    else {
-        const originToDestTrip = content['trips'][0]['origin'] === params.origin.code ?
-            content['trips'][0] :
-            content['trips'][1]
+    const originToDestTrip = content['trips'][0]['origin'] === params.origin.code ?
+        content['trips'][0] :
+        content['trips'][1]
 
-        const destToOriginTrip = content['trips'][0]['origin'] === params.destination.code ?
-            content['trips'][0] :
-            content['trips'][1]
+    const destToOriginTrip = content['trips'][0]['origin'] === params.destination.code ?
+        content['trips'][0] :
+        content['trips'][1]
 
-        return {
-            fromOrigin: processTripDates(originToDestTrip['dates'], params.origin, params.destination),
-            fromDestination: processTripDates(destToOriginTrip['dates'], params.destination, params.origin)
-        }
+    return {
+        fromOrigin: processTripDates(originToDestTrip['dates'], params.origin, params.destination),
+        fromDestination: processTripDates(destToOriginTrip['dates'], params.destination, params.origin)
     }
 }
 
@@ -132,13 +138,30 @@ function processTripDates(responseTripDates: [{
             arrivalDate: new Date(f.time[1]),
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,
             infantsLeft: (f.infantsLeft === -1 ? undefined : f.infantsLeft) as number,
-            prices: f.regularFare.fares.map(fare => ({
-                passengerType: convertFareTypeToPassengerType(fare.type),
-                price: fare.amount as number
-            })),
-            duration: new FlightDuration(f.duration as string)
+            priceDetails: processPrices(f.regularFare.fares),
+            duration: convertFlightDurationToMinutes(f.duration as string)
         }))
     ]))
+}
+
+
+function processPrices(fares: any[]): PriceDetails {
+    let result: PriceDetails = {}
+
+    for (let fare of fares) {
+        result[convertFareTypeToPassengerType(fare.type)] = fare.amount as number
+    }
+
+    return result
+}
+
+
+function convertFlightDurationToMinutes(flightDuration: string): number {
+    const durationSegments = flightDuration.split(':')
+    const hours = parseInt(durationSegments[0])
+    const minutes = parseInt(durationSegments[1])
+
+    return hours * 60 + minutes
 }
 
 

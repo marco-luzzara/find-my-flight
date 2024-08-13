@@ -1,5 +1,5 @@
 import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder"
-import { listAvailableDatesForFare, listAvailableFlights } from "../../../src/ryanair-api/apis/fares"
+import { listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights } from "../../../src/ryanair-api/apis/fares"
 import { ApiUnavailable, UninitializedSession } from "../../../src/ryanair-api/errors"
 import { Airport } from "../../../src/ryanair-api/model/Airport"
 import { Session } from "../../../src/ryanair-api/model/base-types"
@@ -73,7 +73,7 @@ describe('listAvailableFlights', () => {
         const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
         await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/one-way-ok.json`)
 
-        const flightSchedule = await listAvailableFlights(oneWayParams, session)
+        const flightSchedule = await listAvailableOneWayFlights(oneWayParams, session)
 
         expect(flightSchedule.size).toEqual(3)
         expect(flightSchedule.get('2024-07-29T00:00:00.000').length).toEqual(0)
@@ -85,7 +85,7 @@ describe('listAvailableFlights', () => {
         const endpoint = ApiEndpointBuilder.listAvailableFlights(roundTripParams)
         await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/round-trip-ok.json`)
 
-        const flightSchedules = await listAvailableFlights(roundTripParams, session)
+        const flightSchedules = await listAvailableRoundTripFlights(roundTripParams, session)
 
         expect(flightSchedules.fromOrigin.size).toEqual(3)
         expect(flightSchedules.fromOrigin.get('2024-07-30T00:00:00.000').length).toEqual(1)
@@ -97,7 +97,7 @@ describe('listAvailableFlights', () => {
         const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
         await MockUtils.mockHttpGet(endpoint, '', 500)
 
-        return await expect(listAvailableFlights(oneWayParams, session)).rejects.toEqual(
+        return await expect(listAvailableOneWayFlights(oneWayParams, session)).rejects.toEqual(
             new ApiUnavailable(endpoint)
         )
     })
@@ -106,7 +106,7 @@ describe('listAvailableFlights', () => {
         const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
         await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/missing-session-409.json`, 409)
 
-        return await expect(listAvailableFlights(oneWayParams, session)).rejects.toEqual(
+        return await expect(listAvailableOneWayFlights(oneWayParams, session)).rejects.toEqual(
             new UninitializedSession(endpoint)
         )
     })

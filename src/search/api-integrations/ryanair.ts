@@ -1,8 +1,8 @@
 import { listAirports, listDestinationAirports } from "../../ryanair-api/apis/airports";
-import { listAvailableFlights } from "../../ryanair-api/apis/fares";
+import { listAvailableOneWayFlights } from "../../ryanair-api/apis/fares";
 import { createSession } from "../../ryanair-api/apis/miscellaneous";
 import { Airport } from "../../ryanair-api/model/Airport";
-import { Session } from "../../ryanair-api/model/base-types";
+import { PassengerType, PriceDetails, Session } from "../../ryanair-api/model/base-types";
 import { FlightSchedule } from "../../ryanair-api/model/Flight";
 import { Locale } from "../model/base-types";
 import { Flight } from "../model/Flight";
@@ -11,12 +11,7 @@ import { TravelCompanyIntegration } from "./TravelCompanyIntegration";
 
 const MAX_QUERYABLE_DATES = 7
 
-type PassengersCount = {
-    adults: number;
-    children: number;
-    teenagers: number;
-    infants: number;
-}
+type PassengersCount = { [key in PassengerType]?: number }
 
 export class RyanairIntegration implements TravelCompanyIntegration {
     readonly session: Session
@@ -51,8 +46,11 @@ export class RyanairIntegration implements TravelCompanyIntegration {
 
             for (let destination of availableDestinations) {
                 for (let dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
-                    const newFlights = await listAvailableFlights({
-                        ...passengersCount,
+                    const newFlights = await listAvailableOneWayFlights({
+                        adults: passengersCount[PassengerType.ADULT],
+                        teenagers: passengersCount[PassengerType.TEENAGER],
+                        children: passengersCount[PassengerType.CHILD],
+                        infants: passengersCount[PassengerType.INFANT],
                         roundTrip: false,
                         dateOut: dateGroup[0],
                         flexDaysBeforeOut: 0,
@@ -70,7 +68,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                             destination,
                             departureDate: f.departureDate,
                             arrivalDate: f.arrivalDate,
-                            price: 0
+                            price: this.computeTotalPrice(passengersCount, f.priceDetails)
                         }))
                     )
                 }
@@ -120,6 +118,11 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         return groups
     }
 
+    /**
+     * count the number of each passenger type starting from the age of each passenger
+     * @param ages 
+     * @returns 
+     */
     private mapAgesToPassengers(ages: number[]): PassengersCount {
         const adults = ages.filter(age => age >= 16).length
         const children = ages.filter(age => age >= 2 && age <= 11).length
@@ -127,7 +130,20 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         const infants = ages.filter(age => age < 2).length
 
         return {
-            adults, children, teenagers, infants
+            [PassengerType.ADULT]: adults,
+            [PassengerType.TEENAGER]: teenagers,
+            [PassengerType.CHILD]: children,
+            [PassengerType.INFANT]: infants
         }
+    }
+
+    private computeTotalPrice(passengersCount: PassengersCount, priceDetails: PriceDetails): number {
+        let totalPrice = 0
+
+        for (let passengerType in passengersCount) {
+            totalPrice += (priceDetails[passengerType] || 0) * (passengersCount[passengerType] || 0)
+        }
+
+        return totalPrice
     }
 }

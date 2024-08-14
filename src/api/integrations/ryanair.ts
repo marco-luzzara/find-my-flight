@@ -1,12 +1,13 @@
-import { listAirports, listDestinationAirports } from "../../ryanair-api/apis/airports";
-import { listAvailableOneWayFlights } from "../../ryanair-api/apis/fares";
-import { createSession } from "../../ryanair-api/apis/miscellaneous";
-import { Airport } from "../../ryanair-api/model/Airport";
-import { PassengerType, PriceDetails, Session } from "../../ryanair-api/model/base-types";
-import { FlightSchedule } from "../../ryanair-api/model/Flight";
+import { listAirports, listDestinationAirports } from "../../external-apis/ryanair-api/apis/airports";
+import { listAvailableOneWayFlights } from "../../external-apis/ryanair-api/apis/fares";
+import { createSession } from "../../external-apis/ryanair-api/apis/miscellaneous";
+import { Airport } from "../../external-apis/ryanair-api/model/Airport";
+import { PassengerType, PriceDetails, Session } from "../../external-apis/ryanair-api/model/base-types";
+import { FlightSchedule } from "../../external-apis/ryanair-api/model/Flight";
 import { Locale } from "../model/base-types";
 import { Flight, getFlightDuration } from "../model/Flight";
 import { SearchOneWayParams } from "../model/SearchParams";
+import { TravelCompany } from "../model/TravelCompany";
 import { TravelCompanyIntegration } from "./TravelCompanyIntegration";
 
 const MAX_QUERYABLE_DATES = 7
@@ -68,7 +69,8 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                             destination,
                             departureDate: f.departureDate,
                             arrivalDate: f.arrivalDate,
-                            price: this.computeTotalPrice(passengersCount, f.priceDetails)
+                            price: this.computeTotalPrice(passengersCount, f.priceDetails),
+                            travelCompany: TravelCompany.Ryanair
                         })), params)
                     )
                 }

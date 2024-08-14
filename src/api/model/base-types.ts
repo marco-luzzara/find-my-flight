@@ -1,4 +1,4 @@
-import { ValidationError } from "../../ryanair-api/errors"
+import { ValidationError } from "../../external-apis/ryanair-api/errors"
 
 export class HourInterval {
     start: number
@@ -52,18 +52,18 @@ export type Locale = {
     BCP47LangCode: string
 }
 
-export type ResultsSort = {
-    by: SortBy,
-    order: SortOrder
-}
+// export type ResultsSort = {
+//     by: SortBy,
+//     order: SortOrder
+// }
 
-export enum SortOrder {
-    ASCENDING,
-    DESCENDING
-}
+// export enum SortOrder {
+//     ASCENDING,
+//     DESCENDING
+// }
 
-export enum SortBy {
-    PRICE,
-    START_DATE,
-    END_DATE
-}
+// export enum SortBy {
+//     PRICE,
+//     START_DATE,
+//     END_DATE
+// }

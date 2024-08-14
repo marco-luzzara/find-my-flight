@@ -1,12 +1,12 @@
-import * as airportsApi from "../../../src/ryanair-api/apis/airports"
-import * as faresApi from "../../../src/ryanair-api/apis/fares"
-import { Airport as RyanairAirport } from "../../../src/ryanair-api/model/Airport"
-import { PassengerType } from "../../../src/ryanair-api/model/base-types"
-import { RyanairIntegration } from "../../../src/search/api-integrations/ryanair"
-import { Airport } from "../../../src/search/model/Airport"
-import { HourInterval } from "../../../src/search/model/base-types"
-import { TravelCompany } from "../../../src/search/model/TravelCompany"
-import { AirportFactory } from "../../ryanair-api/test-factories/AirportFactory"
+import * as airportsApi from "../../../src/external-apis/ryanair-api/apis/airports"
+import * as faresApi from "../../../src/external-apis/ryanair-api/apis/fares"
+import { Airport as RyanairAirport } from "../../../src/external-apis/ryanair-api/model/Airport"
+import { PassengerType } from "../../../src/external-apis/ryanair-api/model/base-types"
+import { RyanairIntegration } from "../../../src/api/integrations/ryanair"
+import { Airport } from "../../../src/api/model/Airport"
+import { HourInterval } from "../../../src/api/model/base-types"
+import { TravelCompany } from "../../../src/api/model/TravelCompany"
+import { AirportFactory } from "../../external-apis/ryanair-api/test-factories/AirportFactory"
 
 function mapToSearchAirport(airport: RyanairAirport): Airport {
     return {
@@ -28,13 +28,13 @@ const destinationAirports = [
     AirportFactory.build('D')
 ]
 
-jest.mock('../../../src/ryanair-api/apis/miscellaneous', () => {
+jest.mock('../../../src/external-apis/ryanair-api/apis/miscellaneous', () => {
     return {
         createSession: jest.fn().mockResolvedValue([])
     }
 })
-jest.mock('../../../src/ryanair-api/apis/airports')
-jest.mock('../../../src/ryanair-api/apis/fares')
+jest.mock('../../../src/external-apis/ryanair-api/apis/airports')
+jest.mock('../../../src/external-apis/ryanair-api/apis/fares')
 
 const mockedAirportsApi = airportsApi as jest.Mocked<typeof airportsApi>
 mockedAirportsApi.listAirports.mockResolvedValue(originAirports.concat(destinationAirports))

@@ -1,4 +1,5 @@
 import { Airport } from "./Airport"
+import { TravelCompany } from "./TravelCompany"
 
 export type Flight = {
     flightNumber: string
@@ -7,6 +8,7 @@ export type Flight = {
     departureDate: Date
     arrivalDate: Date
     price: number
+    travelCompany: TravelCompany
 }
 
 /**

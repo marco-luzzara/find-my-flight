@@ -1,4 +1,4 @@
-import { Airport } from "../../../src/ryanair-api/model/Airport";
+import { Airport } from "../../../../src/external-apis/ryanair-api/model/Airport";
 
 export class AirportFactory {
     /**

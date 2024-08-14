@@ -1,0 +1,1 @@
+export const API_SAVED_RESPONSES = 'test/external-apis/ryanair-api/saved-responses'

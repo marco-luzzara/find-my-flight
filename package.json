@@ -2,9 +2,10 @@
   "name": "ryanair-power-search",
   "version": "1.0.0",
   "description": "Improves and extensively customize the Ryanair search for the best flight",
-  "main": "index.js",
+  "main": "dist/src/api/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node dist/src/api/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,8 @@
   },
   "dependencies": {
     "@types/cookie": "^0.6.0",
-    "cookie": "^0.6.0"
+    "cookie": "^0.6.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1"
   }
 }

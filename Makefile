@@ -1,4 +1,11 @@
-.PHONY: test
+.PHONY: compile test start
 
-test:
-	npx tsc && npx jest
+
+compile:
+	npx tsc
+
+start: compile
+	npm start
+
+test: compile
+	npx jest

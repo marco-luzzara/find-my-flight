@@ -1,6 +1,6 @@
-import ApiEndpointBuilder from "../../../src/ryanair-api/ApiEndpointBuilder"
-import { createSession, listCountries, listCurrencies } from "../../../src/ryanair-api/apis/miscellaneous"
-import { ApiUnavailable, UnexpectedStatusCode } from "../../../src/ryanair-api/errors"
+import ApiEndpointBuilder from "../../../../src/external-apis/ryanair-api/ApiEndpointBuilder"
+import { createSession, listCountries, listCurrencies } from "../../../../src/external-apis/ryanair-api/apis/miscellaneous"
+import { ApiUnavailable, UnexpectedStatusCode } from "../../../../src/external-apis/ryanair-api/errors"
 import { API_SAVED_RESPONSES } from "../test-utils/constants"
 import { MockUtils } from "../test-utils/mock"
 import * as fs from 'node:fs'

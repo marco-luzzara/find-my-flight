@@ -1,15 +1,15 @@
-import Fastify from 'fastify'
-const fastify = Fastify({
-    logger: true
-})
-import searchFlightRoutes from './apis/search-flight'
+// import Fastify from 'fastify'
+// const fastify = Fastify({
+//     logger: true
+// })
+// import searchFlightRoutes from './apis/search-flight'
 
-import dotenv from "dotenv"
-dotenv.config()
+// import dotenv from "dotenv"
+// dotenv.config()
 
-fastify.register(searchFlightRoutes)
+// fastify.register(searchFlightRoutes)
 
-fastify.listen({ port: parseInt(process.env.SERVER_PORT) }, (err, address) => {
-    if (err) throw err
-    // Server is now listening on ${address}
-})
+// fastify.listen({ port: parseInt(process.env.SERVER_PORT) }, (err, address) => {
+//     if (err) throw err
+//     // Server is now listening on ${address}
+// })

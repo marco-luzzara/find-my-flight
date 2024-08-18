@@ -5,7 +5,7 @@
   "main": "dist/src/api/index.js",
   "scripts": {
     "test": "jest",
-    "start": "node dist/src/api/index.js"
+    "start": "next dev"
   },
   "repository": {
     "type": "git",
@@ -26,8 +26,14 @@
   },
   "dependencies": {
     "@types/cookie": "^0.6.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "cookie": "^0.6.0",
     "dotenv": "^16.4.5",
-    "fastify": "^4.28.1"
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.5",
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

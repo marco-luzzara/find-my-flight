@@ -2,7 +2,7 @@
 
 
 compile:
-	npx tsc
+	npx tsc && npx next lint
 
 start: compile
 	npm start

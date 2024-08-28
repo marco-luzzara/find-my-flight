@@ -1,0 +1,28 @@
+{
+    "name": "@findmyflight/external-api-ryanair",
+    "version": "1.0.0",
+    "description": "Ryanair APIs",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/marco-luzzara/ryanair-power-search.git",
+        "directory": "packages/external-apis/ryanair"
+    },
+    "author": "Marco Luzzara",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
+    },
+    "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
+    "dependencies": {
+        "@types/cookie": "^0.6.0",
+        "cookie": "^0.6.0"
+    },
+    "main": "dist/index.js",
+    "directories": {
+        "dist": "dist"
+    },
+    "keywords": []
+}

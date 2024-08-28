@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "references": [
+        {
+            "path": "../external-apis/ryanair"
+        }
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext"
+    }
+}

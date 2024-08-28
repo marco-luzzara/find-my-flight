@@ -3,10 +3,11 @@ SERVER_PORT ?= 3001
 
 
 compile:
-	npx tsc && npx next lint
+	npx tsc --build
+	cd packages/webapp && npx next lint
 
 start: compile
-	npx next dev -p $(SERVER_PORT)
+	cd packages/webapp && npx next dev -p $(SERVER_PORT)
 
 test: compile
 	npx jest

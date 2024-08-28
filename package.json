@@ -1,8 +1,12 @@
 {
-  "name": "ryanair-power-search",
+  "workspaces": [
+    "packages/external-apis/ryanair",
+    "packages/api",
+    "packages/webapp"
+  ],
+  "name": "findmyflight",
   "version": "1.0.0",
-  "description": "Improves and extensively customize the Ryanair search for the best flight",
-  "main": "dist/src/api/index.js",
+  "description": "FindMyFlight helps you to search and find the optimal flight",
   "scripts": {
     "test": "jest"
   },
@@ -15,26 +19,14 @@
   "bugs": {
     "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
   },
-  "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
-    "ts-jest": "^29.2.2",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@ant-design/nextjs-registry": "^1.0.1",
-    "@types/cookie": "^0.6.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "antd": "^5.20.1",
-    "cookie": "^0.6.0",
-    "dotenv": "^16.4.5",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.5",
-    "next": "^14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "eslint": "^8.57.0"
   }
 }

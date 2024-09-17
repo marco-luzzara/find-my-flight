@@ -1,4 +1,6 @@
-import { AntdRegistry } from '@ant-design/nextjs-registry';
+import '@mantine/core/styles.css';
+
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
 export default function RootLayout({
     children,
@@ -7,8 +9,11 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <head>
+                <ColorSchemeScript />
+            </head>
             <body>
-                <AntdRegistry>{children}</AntdRegistry>
+                <MantineProvider>{children}</MantineProvider>
             </body>
         </html>
     )

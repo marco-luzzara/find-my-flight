@@ -1,17 +1,27 @@
-import { Layout } from 'antd';
-import { Content } from 'antd/lib/layout/layout'
-import Sider from 'antd/lib/layout/Sider'
-import styles from './styles.module.css'
+'use client'
 
-export default function Page() {
+import { AppShell, ScrollArea } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+
+import styles from './styles.module.css'
+import SearchPanel from '@/components/SearchPanel';
+
+export default function App() {
+    const [opened, { toggle }] = useDisclosure();
+
     return (
-        <Layout hasSider>
-            <Sider className={styles.searchPanel}>
-                test
-            </Sider>
-            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-                content
-            </Content>
-        </Layout>
-    )
+        <AppShell padding="md" navbar={{
+            width: "30%",
+            breakpoint: 'sm',
+            collapsed: { mobile: true },
+        }}>
+            <AppShell.Navbar id={styles.navbar} p="md">
+                <AppShell.Section grow component={ScrollArea}>
+                    <SearchPanel className={styles.searchPanel}></SearchPanel>
+                </AppShell.Section>
+            </AppShell.Navbar>
+
+            <AppShell.Main>Main</AppShell.Main>
+        </AppShell>
+    );
 }

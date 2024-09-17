@@ -17,16 +17,24 @@
   },
   "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
   "dependencies": {
-    "@ant-design/nextjs-registry": "^1.0.1",
     "@findmyflight/api": "^1.0.0",
+    "@mantine/core": "^7.12.2",
+    "@mantine/dates": "^7.12.2",
+    "@mantine/hooks": "^7.12.2",
+    "@tabler/icons-react": "^3.17.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
-    "antd": "^5.20.3",
+    "dayjs": "^1.11.13",
     "eslint-config-next": "^14.2.7",
     "next": "^14.2.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "main": "dist/index.js",
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "postcss": "^8.4.47",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1"
+  }
 }

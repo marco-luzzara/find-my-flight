@@ -2,6 +2,7 @@
 
 import { AppShell, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import '@mantine/dates/styles.css';
 
 import styles from './styles.module.css'
 import SearchPanel from '@/components/SearchPanel';

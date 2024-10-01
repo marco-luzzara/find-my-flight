@@ -1,15 +1,7 @@
 #navbar {
     background-color: rgb(121, 253, 127);
-    /* height: 100vh;
-    margin: 5%;
-    overflow: auto;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    scrollbar-width: 'thin';
-    scrollbar-color: 'unset'; */
 }
 
 .searchPanel>* {
-    width: 100%;
+    width: 98%;
 }

@@ -1,17 +1,10 @@
-import { Checkbox, Fieldset, Flex, FlexProps, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider } from '@mantine/core';
+import { Checkbox, Fieldset, Flex, FlexProps, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
 
 export default function SearchPanel({ className }) {
     const theme = useMantineTheme();
-    const selectedItemProps: FlexProps = {
-        gap: "sm",
-        align: "flex-start",
-        direction: "row",
-        style: {
-            padding: "5%"
-        }
-    }
+
     return (
         <Flex gap="lg"
             justify="center"
@@ -95,6 +88,8 @@ export default function SearchPanel({ className }) {
                     label="All travel companies"
                 />
             </Fieldset>
+
+            <Button variant="filled">Search</Button>
         </Flex>
     )
 }

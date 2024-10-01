@@ -6,6 +6,8 @@ import '@mantine/dates/styles.css';
 
 import styles from './styles.module.css'
 import SearchPanel from '@/components/SearchPanel';
+import FlightsGroup from '@/components/FlightsGroup';
+import FlightDetails from '@/components/FlightDetails';
 
 export default function App() {
     const [opened, { toggle }] = useDisclosure();
@@ -22,7 +24,16 @@ export default function App() {
                 </AppShell.Section>
             </AppShell.Navbar>
 
-            <AppShell.Main>Main</AppShell.Main>
+            <AppShell.Main>
+                <FlightsGroup groupDescription="test group">
+                    <FlightDetails originAirport="Bergamo"
+                        departureDateTime="depTime"
+                        flightDuration="2:40"
+                        travelCompany="Ryanair"
+                        destinationAirport="Bologna"
+                        arrivalDateTime="arrTime" />
+                </FlightsGroup>
+            </AppShell.Main>
         </AppShell>
     );
 }

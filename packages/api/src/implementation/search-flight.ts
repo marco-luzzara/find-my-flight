@@ -1,12 +1,6 @@
-import { RyanairIntegration } from "../integrations/ryanair";
-import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration";
+import { travelCompanyIntegrations } from "../integrations/travel-company-integrations";
 import { Flight } from "../model/Flight";
 import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams";
-import { TravelCompany } from "../model/TravelCompany";
-
-const travelCompanyIntegrations: Map<TravelCompany, Promise<TravelCompanyIntegration>> = new Map([
-    [TravelCompany.Ryanair, RyanairIntegration.create()]
-])
 
 
 export async function searchOneWayFlight(

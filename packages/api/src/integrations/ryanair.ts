@@ -1,5 +1,5 @@
 import {
-    Airport, airportsApi, faresApi, miscellaneousApi,
+    Airport as RyanairAirport, airportsApi, faresApi, miscellaneousApi,
     PassengerType,
     PriceDetails,
     Session
@@ -9,7 +9,8 @@ import { Locale } from "../model/base-types";
 import { Flight, getFlightDuration } from "../model/Flight";
 import { SearchOneWayParams } from "../model/SearchParams";
 import { TravelCompany } from "../model/TravelCompany";
-import { TravelCompanyIntegration } from "./TravelCompanyIntegration";
+import { TravelCompanyIntegration } from "./travel-company-integrations";
+import { Airport } from "../model/Airport";
 
 const MAX_QUERYABLE_DATES = 7
 
@@ -17,10 +18,10 @@ type PassengersCount = { [key in PassengerType]?: number }
 
 export class RyanairIntegration implements TravelCompanyIntegration {
     readonly session: Session
-    readonly airports: Airport[]
+    readonly airports: RyanairAirport[]
     readonly locale: Locale
 
-    protected constructor(locale: Locale, session: Session, airports: Airport[]) {
+    protected constructor(locale: Locale, session: Session, airports: RyanairAirport[]) {
         this.locale = locale
         this.session = session
         this.airports = airports
@@ -79,6 +80,15 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         }
 
         return flights.flatMap(f => f)
+    }
+
+    public async listAirports(): Promise<Airport[]> {
+        return Promise.resolve(this.airports.map(a => {
+            return {
+                code: a.code,
+                name: a.name
+            }
+        }))
     }
 
     /**

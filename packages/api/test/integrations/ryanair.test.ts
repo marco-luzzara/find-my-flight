@@ -180,3 +180,17 @@ describe('getOneWayFlights', () => {
         expect(searchResults).toHaveLength(0)
     })
 })
+
+describe('listAirports', () => {
+    test('given Ryanair airports, return simple Airport', async () => {
+        const integration = await RyanairIntegration.create()
+
+        const airports = await integration.listAirports()
+
+        expect(airports).toHaveLength(4)
+        expect(airports[0]).toEqual({
+            code: 'AAA',
+            name: 'AirportA'
+        })
+    })
+})

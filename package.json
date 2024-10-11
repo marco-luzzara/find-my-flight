@@ -2,7 +2,8 @@
   "workspaces": [
     "packages/external-apis/ryanair",
     "packages/api",
-    "packages/webapp"
+    "packages/webapp",
+    "packages/utils"
   ],
   "name": "findmyflight",
   "version": "1.0.0",

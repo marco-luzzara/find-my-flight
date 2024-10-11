@@ -1,13 +1,23 @@
-SERVER_PORT ?= 3001
-.PHONY: compile test start
+SHELL=/bin/bash
+.PHONY: compile-api start-api compile-webapp start-webapp test
 
+compile-api:
+	cd packages/api && \
+		npx tsc -b
 
-compile:
+start-api: compile-api
+	cd packages/api && \
+		npx node dist/index.js
+
+compile-webapp:
 	npx tsc --build
-	cd packages/webapp && npx next lint
+	cd packages/webapp && \
+		npx next lint
 
-start: compile
-	cd packages/webapp && npx next dev -p $(SERVER_PORT)
+start-webapp: compile-webapp
+	cd packages/webapp && \
+		source .env && \
+		npx next dev -p "$$SERVER_PORT"
 
-test: compile
+test: compile-api compile-webapp
 	npx jest

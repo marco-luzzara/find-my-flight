@@ -1,14 +1,14 @@
 {
-    "name": "@findmyflight/api",
+    "name": "@findmyflight/utils",
     "version": "1.0.0",
-    "description": "APIs for the FindMyFlight application",
+    "description": "Common utils for the FindMyFlight project",
     "scripts": {
         "test": "jest"
     },
     "repository": {
         "type": "git",
         "url": "git+ssh://git@github.com/marco-luzzara/ryanair-power-search.git",
-        "directory": "packages/api"
+        "directory": "packages/utils"
     },
     "author": "Marco Luzzara",
     "license": "ISC",
@@ -16,12 +16,7 @@
         "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
     },
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
-    "dependencies": {
-        "@findmyflight/external-api-ryanair": "^1.0.0",
-        "@findmyflight/utils": "^1.0.0",
-        "dotenv": "^16.4.5",
-        "fastify": "^5.0.0"
-    },
+    "dependencies": {},
     "main": "dist/index.js",
     "directories": {
         "dist": "dist"

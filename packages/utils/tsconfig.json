@@ -1,13 +1,5 @@
 {
     "extends": "../../tsconfig.base.json",
-    "references": [
-        {
-            "path": "../external-apis/ryanair"
-        },
-        {
-            "path": "../utils"
-        }
-    ],
     "include": [
         "src/**/*.ts"
     ],

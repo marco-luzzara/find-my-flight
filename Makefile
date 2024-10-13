@@ -7,7 +7,7 @@ compile-api:
 
 start-api: compile-api
 	cd packages/api && \
-		npx node dist/index.js
+		npx node dist/app.js
 
 compile-webapp:
 	npx tsc --build

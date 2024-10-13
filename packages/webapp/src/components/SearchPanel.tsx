@@ -1,8 +1,8 @@
-import { Checkbox, Fieldset, Flex, FlexProps, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button } from '@mantine/core';
+import { Checkbox, Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
 
-export default function SearchPanel({ className }) {
+export default async function SearchPanel({ className }) {
     const theme = useMantineTheme();
 
     return (
@@ -13,7 +13,7 @@ export default function SearchPanel({ className }) {
             className={className}
         >
             <Fieldset radius='lg'>
-                <Select data={['One Way']} label='Flight Type' placeholder='Choose the flight type...' />
+                <Select data={[{ value: 'one-way', label: 'One Way' }]} label='Flight Type' placeholder='Choose the flight type...' />
             </Fieldset>
 
             <Fieldset radius='lg'>

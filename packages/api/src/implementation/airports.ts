@@ -1,5 +1,5 @@
-import { travelCompanyIntegrations } from "../integrations/travel-company-integrations"
 import { AsyncUtils } from "@findmyflight/utils"
+import { travelCompanyIntegrations } from "../integrations/travel-company-integrations"
 import { Airport } from "../model/Airport"
 
 export async function listAirports(): Promise<Airport[]> {
@@ -12,7 +12,7 @@ export async function listAirports(): Promise<Airport[]> {
     })
 
     const airportsMap = new Map()
-    for await (let airports of listAirportsPromises) { //TODO: AsyncUtils.getAsSoonAsReady(listAirportsPromises)) {
+    for await (let airports of AsyncUtils.getAsSoonAsComplete(listAirportsPromises)) {
         for (let airport of airports) {
             if (!airportsMap.has(airport.code))
                 airportsMap.set(airport.code, airport)

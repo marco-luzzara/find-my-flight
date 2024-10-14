@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-.PHONY: compile-api start-api compile-webapp start-webapp test
+.PHONY: compile-api start-api compile-webapp start-webapp test clean
 
 compile-api:
 	cd packages/api && \
@@ -21,3 +21,6 @@ start-webapp: compile-webapp
 
 test: compile-api compile-webapp
 	npx jest
+
+clean:
+	npx tsc --build --clean

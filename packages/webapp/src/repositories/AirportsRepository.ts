@@ -3,7 +3,7 @@ import { Airport } from "@findmyflight/api";
 
 export class AirportRepository {
     public async listAirports(): Promise<Airport[]> {
-        return null
-        // return await fetch(configurationManager.apiEndpoint + '/airports')
+        const response = await fetch(configurationManager.apiEndpoint + '/airports')
+        return await response.json() as Airport[]
     }
 }

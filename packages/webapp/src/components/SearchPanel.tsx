@@ -1,9 +1,24 @@
-import { Checkbox, Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button } from '@mantine/core';
+import { AirportRepository } from '@/repositories/AirportsRepository';
+import { Checkbox, Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button, Space } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
+import { useEffect, useState } from 'react';
 
+const airportsRepo = new AirportRepository()
 
-export default async function SearchPanel({ className }) {
+export default function SearchPanel({ className }) {
     const theme = useMantineTheme();
+    const [airportsData, setAirportsData] = useState(null)
+
+    // the airports are re-loaded every time the day changes
+    const currentDate = (new Date()).getDate()
+    useEffect(() => {
+        airportsRepo.listAirports()
+            .then(res => res.map(a => ({
+                value: a.code,
+                label: `${a.name} (${a.code})`
+            })))
+            .then(airports => setAirportsData(airports))
+    }, [currentDate])
 
     return (
         <Flex gap="lg"
@@ -20,18 +35,18 @@ export default async function SearchPanel({ className }) {
                 <MultiSelect
                     label="Origin Airport"
                     placeholder="Select the origin airport..."
-                    data={['Bergamo', 'Bologna']}
+                    limit={10}
+                    data={airportsData}
                     searchable
                     clearable
                     nothingFoundMessage="No airport with this name..."
                 />
-            </Fieldset>
-
-            <Fieldset radius='lg'>
+                <Space h="md" />
                 <MultiSelect
                     label="Destination Airport"
                     placeholder="Select the destination airport..."
-                    data={['Bergamo', 'Bologna']}
+                    limit={10}
+                    data={airportsData}
                     searchable
                     clearable
                     nothingFoundMessage="No airport with this name..."

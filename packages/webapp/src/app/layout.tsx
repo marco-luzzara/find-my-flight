@@ -1,4 +1,5 @@
 import '@mantine/core/styles.css';
+import { StrictMode } from 'react';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
@@ -13,7 +14,9 @@ export default function RootLayout({
                 <ColorSchemeScript />
             </head>
             <body>
-                <MantineProvider>{children}</MantineProvider>
+                <StrictMode>
+                    <MantineProvider>{children}</MantineProvider>
+                </StrictMode>
             </body>
         </html>
     )

@@ -17,6 +17,7 @@
     },
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
     "dependencies": {
+        "@fastify/cors": "^10.0.1",
         "@findmyflight/external-api-ryanair": "^1.0.0",
         "@findmyflight/utils": "^1.0.0",
         "dotenv": "^16.4.5",

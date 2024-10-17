@@ -21,7 +21,8 @@ export default function SearchPanel({ className }) {
     }, [currentDate])
 
     return (
-        <Flex gap="lg"
+        <Flex
+            gap="lg"
             justify="center"
             align="flex-start"
             direction="column"

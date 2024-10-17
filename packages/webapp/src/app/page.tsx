@@ -8,6 +8,7 @@ import styles from './styles.module.css'
 import SearchPanel from '@/components/SearchPanel';
 import FlightsGroup from '@/components/FlightsGroup';
 import FlightDetails from '@/components/FlightDetails';
+import SettingsPanel from '@/components/SettingsPanel';
 
 export default function App() {
     const [opened, { toggle }] = useDisclosure();
@@ -18,13 +19,15 @@ export default function App() {
             breakpoint: 'sm',
             collapsed: { mobile: true },
         }}>
-            <AppShell.Navbar id={styles.navbar} p="md">
+            <AppShell.Navbar bg='searchPanelColor' id='navbar' p="md">
                 <AppShell.Section grow component={ScrollArea}>
                     <SearchPanel className={styles.searchPanel}></SearchPanel>
                 </AppShell.Section>
             </AppShell.Navbar>
 
             <AppShell.Main>
+                <SettingsPanel />
+
                 <FlightsGroup groupDescription="test group">
                     <FlightDetails originAirport="Bergamo"
                         departureDateTime="depTime"

@@ -1,7 +1,8 @@
 import { AirportRepository } from '@/repositories/AirportsRepository';
-import { Checkbox, Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button, Space } from '@mantine/core';
+import { Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button, Space } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useEffect, useState } from 'react';
+import TravelCompanySelect from './TravelCompanySelect';
 
 const airportsRepo = new AirportRepository()
 
@@ -42,7 +43,9 @@ export default function SearchPanel({ className }) {
                     clearable
                     nothingFoundMessage="No airport with this name..."
                 />
+
                 <Space h="md" />
+
                 <MultiSelect
                     label="Destination Airport"
                     placeholder="Select the destination airport..."
@@ -87,23 +90,7 @@ export default function SearchPanel({ className }) {
                     style={{ marginTop: theme.spacing.xl, marginBottom: theme.spacing.lg }} />
             </Fieldset>
 
-            <Fieldset radius='lg'>
-                <MultiSelect
-                    label="Travel Companies"
-                    placeholder="Select all the travel companies you would choose"
-                    data={['Ryanair', 'Volotea']}
-                    searchable
-                    clearable
-                    nothingFoundMessage="No travel company with this name..."
-                />
-
-                <hr />
-
-                <Checkbox
-                    defaultChecked
-                    label="All travel companies"
-                />
-            </Fieldset>
+            <TravelCompanySelect />
 
             <Button variant="filled">Search</Button>
         </Flex>

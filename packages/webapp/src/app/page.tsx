@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import '@mantine/dates/styles.css';
 
 import styles from './styles.module.css'
-import SearchPanel from '@/components/SearchPanel';
+import SearchPanel from '@/components/search-panel/SearchPanel';
 import FlightsGroup from '@/components/FlightsGroup';
 import FlightDetails from '@/components/FlightDetails';
 import SettingsPanel from '@/components/SettingsPanel';

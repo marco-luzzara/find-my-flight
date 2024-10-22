@@ -2,7 +2,7 @@ import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
 import { Airport } from "../model/Airport";
 
-export async function listAirports(languageLocale: string = 'en'): Promise<Array<Airport>> {
+export async function listAirports(languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listAirports(languageLocale)
     const response = await fetch(endpoint)
     switch (response.status) {
@@ -31,7 +31,7 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Array
     }
 }
 
-export async function listDestinationAirports(originAirport: Airport, languageLocale: string = 'en'): Promise<Array<Airport>> {
+export async function listDestinationAirports(originAirport: Airport, languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport, languageLocale)
     const response = await fetch(endpoint)
 

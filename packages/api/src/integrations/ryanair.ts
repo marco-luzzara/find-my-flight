@@ -83,12 +83,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
     }
 
     public async listAirports(): Promise<Airport[]> {
-        return Promise.resolve(this.airports.map(a => {
-            return {
-                code: a.code,
-                name: a.name
-            }
-        }))
+        return Promise.resolve(this.airports.map(a => RyanairTypeMapping.toAirport(a)))
     }
 
     /**
@@ -181,5 +176,25 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         }
 
         return totalPrice
+    }
+}
+
+export class RyanairTypeMapping {
+    public static toAirport(airport: RyanairAirport): Airport {
+        return {
+            code: airport.code,
+            name: airport.name
+        }
+    }
+
+    public static fromAirport(airport: Airport): RyanairAirport {
+        return {
+            code: airport.code,
+            name: airport.name,
+            city: null,
+            country: null,
+            region: null,
+            timeZone: null
+        }
     }
 }

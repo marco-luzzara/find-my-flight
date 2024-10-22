@@ -1,5 +1,5 @@
 import { faresApi, Airport as RyanairAirport, PassengerType, airportsApi } from "@findmyflight/external-api-ryanair"
-import { RyanairIntegration } from "../../src/integrations/ryanair"
+import { RyanairIntegration, RyanairTypeMapping } from "../../src/integrations/ryanair"
 import { Airport } from "../../src/model/Airport"
 import { HourInterval } from "../../src/model/base-types"
 import { TravelCompany } from "../../src/model/TravelCompany"
@@ -47,6 +47,7 @@ jest.mock('@findmyflight/external-api-ryanair', () => {
 
 const mockedAirportsApi = airportsApi as jest.Mocked<typeof airportsApi>
 mockedAirportsApi.listAirports.mockResolvedValue(originAirports.concat(destinationAirports))
+// the first airport is connected with both C and D, the second is connected to none
 mockedAirportsApi.listDestinationAirports.mockImplementation((originAirport: RyanairAirport) =>
     Promise.resolve(originAirport.code === originAirports[0].code ? destinationAirports : [])
 )
@@ -188,9 +189,6 @@ describe('listAirports', () => {
         const airports = await integration.listAirports()
 
         expect(airports).toHaveLength(4)
-        expect(airports[0]).toEqual({
-            code: 'AAA',
-            name: 'AirportA'
-        })
+        expect(airports[0]).toEqual(RyanairTypeMapping.toAirport(originAirports[0]))
     })
 })

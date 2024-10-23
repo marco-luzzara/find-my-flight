@@ -6,13 +6,6 @@ import { TravelCompany } from "../../src/model/TravelCompany"
 import { AirportFactory } from "../test-factories/AirportFactory"
 
 
-function mapToSearchAirport(airport: RyanairAirport): Airport {
-    return {
-        code: airport.code,
-        name: airport.name
-    }
-}
-
 const departureDate = new Date('2024-08-10T00:00:00.000')
 const originAirports = [
     // A -> [C, D]
@@ -60,12 +53,15 @@ beforeEach(() => {
 });
 
 
-describe('getOneWayFlights', () => {
-    test('given an origin and destination airport, when no route from origin to destination, getOneWayFlights returns 0 flights', async () => {
+describe('searchOneWayFlights', () => {
+    test('given an origin and destination airport, when no route from origin to destination, searchOneWayFlights returns 0 flights', async () => {
         const searchParams = {
             departureDates: [departureDate],
-            origins: [mapToSearchAirport(originAirports[1])],
-            destinations: [mapToSearchAirport(destinationAirports[0]), mapToSearchAirport(destinationAirports[1])],
+            originCodes: [RyanairTypeMapping.toAirport(originAirports[1]).code],
+            destinationCodes: [
+                RyanairTypeMapping.toAirport(destinationAirports[0]).code,
+                RyanairTypeMapping.toAirport(destinationAirports[1]).code
+            ],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 20],
             travelCompanies: [TravelCompany.Ryanair],
@@ -73,12 +69,12 @@ describe('getOneWayFlights', () => {
         }
 
         const integration = await RyanairIntegration.create()
-        const searchResults = await integration.getOneWayFlights(searchParams)
+        const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
     })
 
-    test('given an origin and destination airport, when there is 1 route, getOneWayFlights returns 1 flights', async () => {
+    test('given an origin and destination airport, when there is 1 route, searchOneWayFlights returns 1 flights', async () => {
         mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
@@ -97,8 +93,8 @@ describe('getOneWayFlights', () => {
             ]]]))
         const searchParams = {
             departureDates: [departureDate],
-            origins: [mapToSearchAirport(originAirports[0])],
-            destinations: [mapToSearchAirport(destinationAirports[0])],
+            originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
+            destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
@@ -106,7 +102,7 @@ describe('getOneWayFlights', () => {
         }
 
         const integration = await RyanairIntegration.create()
-        const searchResults = await integration.getOneWayFlights(searchParams)
+        const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(1)
         const foundFlight = searchResults.at(0)!
@@ -114,7 +110,7 @@ describe('getOneWayFlights', () => {
         expect(foundFlight.price).toEqual(60)
     })
 
-    test('given a route from origin to destination airport, when the departure time is not in hour interval, getOneWayFlights returns 0 flights', async () => {
+    test('given a route from origin to destination airport, when the departure time is not in hour interval, searchOneWayFlights returns 0 flights', async () => {
         mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
@@ -133,8 +129,8 @@ describe('getOneWayFlights', () => {
             ]]]))
         const searchParams = {
             departureDates: [departureDate],
-            origins: [mapToSearchAirport(originAirports[0])],
-            destinations: [mapToSearchAirport(destinationAirports[0])],
+            originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
+            destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(16, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
@@ -142,12 +138,12 @@ describe('getOneWayFlights', () => {
         }
 
         const integration = await RyanairIntegration.create()
-        const searchResults = await integration.getOneWayFlights(searchParams)
+        const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
     })
 
-    test('given a route from origin to destination airport, when the flight duration is above max, getOneWayFlights returns 0 flights', async () => {
+    test('given a route from origin to destination airport, when the flight duration is above max, searchOneWayFlights returns 0 flights', async () => {
         mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
@@ -166,8 +162,8 @@ describe('getOneWayFlights', () => {
             ]]]))
         const searchParams = {
             departureDates: [departureDate],
-            origins: [mapToSearchAirport(originAirports[0])],
-            destinations: [mapToSearchAirport(destinationAirports[0])],
+            originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
+            destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
@@ -176,7 +172,7 @@ describe('getOneWayFlights', () => {
 
         const integration = await RyanairIntegration.create()
 
-        const searchResults = await integration.getOneWayFlights(searchParams)
+        const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
     })

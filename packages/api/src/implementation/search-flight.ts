@@ -3,19 +3,18 @@ import { Flight } from "../model/Flight";
 import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams";
 
 
-export async function searchOneWayFlight(
+export async function searchOneWayFlights(
     params: SearchOneWayParams,
 ): Promise<Flight[]> {
-    let searchResultPromises: Promise<Flight[]>[] = []
+    let searchFlightsPromises = Array.from(travelCompanyIntegrations.values()).map(int => {
+        const integrationBuilder = int
+        return (async () => {
+            const integration = await integrationBuilder
+            return await integration.searchOneWayFlights(params)
+        })()
+    })
 
-    for (let travelCompany of params.travelCompanies) {
-        searchResultPromises.push((async () => {
-            const integration = await travelCompanyIntegrations.get(travelCompany)
-            return await integration.getOneWayFlights(params)
-        })())
-    }
-
-    let flights = (await Promise.all(searchResultPromises)).flatMap(f => f)
+    let flights = (await Promise.all(searchFlightsPromises)).flatMap(f => f)
 
     return flights
 }

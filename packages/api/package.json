@@ -28,5 +28,8 @@
     "directories": {
         "dist": "dist"
     },
-    "keywords": []
+    "keywords": [],
+    "devDependencies": {
+        "json-schema-to-ts": "^3.1.1"
+    }
 }

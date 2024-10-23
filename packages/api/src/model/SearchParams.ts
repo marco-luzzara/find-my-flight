@@ -2,15 +2,16 @@ import { Airport } from "./Airport";
 import { DayInterval, HourInterval } from "./base-types";
 import { TravelCompany } from "./TravelCompany";
 
+type AirportCode = string
 export type SearchOneWayParams = {
     /**
      * The possible airports where the flight starts
      */
-    origins: Airport[]
+    originCodes: AirportCode[]
     /**
      * The possible airports where the flight ends
      */
-    destinations: Airport[]
+    destinationCodes: AirportCode[]
     /**
      * age of the people traveling
      */
@@ -26,7 +27,7 @@ export type SearchOneWayParams = {
     /**
      * Maximum duration of the flight in minutes
      */
-    maxFlightDuration?: number
+    maxFlightDuration: number
     /**
      * search results can come from these travel companies exclusively
      */

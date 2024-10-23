@@ -11,8 +11,8 @@ export class HourInterval {
         if (start < 0)
             throw new apiErrors.ValidationError('start', start, `start >= 0`)
 
-        if (end > 23)
-            throw new apiErrors.ValidationError('end', start, `end <= 23`)
+        if (end > 24)
+            throw new apiErrors.ValidationError('end', start, `end <= 24`)
 
         this.start = start
         this.end = end

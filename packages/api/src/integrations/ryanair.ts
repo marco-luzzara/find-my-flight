@@ -34,21 +34,24 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         return new RyanairIntegration(locale, session, airports)
     }
 
-    public async getOneWayFlights(params: SearchOneWayParams): Promise<Flight[]> {
+    public async searchOneWayFlights(params: SearchOneWayParams): Promise<Flight[]> {
         const passengersCount = this.mapAgesToPassengers(params.passengersAge)
         const flights: Flight[] = []
 
-        for (let origin of params.origins) {
+        for (let originCode of params.originCodes) {
             const destinationAirportCodes = (await airportsApi.listDestinationAirports(
-                this.airports.filter(a => a.code === origin.code).at(0),
+                this.airports.filter(a => a.code === originCode).at(0),
                 this.locale.languageCode
             )).map(a => a.code)
 
-            const availableDestinations = params.destinations
-                .filter(d => destinationAirportCodes.includes(d.code))
+            const availableDestinationCodes = params.destinationCodes
+                .filter(dCode => destinationAirportCodes.includes(dCode))
 
-            for (let destination of availableDestinations) {
+            for (let destinationCode of availableDestinationCodes) {
                 for (let dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
+                    const origin = this.airports.filter(a => a.code === originCode).at(0)
+                    const destination = this.airports.filter(a => a.code === destinationCode).at(0)
+
                     const newFlights = await faresApi.listAvailableOneWayFlights({
                         adults: passengersCount[PassengerType.ADULT],
                         teenagers: passengersCount[PassengerType.TEENAGER],
@@ -58,8 +61,8 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                         dateOut: dateGroup[0],
                         flexDaysBeforeOut: 0,
                         flexDaysOut: dateGroup[1] - 1,
-                        origin: this.airports.filter(a => a.code === origin.code).at(0),
-                        destination: this.airports.filter(a => a.code === destination.code).at(0),
+                        origin: origin,
+                        destination: destination,
                         includeConnectingFlights: true,
                         promoCode: ''
                     }, this.session)

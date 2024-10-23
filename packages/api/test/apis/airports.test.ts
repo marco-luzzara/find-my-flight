@@ -20,13 +20,13 @@ function mockTravelCompanyIntegrations(...mockedIntegrations: {
     travelCompany: TravelCompany,
     mockFns: {
         listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
-        getOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['getOneWayFlights']>
+        searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
     }
 }[]) {
     for (let integration of mockedIntegrations) {
         mockedTravelCompanyModule.travelCompanyIntegrations.set(integration.travelCompany, Promise.resolve({
             listAirports: integration.mockFns.listAirportsMock ?? jest.fn(),
-            getOneWayFlights: integration.mockFns.getOneWayFlightsMock ?? jest.fn()
+            searchOneWayFlights: integration.mockFns.searchOneWayFlightsMock ?? jest.fn()
         }))
     }
 }

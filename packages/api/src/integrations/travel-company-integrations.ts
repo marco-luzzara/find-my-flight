@@ -5,7 +5,7 @@ import { TravelCompany } from "../model/TravelCompany";
 import { RyanairIntegration } from "./ryanair";
 
 export interface TravelCompanyIntegration {
-    getOneWayFlights(params: SearchOneWayParams): Promise<Flight[]>
+    searchOneWayFlights(params: SearchOneWayParams): Promise<Flight[]>
     listAirports(): Promise<Airport[]>
 }
 

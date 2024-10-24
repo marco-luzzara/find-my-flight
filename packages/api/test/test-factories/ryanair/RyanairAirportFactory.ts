@@ -1,6 +1,6 @@
-import { Airport } from "../../src/model/Airport";
+import { Airport } from "@findmyflight/external-api-ryanair";
 
-export class AirportFactory {
+export class RyanairAirportFactory {
     /**
      * build an test airport using a seed letter
      * @param seed a letter used to generate the airport data

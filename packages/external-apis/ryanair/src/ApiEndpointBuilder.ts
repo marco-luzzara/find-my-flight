@@ -8,8 +8,8 @@ export default class ApiEndpointBuilder {
         return `https://www.ryanair.com/api/views/locate/5/airports/${languageLocale}/active`
     }
 
-    public static listDestinationAirports(originAirport: Airport, languageLocale: string): string {
-        return `https://www.ryanair.com/api/views/locate/searchWidget/routes/${languageLocale}/airport/${originAirport.code}`
+    public static listDestinationAirports(originAirportCode: string, languageLocale: string): string {
+        return `https://www.ryanair.com/api/views/locate/searchWidget/routes/${languageLocale}/airport/${originAirportCode}`
     }
 
     // ******** MISCELLANEOUS ********
@@ -28,8 +28,8 @@ export default class ApiEndpointBuilder {
 
     // ******** FARES ********
 
-    public static listAvailableDatesForFare(originAirport: Airport, destinationAirport: Airport): string {
-        return `https://www.ryanair.com/api/farfnd/v4/oneWayFares/${originAirport.code}/${destinationAirport.code}/availabilities`
+    public static listAvailableDatesForFare(originAirportCode: string, destinationAirportCode: string): string {
+        return `https://www.ryanair.com/api/farfnd/v4/oneWayFares/${originAirportCode}/${destinationAirportCode}/availabilities`
     }
 
     public static listAvailableFlights(
@@ -41,8 +41,8 @@ export default class ApiEndpointBuilder {
             'TEEN': params.teenagers ?? 0,
             'INF': params.infants ?? 0,
             'DateOut': ApiEndpointBuilder.toRyanAirStringDate(params.dateOut),
-            'Destination': params.destination.code,
-            'Origin': params.origin.code,
+            'Destination': params.destinationCode,
+            'Origin': params.originCode,
             'promoCode': params.promoCode ?? '',
             'IncludeConnectingFlights': params.includeConnectingFlights,
             'FlexDaysBeforeOut': params.flexDaysBeforeOut,

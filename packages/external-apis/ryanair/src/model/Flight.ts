@@ -9,8 +9,8 @@ export type FlightSchedule = Map<string, Flight[]>
 
 export type Flight = {
     flightNumber: string
-    origin: Airport
-    destination: Airport
+    originCode: string
+    destinationCode: string
     departureDate: Date
     arrivalDate: Date
     seatLeft?: number

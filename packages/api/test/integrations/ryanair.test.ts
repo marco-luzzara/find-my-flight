@@ -3,20 +3,20 @@ import { RyanairIntegration, RyanairTypeMapping } from "../../src/integrations/r
 import { Airport } from "../../src/model/Airport"
 import { HourInterval } from "../../src/model/base-types"
 import { TravelCompany } from "../../src/model/TravelCompany"
-import { AirportFactory } from "../test-factories/AirportFactory"
+import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
 
 
 const departureDate = new Date('2024-08-10T00:00:00.000')
 const originAirports = [
     // A -> [C, D]
-    AirportFactory.build('A'),
+    RyanairAirportFactory.build('A'),
     // B -> []
-    AirportFactory.build('B')
+    RyanairAirportFactory.build('B')
 ]
 
 const destinationAirports = [
-    AirportFactory.build('C'),
-    AirportFactory.build('D')
+    RyanairAirportFactory.build('C'),
+    RyanairAirportFactory.build('D')
 ]
 
 jest.mock('@findmyflight/external-api-ryanair', () => {
@@ -41,8 +41,8 @@ jest.mock('@findmyflight/external-api-ryanair', () => {
 const mockedAirportsApi = airportsApi as jest.Mocked<typeof airportsApi>
 mockedAirportsApi.listAirports.mockResolvedValue(originAirports.concat(destinationAirports))
 // the first airport is connected with both C and D, the second is connected to none
-mockedAirportsApi.listDestinationAirports.mockImplementation((originAirport: RyanairAirport) =>
-    Promise.resolve(originAirport.code === originAirports[0].code ? destinationAirports : [])
+mockedAirportsApi.listDestinationAirports.mockImplementation((originAirportCode: string) =>
+    Promise.resolve(originAirportCode === originAirports[0].code ? destinationAirports : [])
 )
 
 const mockedFaresApi = faresApi as jest.Mocked<typeof faresApi>
@@ -79,8 +79,8 @@ describe('searchOneWayFlights', () => {
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
-                    origin: originAirports[0],
-                    destination: destinationAirports[0],
+                    originCode: originAirports[0].code,
+                    destinationCode: destinationAirports[0].code,
                     departureDate: departureDate,
                     arrivalDate: new Date('2024-08-10T01:00:00.000'),
                     seatLeft: 4,
@@ -115,8 +115,8 @@ describe('searchOneWayFlights', () => {
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
-                    origin: originAirports[0],
-                    destination: destinationAirports[0],
+                    originCode: originAirports[0].code,
+                    destinationCode: destinationAirports[0].code,
                     departureDate: departureDate,
                     arrivalDate: new Date('2024-08-10T01:00:00.000'),
                     seatLeft: 4,
@@ -148,8 +148,8 @@ describe('searchOneWayFlights', () => {
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
-                    origin: originAirports[0],
-                    destination: destinationAirports[0],
+                    originCode: originAirports[0].code,
+                    destinationCode: destinationAirports[0].code,
                     departureDate: departureDate,
                     arrivalDate: new Date('2024-08-10T03:00:00.000'),
                     seatLeft: 4,

@@ -39,8 +39,9 @@ export class RyanairIntegration implements TravelCompanyIntegration {
         const flights: Flight[] = []
 
         for (let originCode of params.originCodes) {
+            const origin = this.airports.filter(a => a.code === originCode).at(0)
             const destinationAirportCodes = (await airportsApi.listDestinationAirports(
-                this.airports.filter(a => a.code === originCode).at(0),
+                originCode,
                 this.locale.languageCode
             )).map(a => a.code)
 
@@ -48,10 +49,9 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                 .filter(dCode => destinationAirportCodes.includes(dCode))
 
             for (let destinationCode of availableDestinationCodes) {
-                for (let dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
-                    const origin = this.airports.filter(a => a.code === originCode).at(0)
-                    const destination = this.airports.filter(a => a.code === destinationCode).at(0)
+                const destination = this.airports.filter(a => a.code === destinationCode).at(0)
 
+                for (let dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
                     const newFlights = await faresApi.listAvailableOneWayFlights({
                         adults: passengersCount[PassengerType.ADULT],
                         teenagers: passengersCount[PassengerType.TEENAGER],
@@ -61,8 +61,8 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                         dateOut: dateGroup[0],
                         flexDaysBeforeOut: 0,
                         flexDaysOut: dateGroup[1] - 1,
-                        origin: origin,
-                        destination: destination,
+                        originCode: originCode,
+                        destinationCode: destinationCode,
                         includeConnectingFlights: true,
                         promoCode: ''
                     }, this.session)
@@ -70,8 +70,14 @@ export class RyanairIntegration implements TravelCompanyIntegration {
                     flights.push(...this.filterFlights(Array.from(newFlights.values()).flatMap(fs => fs)
                         .map(f => ({
                             flightNumber: f.flightNumber,
-                            origin,
-                            destination,
+                            origin: {
+                                code: origin.code,
+                                name: origin.name
+                            },
+                            destination: {
+                                code: destination.code,
+                                name: destination.name
+                            },
                             departureDate: f.departureDate,
                             arrivalDate: f.arrivalDate,
                             price: this.computeTotalPrice(passengersCount, f.priceDetails),
@@ -187,17 +193,6 @@ export class RyanairTypeMapping {
         return {
             code: airport.code,
             name: airport.name
-        }
-    }
-
-    public static fromAirport(airport: Airport): RyanairAirport {
-        return {
-            code: airport.code,
-            name: airport.name,
-            city: null,
-            country: null,
-            region: null,
-            timeZone: null
         }
     }
 }

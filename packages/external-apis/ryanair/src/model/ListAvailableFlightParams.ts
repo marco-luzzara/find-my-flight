@@ -19,8 +19,8 @@ export type ListAvailableFlightsBaseParams = {
      */
     infants?: number;
     dateOut: Date;
-    destination: Airport;
-    origin: Airport;
+    destinationCode: string;
+    originCode: string;
     promoCode?: string;
     roundTrip: boolean;
     includeConnectingFlights: boolean;

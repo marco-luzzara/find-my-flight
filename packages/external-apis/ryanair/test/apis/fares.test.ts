@@ -4,37 +4,37 @@ import { ApiUnavailable, UninitializedSession } from "../../src/errors"
 import { Airport } from "../../src/model/Airport"
 import { Session } from "../../src/model/base-types"
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../../src/model/ListAvailableFlightParams"
-import { AirportFactory } from "../test-factories/AirportFactory"
 import { API_SAVED_RESPONSES } from "../test-utils/constants"
 import { MockUtils } from "../test-utils/mock"
 
+const originAirportCode = 'AAA'
+const destinationAirportCode = 'BBB'
+
 describe('listAvailableDatesForFare', () => {
-    const originAirport: Airport = AirportFactory.build('A')
-    const destinationAirport: Airport = AirportFactory.build('B')
+    const originAirportCode = 'AAA'
+    const destinationAirportCode = 'BBB'
 
     test('listAvailableDatesForFare should return list of Dates', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirport, destinationAirport)
+        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirportCode, destinationAirportCode)
         await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-dates-for-fare/ok.json`)
 
-        const dates = await listAvailableDatesForFare(originAirport, destinationAirport)
+        const dates = await listAvailableDatesForFare(originAirportCode, destinationAirportCode)
 
         expect(dates.length).toEqual(3)
         expect(dates[1]).toEqual(new Date('2024-07-23'))
     })
 
     test('when HTTP request fails, then listAvailableDatesForFare returns ApiUnavailable', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirport, destinationAirport)
+        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirportCode, destinationAirportCode)
         await MockUtils.mockHttpGet(endpoint, '', 500)
 
-        return await expect(listAvailableDatesForFare(originAirport, destinationAirport)).rejects.toEqual(
+        return await expect(listAvailableDatesForFare(originAirportCode, destinationAirportCode)).rejects.toEqual(
             new ApiUnavailable(endpoint)
         )
     })
 })
 
 describe('listAvailableFlights', () => {
-    const originAirport: Airport = AirportFactory.build('A')
-    const destinationAirport: Airport = AirportFactory.build('B')
     let dateOut = new Date()
     dateOut.setDate(dateOut.getDate() + 1)
     const session: Session = [
@@ -45,8 +45,8 @@ describe('listAvailableFlights', () => {
     const oneWayParams: ListAvailableOneWayFlightsParams = {
         adults: 1,
         dateOut,
-        origin: originAirport,
-        destination: destinationAirport,
+        originCode: originAirportCode,
+        destinationCode: destinationAirportCode,
         flexDaysBeforeOut: 1,
         flexDaysOut: 1,
         includeConnectingFlights: false,
@@ -57,8 +57,8 @@ describe('listAvailableFlights', () => {
     const roundTripParams: ListAvailableRoundTripFlightsParams = {
         adults: 1,
         dateOut,
-        origin: originAirport,
-        destination: destinationAirport,
+        originCode: originAirportCode,
+        destinationCode: destinationAirportCode,
         flexDaysBeforeOut: 1,
         flexDaysOut: 1,
         includeConnectingFlights: false,

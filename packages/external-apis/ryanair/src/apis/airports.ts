@@ -31,8 +31,8 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Airpo
     }
 }
 
-export async function listDestinationAirports(originAirport: Airport, languageLocale: string = 'en'): Promise<Airport[]> {
-    const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirport, languageLocale)
+export async function listDestinationAirports(originAirportCode: string, languageLocale: string = 'en'): Promise<Airport[]> {
+    const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirportCode, languageLocale)
     const response = await fetch(endpoint)
 
     switch (response.status) {

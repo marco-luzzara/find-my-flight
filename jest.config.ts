@@ -5,6 +5,7 @@ const config: Config = {
         '<rootDir>/packages/external-apis/*',
         '<rootDir>/packages/api',
         '<rootDir>/packages/utils',
+        '<rootDir>/packages/test-utils',
     ],
 };
 

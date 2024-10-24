@@ -13,8 +13,8 @@ import { Flight, FlightSchedule } from "../model/Flight";
  * @param destination 
  * @returns The dates for the scheduled flights
  */
-export async function listAvailableDatesForFare(origin: Airport, destination: Airport): Promise<Date[]> {
-    const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(origin, destination)
+export async function listAvailableDatesForFare(originCode: string, destinationCode: string): Promise<Date[]> {
+    const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originCode, destinationCode)
     const response = await fetch(endpoint)
     switch (response.status) {
         case 200:
@@ -64,7 +64,7 @@ async function processListAvailableOneWayFlightsResponse(
     const content: Array<any> = await response.json()
     const responseTripDates = content['trips'][0]['dates']
 
-    return processTripDates(responseTripDates, params.origin, params.destination)
+    return processTripDates(responseTripDates, params.originCode, params.destinationCode)
 }
 
 
@@ -109,17 +109,17 @@ async function processListAvailableRoundTripFlightsResponse(
 }> {
     const content: Array<any> = await response.json()
 
-    const originToDestTrip = content['trips'][0]['origin'] === params.origin.code ?
+    const originToDestTrip = content['trips'][0]['origin'] === params.originCode ?
         content['trips'][0] :
         content['trips'][1]
 
-    const destToOriginTrip = content['trips'][0]['origin'] === params.destination.code ?
+    const destToOriginTrip = content['trips'][0]['origin'] === params.destinationCode ?
         content['trips'][0] :
         content['trips'][1]
 
     return {
-        fromOrigin: processTripDates(originToDestTrip['dates'], params.origin, params.destination),
-        fromDestination: processTripDates(destToOriginTrip['dates'], params.destination, params.origin)
+        fromOrigin: processTripDates(originToDestTrip['dates'], params.originCode, params.destinationCode),
+        fromDestination: processTripDates(destToOriginTrip['dates'], params.destinationCode, params.originCode)
     }
 }
 
@@ -127,13 +127,13 @@ async function processListAvailableRoundTripFlightsResponse(
 function processTripDates(responseTripDates: [{
     dateOut: string,
     flights: any
-}], origin: Airport, destination: Airport): FlightSchedule {
+}], originCode: string, destinationCode: string): FlightSchedule {
     return new Map(responseTripDates.map(x => [
         x.dateOut,
         x.flights.map(f => ({
             flightNumber: f.flightNumber as string,
-            origin: origin,
-            destination: destination,
+            origin: originCode,
+            destination: destinationCode,
             departureDate: new Date(f.time[0]),
             arrivalDate: new Date(f.time[1]),
             seatLeft: (f.faresLeft === -1 ? undefined : f.faresLeft) as number,

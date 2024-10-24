@@ -1,9 +1,7 @@
 import { FastifyInstance, FastifyServerOptions } from "fastify";
 import { Flight } from "../model/Flight";
-import { SearchOneWayParams } from "../model/SearchParams";
 import { TravelCompany } from "../model/TravelCompany";
 import { FromSchema } from "json-schema-to-ts";
-import { format } from "winston";
 import { HourInterval } from "../model/base-types";
 import { searchOneWayFlights } from "../implementation/search-flight";
 

@@ -1,0 +1,24 @@
+{
+    "name": "@findmyflight/test-utils",
+    "version": "1.0.0",
+    "description": "Test utilities for the other FindMyFlight workspaces",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/marco-luzzara/ryanair-power-search.git",
+        "directory": "packages/test-utils"
+    },
+    "author": "Marco Luzzara",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
+    },
+    "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
+    "main": "dist/index.js",
+    "directories": {
+        "dist": "dist"
+    },
+    "keywords": []
+}

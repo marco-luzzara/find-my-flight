@@ -7,5 +7,5 @@ export enum PassengerType {
 
 export type PriceDetails = { [key in PassengerType]?: number }
 
-export type Cookie = Record<string, string>
+export type Cookie = string
 export type Session = Cookie[]

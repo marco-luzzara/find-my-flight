@@ -5,6 +5,15 @@ import { Country } from "../model/Country";
 import Currency from "../model/Currency";
 import * as cookie from 'cookie'
 
+import winston from "winston";
+
+const logger = winston.createLogger({
+    transports: [new winston.transports.Console()],
+    defaultMeta: {
+        api: 'Ryanair miscellaneous API'
+    }
+})
+
 export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {
     const endpoint = ApiEndpointBuilder.listCountries(languageLocale)
     const response = await fetch(endpoint)
@@ -54,7 +63,7 @@ export async function createSession(): Promise<Session> {
 
     switch (response.status) {
         case 200:
-            const cookies = response.headers.getSetCookie().map(elem => cookie.parse(elem))
+            const cookies = response.headers.getSetCookie()
             return cookies
         case 500:
             throw new ApiUnavailable(endpoint)

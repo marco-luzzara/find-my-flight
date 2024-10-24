@@ -38,9 +38,7 @@ describe('listAvailableFlights', () => {
     let dateOut = new Date()
     dateOut.setDate(dateOut.getDate() + 1)
     const session: Session = [
-        {
-            cookie1: 'test_val'
-        }
+        "cookie1=test_val"
     ]
     const oneWayParams: ListAvailableOneWayFlightsParams = {
         adults: 1,
@@ -76,9 +74,9 @@ describe('listAvailableFlights', () => {
         const flightSchedule = await listAvailableOneWayFlights(oneWayParams, session)
 
         expect(flightSchedule.size).toEqual(3)
-        expect(flightSchedule.get('2024-07-29T00:00:00.000').length).toEqual(0)
-        expect(flightSchedule.get('2024-07-30T00:00:00.000').length).toEqual(1)
-        expect(flightSchedule.get('2024-07-31T00:00:00.000').length).toEqual(2)
+        expect(flightSchedule.get('2024-07-29T00:00:00.000')!.length).toEqual(0)
+        expect(flightSchedule.get('2024-07-30T00:00:00.000')!.length).toEqual(1)
+        expect(flightSchedule.get('2024-07-31T00:00:00.000')!.length).toEqual(2)
     })
 
     test('when round trip, listAvailableFlights should return 2 FlightSchedules', async () => {
@@ -88,9 +86,9 @@ describe('listAvailableFlights', () => {
         const flightSchedules = await listAvailableRoundTripFlights(roundTripParams, session)
 
         expect(flightSchedules.fromOrigin.size).toEqual(3)
-        expect(flightSchedules.fromOrigin.get('2024-07-30T00:00:00.000').length).toEqual(1)
+        expect(flightSchedules.fromOrigin.get('2024-07-30T00:00:00.000')!.length).toEqual(1)
         expect(flightSchedules.fromDestination.size).toEqual(3)
-        expect(flightSchedules.fromDestination.get('2024-08-20T00:00:00.000').length).toEqual(2)
+        expect(flightSchedules.fromDestination.get('2024-08-20T00:00:00.000')!.length).toEqual(2)
     })
 
     test('when HTTP request fails, then listAvailableFlights returns ApiUnavailable', async () => {

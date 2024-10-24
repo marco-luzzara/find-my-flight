@@ -74,9 +74,10 @@ describe('searchOneWayFlights', () => {
             url: '/flights/search/oneway?' + urlParams.toString()
         })
 
+        expect(response.statusCode).toBe(200)
         const flights: Flight[] = JSON.parse(response.body)
         expect(flights).toHaveLength(1)
-        //expect(flights[0].flightNumber).toEqual()
+        expect(flights[0].flightNumber).toEqual('FN0001')
         expect(searchOneWayFlightsFn).toHaveBeenCalledWith(expect.objectContaining({
             originCodes: [builtinAirports[0].code],
             destinationCodes: ['TPS'],
@@ -86,5 +87,59 @@ describe('searchOneWayFlights', () => {
             departureDates: [new Date('2024-10-25')],
             travelCompanies: [TravelCompany.Ryanair]
         } as SearchOneWayParams))
+    })
+
+    test('searchOneWayFlights with missing param returns a validation error', async () => {
+        const searchOneWayFlightsFn = jest.fn()
+        mockTravelCompanyIntegrations({
+            travelCompany: TravelCompany.Ryanair, mockFns: {
+                searchOneWayFlightsMock: searchOneWayFlightsFn
+            }
+        })
+        const urlParams = new URLSearchParams({
+            // Missing value: originCodes: builtinAirports[0].code,
+            destinationCodes: 'TPS',
+            passengersAge: '20',
+            departureDates: '2024-10-25',
+            departureTimeStart: '0',
+            departureTimeEnd: '24',
+            maxFlightDuration: '100',
+            travelCompanies: 'Ryanair'
+        })
+
+        const response = await app.inject({
+            method: 'GET',
+            url: '/flights/search/oneway?' + urlParams.toString()
+        })
+
+        expect(response.statusCode).toBe(400)
+        expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
+    })
+
+    test('searchOneWayFlights with invalid param returns a validation error', async () => {
+        const searchOneWayFlightsFn = jest.fn()
+        mockTravelCompanyIntegrations({
+            travelCompany: TravelCompany.Ryanair, mockFns: {
+                searchOneWayFlightsMock: searchOneWayFlightsFn
+            }
+        })
+        const urlParams = new URLSearchParams({
+            originCodes: builtinAirports[0].code,
+            destinationCodes: 'TPS',
+            passengersAge: 'shouldBeANumber', // validation error
+            departureDates: '2024-10-25',
+            departureTimeStart: '0',
+            departureTimeEnd: '24',
+            maxFlightDuration: '100',
+            travelCompanies: 'Ryanair'
+        })
+
+        const response = await app.inject({
+            method: 'GET',
+            url: '/flights/search/oneway?' + urlParams.toString()
+        })
+
+        expect(response.statusCode).toBe(400)
+        expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
     })
 })

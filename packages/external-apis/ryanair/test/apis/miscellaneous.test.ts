@@ -75,9 +75,9 @@ describe('createSession', () => {
         const cookies = await createSession()
 
         expect(cookies.length).toEqual(3)
-        expect(cookies[0]['fr-correlation-id']).toEqual('fr-correlation-id-cookie')
-        expect(cookies[1]['rid']).toEqual('rid-cookie')
-        expect(cookies[2]['rid.sig']).toEqual('rid.sig-cookie')
+        expect(cookies[0]).toMatch(/fr-correlation-id=fr-correlation-id-cookie;.*/)
+        expect(cookies[1]).toMatch(/rid=rid-cookie;.*/)
+        expect(cookies[2]).toMatch(/rid.sig=rid.sig-cookie;.*/)
     })
 
     test('when HTTP request fails, then createSession returns ApiUnavailable', async () => {

@@ -1,10 +1,17 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationError } from "../errors";
-import { Airport } from "../model/Airport";
 import { PassengerType, PriceDetails, Session } from "../model/base-types";
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/ListAvailableFlightParams";
-import { Flight, FlightSchedule } from "../model/Flight";
+import { FlightSchedule } from "../model/Flight";
 
+import winston from "winston";
+
+const logger = winston.createLogger({
+    transports: [new winston.transports.Console()],
+    defaultMeta: {
+        api: 'Ryanair fares API'
+    }
+})
 
 /**
  * List the available dates for the flights from origin to destination. In the returned dates,
@@ -41,7 +48,7 @@ export async function listAvailableOneWayFlights(
 
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
     const headers = new Headers()
-    headers.append('Cookie', session.join('; '))
+    headers.append('Cookie', session.map(cookie => cookie.substring(0, cookie.indexOf(';'))).join('; '))
 
     const response = await fetch(endpoint, { headers })
     switch (response.status) {

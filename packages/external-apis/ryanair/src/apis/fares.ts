@@ -3,14 +3,10 @@ import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationE
 import { PassengerType, PriceDetails, Session } from "../model/base-types";
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/ListAvailableFlightParams";
 import { FlightSchedule } from "../model/Flight";
+import { LogUtils } from '@findmyflight/utils'
 
-import winston from "winston";
-
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()],
-    defaultMeta: {
-        api: 'Ryanair fares API'
-    }
+const logger = LogUtils.getLogger({
+    api: 'Ryanair fares API'
 })
 
 /**
@@ -50,6 +46,7 @@ export async function listAvailableOneWayFlights(
     const headers = new Headers()
     headers.append('Cookie', session.map(cookie => cookie.substring(0, cookie.indexOf(';'))).join('; '))
 
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint, { headers })
     switch (response.status) {
         case 200:

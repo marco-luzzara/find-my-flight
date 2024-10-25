@@ -65,7 +65,7 @@ describe('searchOneWayFlights', () => {
             departureDates: '2024-10-25',
             departureTimeStart: '0',
             departureTimeEnd: '24',
-            maxFlightDuration: '100',
+            maxFlightHours: '2',
             travelCompanies: 'Ryanair'
         })
 
@@ -82,7 +82,7 @@ describe('searchOneWayFlights', () => {
             originCodes: [builtinAirports[0].code],
             destinationCodes: ['TPS'],
             departureTimeInterval: new HourInterval(0, 24),
-            maxFlightDuration: 100,
+            maxFlightHours: 2,
             passengersAge: [20],
             departureDates: [new Date('2024-10-25')],
             travelCompanies: [TravelCompany.Ryanair]
@@ -103,7 +103,7 @@ describe('searchOneWayFlights', () => {
             departureDates: '2024-10-25',
             departureTimeStart: '0',
             departureTimeEnd: '24',
-            maxFlightDuration: '100',
+            maxFlightHours: '2',
             travelCompanies: 'Ryanair'
         })
 
@@ -113,6 +113,7 @@ describe('searchOneWayFlights', () => {
         })
 
         expect(response.statusCode).toBe(400)
+        expect(response.json().message).toBe("querystring must have required property 'originCodes'")
         expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
     })
 
@@ -130,7 +131,7 @@ describe('searchOneWayFlights', () => {
             departureDates: '2024-10-25',
             departureTimeStart: '0',
             departureTimeEnd: '24',
-            maxFlightDuration: '100',
+            maxFlightHours: '2',
             travelCompanies: 'Ryanair'
         })
 
@@ -140,6 +141,7 @@ describe('searchOneWayFlights', () => {
         })
 
         expect(response.statusCode).toBe(400)
+        expect(response.json().message).toBe("querystring/passengersAge/0 must be number")
         expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
     })
 })

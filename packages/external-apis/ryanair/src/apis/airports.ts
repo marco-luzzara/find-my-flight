@@ -1,14 +1,10 @@
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
 import { Airport } from "../model/Airport";
+import { LogUtils } from '@findmyflight/utils'
 
-import winston from "winston";
-
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()],
-    defaultMeta: {
-        api: 'Ryanair airports API'
-    }
+const logger = LogUtils.getLogger({
+    api: 'Ryanair airports API'
 })
 
 export async function listAirports(languageLocale: string = 'en'): Promise<Airport[]> {

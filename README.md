@@ -11,7 +11,8 @@ The API module is a dependency of the WebApp so that they can be independently d
 Create a `.env` file in `packages/api` with the following properties:
 
 ```bash
-API_SERVER_PORT=9678 # it specifies the port for the HTTP server
+API_SERVER_PORT=9678            # it specifies the port for the HTTP server
+NODE_ENV=development            # environment type 
 ```
 
 To run the server:
@@ -27,8 +28,11 @@ make start-api
 Create a `.env` file in `packages/webapp` with the following properties:
 
 ```bash
-SERVER_PORT=3001 # it specifies the port the webapp runs on
+SERVER_PORT=3001                    # it specifies the port the webapp runs on
+API_ENDPOINT=http://0.0.0.0:9678    # the endpoint of the API server
 ```
+
+To import environment variables in the Webapp, add them to the `nextConfig` in `next.config.mjs`.
 
 To run the webapp:
 

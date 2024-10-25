@@ -1,3 +1,6 @@
+import dotenv from "dotenv"
+dotenv.config()
+
 import buildServer from './buildServer'
 
 const server = buildServer({
@@ -5,9 +8,6 @@ const server = buildServer({
         level: 'info'
     }
 })
-
-import dotenv from "dotenv"
-dotenv.config()
 
 const API_SERVER_PORT = parseInt(process.env.API_SERVER_PORT) ?? 9678
 

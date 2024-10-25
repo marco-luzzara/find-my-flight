@@ -25,9 +25,9 @@ export type SearchOneWayParams = {
      */
     departureTimeInterval: HourInterval
     /**
-     * Maximum duration of the flight in minutes
+     * Maximum duration of the flight in hours
      */
-    maxFlightDuration: number
+    maxFlightHours: number
     /**
      * search results can come from these travel companies exclusively
      */

@@ -11,8 +11,13 @@ import { SearchOneWayParams } from "../model/SearchParams";
 import { TravelCompany } from "../model/TravelCompany";
 import { TravelCompanyIntegration } from "./travel-company-integrations";
 import { Airport } from "../model/Airport";
+import { LogUtils } from '@findmyflight/utils'
 
 const MAX_QUERYABLE_DATES = 7
+
+const logger = LogUtils.getLogger({
+    integration: 'Ryanair'
+})
 
 type PassengersCount = { [key in PassengerType]?: number }
 
@@ -145,7 +150,7 @@ export class RyanairIntegration implements TravelCompanyIntegration {
      */
     private filterFlights(flights: Flight[], params: SearchOneWayParams): Flight[] {
         return flights.filter(flight =>
-            getFlightDuration(flight) < (params.maxFlightDuration ?? Number.MAX_SAFE_INTEGER) &&
+            getFlightDuration(flight) <= ((params.maxFlightHours ?? (Number.MAX_SAFE_INTEGER / 60)) * 60) &&
             params.departureTimeInterval.isIncluded(flight.departureDate.getHours())
         )
     }

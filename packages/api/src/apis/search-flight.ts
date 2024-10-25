@@ -14,7 +14,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             'originCodes', 'destinationCodes',
             'passengersAge', 'departureDates',
             'departureTimeStart', 'departureTimeEnd',
-            'maxFlightDuration', 'travelCompanies'
+            'maxFlightHours', 'travelCompanies'
         ],
         properties: {
             originCodes: {
@@ -43,7 +43,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
                 minimum: 1,
                 maximum: 24
             },
-            maxFlightDuration: {
+            maxFlightHours: {
                 type: 'number',
                 minimum: 1,
                 maximum: Number.MAX_SAFE_INTEGER
@@ -73,7 +73,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             destinationCodes: queryParams.destinationCodes,
             departureDates: queryParams.departureDates.map(d => new Date(d)),
             departureTimeInterval: new HourInterval(queryParams.departureTimeStart, queryParams.departureTimeEnd),
-            maxFlightDuration: queryParams.maxFlightDuration,
+            maxFlightHours: queryParams.maxFlightHours,
             passengersAge: queryParams.passengersAge,
             travelCompanies: queryParams.travelCompanies
         }

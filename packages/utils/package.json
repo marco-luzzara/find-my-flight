@@ -16,7 +16,9 @@
         "url": "https://github.com/marco-luzzara/ryanair-power-search/issues"
     },
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
-    "dependencies": {},
+    "dependencies": {
+        "winston": "^3.15.0"
+    },
     "main": "dist/index.js",
     "directories": {
         "dist": "dist"

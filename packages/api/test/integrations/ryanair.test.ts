@@ -65,7 +65,7 @@ describe('searchOneWayFlights', () => {
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 20],
             travelCompanies: [TravelCompany.Ryanair],
-            maxFlightDuration: 1000
+            maxFlightHours: 10
         }
 
         const integration = await RyanairIntegration.create()
@@ -98,7 +98,7 @@ describe('searchOneWayFlights', () => {
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
-            maxFlightDuration: 1000
+            maxFlightHours: 10
         }
 
         const integration = await RyanairIntegration.create()
@@ -134,7 +134,7 @@ describe('searchOneWayFlights', () => {
             departureTimeInterval: new HourInterval(16, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
-            maxFlightDuration: 1000
+            maxFlightHours: 10
         }
 
         const integration = await RyanairIntegration.create()
@@ -167,7 +167,7 @@ describe('searchOneWayFlights', () => {
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
             travelCompanies: [TravelCompany.Ryanair],
-            maxFlightDuration: 120
+            maxFlightHours: 2
         }
 
         const integration = await RyanairIntegration.create()

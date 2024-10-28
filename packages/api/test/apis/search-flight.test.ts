@@ -17,7 +17,7 @@ let mockedTravelCompanyModule = travelCompanyModule as jest.Mocked<typeof travel
 
 const app = buildServer()
 
-const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B')]
+const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B'), AirportFactory.build('C')]
 
 function mockTravelCompanyIntegrations(...mockedIntegrations: {
     travelCompany: TravelCompany,
@@ -60,13 +60,13 @@ describe('searchOneWayFlights', () => {
         })
         const urlParams = new URLSearchParams({
             originCodes: builtinAirports[0].code,
-            destinationCodes: 'TPS',
+            destinationCodes: builtinAirports[1].code,
             passengersAge: '20',
             departureDates: '2024-10-25',
             departureTimeStart: '0',
             departureTimeEnd: '24',
             maxFlightHours: '2',
-            travelCompanies: 'Ryanair'
+            travelCompanies: TravelCompany.Ryanair
         })
 
         const response = await app.inject({
@@ -80,11 +80,61 @@ describe('searchOneWayFlights', () => {
         expect(flights[0].flightNumber).toEqual('FN0001')
         expect(searchOneWayFlightsFn).toHaveBeenCalledWith(expect.objectContaining({
             originCodes: [builtinAirports[0].code],
-            destinationCodes: ['TPS'],
+            destinationCodes: [builtinAirports[1].code],
             departureTimeInterval: new HourInterval(0, 24),
             maxFlightHours: 2,
             passengersAge: [20],
             departureDates: [new Date('2024-10-25')],
+            travelCompanies: [TravelCompany.Ryanair]
+        } as SearchOneWayParams))
+    })
+
+    test('when searchOneWayFlights with multiple dates and origin airports, then return flights', async () => {
+        const searchOneWayFlightsFn =
+            jest.fn().mockResolvedValue({
+                flightNumber: 'FN0001',
+                origin: builtinAirports[0],
+                destination: builtinAirports[1],
+                departureDate: new Date('2024-10-24T09:00:00.000Z'),
+                arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
+                price: 100,
+                travelCompany: TravelCompany.Ryanair
+            })
+        mockTravelCompanyIntegrations({
+            travelCompany: TravelCompany.Ryanair, mockFns: {
+                searchOneWayFlightsMock: searchOneWayFlightsFn
+            }
+        })
+        const urlParams = new URLSearchParams({
+            originCodes: builtinAirports[0].code,
+            destinationCodes: builtinAirports[1].code,
+            passengersAge: '20',
+            departureDates: '2024-10-24',
+            departureTimeStart: '0',
+            departureTimeEnd: '24',
+            maxFlightHours: '2',
+            travelCompanies: TravelCompany.Ryanair
+        })
+        urlParams.append('passengersAge', '31')
+        urlParams.append('destinationCodes', builtinAirports[2].code)
+        urlParams.append('departureDates', '2024-10-29')
+
+        const response = await app.inject({
+            method: 'GET',
+            url: '/flights/search/oneway?' + urlParams.toString()
+        })
+
+        expect(response.statusCode).toBe(200)
+        const flights: Flight[] = JSON.parse(response.body)
+        expect(flights).toHaveLength(1)
+        expect(flights[0].flightNumber).toEqual('FN0001')
+        expect(searchOneWayFlightsFn).toHaveBeenCalledWith(expect.objectContaining({
+            originCodes: [builtinAirports[0].code],
+            destinationCodes: [builtinAirports[1].code, builtinAirports[2].code],
+            departureTimeInterval: new HourInterval(0, 24),
+            maxFlightHours: 2,
+            passengersAge: [20, 31],
+            departureDates: [new Date('2024-10-24'), new Date('2024-10-29')],
             travelCompanies: [TravelCompany.Ryanair]
         } as SearchOneWayParams))
     })

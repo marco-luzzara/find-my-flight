@@ -3,6 +3,7 @@ import { IconPlaneTilt } from "@tabler/icons-react";
 
 export default function FlightDetails(
     {
+        flightNumber,
         originAirport,
         departureDateTime,
         flightDuration,
@@ -13,7 +14,6 @@ export default function FlightDetails(
     const theme = useMantineTheme();
     const boxStyle: MantineStyleProp = {
         gap: theme.spacing.xs,
-        // alignContent: 'center',
         alignItems: 'center'
     }
 

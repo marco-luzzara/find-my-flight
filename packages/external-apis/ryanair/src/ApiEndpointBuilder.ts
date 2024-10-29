@@ -1,5 +1,7 @@
+import { format } from "date-fns"
 import { Airport } from "./model/Airport"
 import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "./model/ListAvailableFlightParams"
+import { DateUtils } from "@findmyflight/utils"
 
 export default class ApiEndpointBuilder {
     // ******** AIRPORTS ********
@@ -40,7 +42,7 @@ export default class ApiEndpointBuilder {
             'CHD': params.children ?? 0,
             'TEEN': params.teenagers ?? 0,
             'INF': params.infants ?? 0,
-            'DateOut': ApiEndpointBuilder.toRyanAirStringDate(params.dateOut),
+            'DateOut': format(params.dateOut, 'yyyy-MM-dd'),
             'Destination': params.destinationCode,
             'Origin': params.originCode,
             'promoCode': params.promoCode ?? '',
@@ -53,7 +55,7 @@ export default class ApiEndpointBuilder {
         let roundTripParams = {}
         if (params.roundTrip === true) {
             roundTripParams = {
-                'DateIn': ApiEndpointBuilder.toRyanAirStringDate(params.dateIn),
+                'DateIn': DateUtils.formatDateAsISO(params.dateIn),
                 'FlexDaysBeforeIn': params.flexDaysBeforeIn,
                 'FlexDaysIn': params.flexDaysIn
             }
@@ -62,12 +64,5 @@ export default class ApiEndpointBuilder {
         const urlParams = new URLSearchParams(paramsMap as any).toString()
 
         return `https://www.ryanair.com/api/booking/v4/en-EN/availability?${urlParams}`
-    }
-
-    private static toRyanAirStringDate(date: Date): string {
-        const year = date.getFullYear()
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const day = date.getDate().toString().padStart(2, '0')
-        return `${year}-${month}-${day}`;
     }
 }

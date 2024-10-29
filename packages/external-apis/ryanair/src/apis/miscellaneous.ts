@@ -1,17 +1,12 @@
+import { LogUtils } from "@findmyflight/utils";
 import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
 import { Session } from "../model/base-types";
 import { Country } from "../model/Country";
 import Currency from "../model/Currency";
-import * as cookie from 'cookie'
 
-import winston from "winston";
-
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()],
-    defaultMeta: {
-        api: 'Ryanair miscellaneous API'
-    }
+const logger = LogUtils.getLogger({
+    api: 'Ryanair miscellaneous API'
 })
 
 export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {

@@ -1,13 +1,9 @@
-import { AsyncUtils } from "@findmyflight/utils"
+import { AsyncUtils, LogUtils } from "@findmyflight/utils"
 import { travelCompanyIntegrations } from "../integrations/travel-company-integrations"
 import { Airport } from "../model/Airport"
-import winston from "winston"
 
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()],
-    defaultMeta: {
-        api: listAirports.name
-    }
+const logger = LogUtils.getLogger({
+    api: listAirports.name
 })
 
 export async function listAirports(): Promise<Airport[]> {

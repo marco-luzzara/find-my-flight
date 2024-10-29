@@ -4,7 +4,7 @@ import { Checkbox, Fieldset, MultiSelect } from "@mantine/core";
 import { TravelCompany } from '@findmyflight/api';
 import { useState } from "react";
 
-export default function TravelCompanySelect() {
+export default function TravelCompanySelect({ onCompaniesSelected }) {
     const [selectedCompanies, setSelectedCompanies] = useState([])
 
     return (
@@ -14,7 +14,10 @@ export default function TravelCompanySelect() {
                 placeholder="Select all the travel companies you would choose"
                 data={Object.values(TravelCompany)}
                 value={selectedCompanies}
-                onChange={companies => setSelectedCompanies(companies)}
+                onChange={companies => {
+                    setSelectedCompanies(companies)
+                    onCompaniesSelected(companies)
+                }}
                 searchable
                 clearable
                 nothingFoundMessage="No travel company with this name..."
@@ -23,9 +26,12 @@ export default function TravelCompanySelect() {
             <hr />
 
             <Checkbox
-                defaultChecked
                 label="All travel companies"
-                onChange={e => setSelectedCompanies(e.target.checked ? Object.values(TravelCompany) : selectedCompanies)}
+                onChange={e => {
+                    const newCompanies = e.target.checked ? Object.values(TravelCompany) : selectedCompanies
+                    setSelectedCompanies(newCompanies)
+                    onCompaniesSelected(newCompanies)
+                }}
             />
         </Fieldset>
     )

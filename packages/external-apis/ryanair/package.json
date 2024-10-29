@@ -17,10 +17,7 @@
     },
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
     "dependencies": {
-        "@findmyflight/utils": "^1.0.0",
-        "@types/cookie": "^0.6.0",
-        "cookie": "^0.6.0",
-        "winston": "^3.15.0"
+        "@findmyflight/utils": "^1.0.0"
     },
     "main": "dist/index.js",
     "directories": {

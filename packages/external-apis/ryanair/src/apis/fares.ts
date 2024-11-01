@@ -134,7 +134,7 @@ function processTripDates(responseTripDates: [{
 }], originCode: string, destinationCode: string): FlightSchedule {
     return new Map(responseTripDates.map(x => [
         x.dateOut,
-        x.flights.map(f => ({
+        x.flights.filter(f => f.faresLeft != 0).map(f => ({
             flightNumber: f.flightNumber as string,
             origin: originCode,
             destination: destinationCode,

@@ -1,0 +1,60 @@
+{
+    "termsOfUse": "https://www.ryanair.com/ie/en/corporate/terms-of-use=AGREED",
+    "currency": "EUR",
+    "currPrecision": 2,
+    "routeGroup": "CITY",
+    "tripType": "CITY_BREAK",
+    "upgradeType": "PLUS",
+    "trips": [
+        {
+            "origin": "BGY",
+            "originName": "Milan (Bergamo)",
+            "destination": "BUD",
+            "destinationName": "Budapest ",
+            "routeGroup": "CITY",
+            "tripType": "CITY_BREAK",
+            "upgradeType": "PLUS",
+            "dates": [
+                {
+                    "dateOut": "2024-11-01T00:00:00.000",
+                    "flights": [
+                        {
+                            "faresLeft": 0,
+                            "flightKey": "FR~3585~ ~~BGY~11/01/2024 22:20~BUD~11/01/2024 23:55~~",
+                            "infantsLeft": 18,
+                            "operatedBy": "Ryanair Sun",
+                            "segments": [
+                                {
+                                    "segmentNr": 0,
+                                    "origin": "BGY",
+                                    "destination": "BUD",
+                                    "flightNumber": "FR 3585",
+                                    "time": [
+                                        "2024-11-01T22:20:00.000",
+                                        "2024-11-01T23:55:00.000"
+                                    ],
+                                    "timeUTC": [
+                                        "2024-11-01T21:20:00.000Z",
+                                        "2024-11-01T22:55:00.000Z"
+                                    ],
+                                    "duration": "01:35"
+                                }
+                            ],
+                            "flightNumber": "FR 3585",
+                            "time": [
+                                "2024-11-01T22:20:00.000",
+                                "2024-11-01T23:55:00.000"
+                            ],
+                            "timeUTC": [
+                                "2024-11-01T21:20:00.000Z",
+                                "2024-11-01T22:55:00.000Z"
+                            ],
+                            "duration": "01:35"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "serverTimeUTC": "2024-11-01T15:50:56.869Z"
+}

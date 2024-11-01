@@ -79,6 +79,16 @@ describe('listAvailableFlights', () => {
         expect(flightSchedule.get('2024-07-31T00:00:00.000')!.length).toEqual(2)
     })
 
+    test('when one way trip has not any seat available, listAvailableFlights should return nothing', async () => {
+        const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
+        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/fare-with-no-left-seat.json`)
+
+        const flightSchedule = await listAvailableOneWayFlights(oneWayParams, session)
+
+        expect(flightSchedule.size).toEqual(1)
+        expect(flightSchedule.get('2024-11-01T00:00:00.000')!.length).toEqual(0)
+    })
+
     test('when round trip, listAvailableFlights should return 2 FlightSchedules', async () => {
         const endpoint = ApiEndpointBuilder.listAvailableFlights(roundTripParams)
         await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/round-trip-ok.json`)

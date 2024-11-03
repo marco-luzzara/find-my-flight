@@ -18,6 +18,8 @@ const logger = LogUtils.getLogger({
  */
 export async function listAvailableDatesForFare(originCode: string, destinationCode: string): Promise<Date[]> {
     const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originCode, destinationCode)
+
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint)
     switch (response.status) {
         case 200:
@@ -43,8 +45,7 @@ export async function listAvailableOneWayFlights(
     validateListAvailableFlightsParams(params)
 
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
-    const headers = new Headers()
-    headers.append('Cookie', session.map(cookie => cookie.substring(0, cookie.indexOf(';'))).join('; '))
+    const headers = createHeaders(session)
 
     logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint, { headers })
@@ -58,17 +59,6 @@ export async function listAvailableOneWayFlights(
         default:
             throw new UnexpectedStatusCode(endpoint, response)
     }
-}
-
-
-async function processListAvailableOneWayFlightsResponse(
-    response: Response,
-    params: ListAvailableOneWayFlightsParams
-): Promise<FlightSchedule> {
-    const content: Array<any> = await response.json()
-    const responseTripDates = content['trips'][0]['dates']
-
-    return processTripDates(responseTripDates, params.originCode, params.destinationCode)
 }
 
 
@@ -87,9 +77,9 @@ export async function listAvailableRoundTripFlights(
     validateListAvailableFlightsParams(params)
 
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
-    const headers = new Headers()
-    headers.append('Cookie', session.join('; '))
+    const headers = createHeaders(session)
 
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint, { headers })
     switch (response.status) {
         case 200:
@@ -101,6 +91,26 @@ export async function listAvailableRoundTripFlights(
         default:
             throw new UnexpectedStatusCode(endpoint, response)
     }
+}
+
+
+function createHeaders(session: Session): Headers {
+    const headers = new Headers()
+    headers.append('Cookie',
+        session.map(cookie => cookie.substring(0, cookie.indexOf(';'))).join('; '))
+
+    return headers
+}
+
+
+async function processListAvailableOneWayFlightsResponse(
+    response: Response,
+    params: ListAvailableOneWayFlightsParams
+): Promise<FlightSchedule> {
+    const content: Array<any> = await response.json()
+    const responseTripDates = content['trips'][0]['dates']
+
+    return processTripDates(responseTripDates, params.originCode, params.destinationCode)
 }
 
 

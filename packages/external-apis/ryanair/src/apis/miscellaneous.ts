@@ -54,6 +54,8 @@ export async function listCurrencies(): Promise<Currency[]> {
 
 export async function createSession(): Promise<Session> {
     const endpoint = ApiEndpointBuilder.createSession()
+
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint)
 
     switch (response.status) {

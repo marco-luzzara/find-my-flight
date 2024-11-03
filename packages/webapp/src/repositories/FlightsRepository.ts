@@ -2,7 +2,6 @@ import configurationManager from "@/ConfigurationManager";
 import { OneWayFlightsSearchFilters } from "@/types/search";
 import { Flight } from "@findmyflight/api";
 import { DateUtils } from "@findmyflight/utils";
-import { format } from "date-fns";
 
 export class FlightsRepository {
     public async searchOneWayFlights(filters: OneWayFlightsSearchFilters): Promise<Flight[]> {

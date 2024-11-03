@@ -9,6 +9,8 @@ const logger = LogUtils.getLogger({
 
 export async function listAirports(languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listAirports(languageLocale)
+
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint)
     switch (response.status) {
         case 200:
@@ -38,6 +40,8 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Airpo
 
 export async function listDestinationAirports(originAirportCode: string, languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirportCode, languageLocale)
+
+    logger.debug(`HTTP GET ${endpoint}`)
     const response = await fetch(endpoint)
 
     switch (response.status) {

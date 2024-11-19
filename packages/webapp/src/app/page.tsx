@@ -1,6 +1,6 @@
 'use client'
 
-import { AppShell, ScrollArea } from '@mantine/core';
+import { AppShell, Box, Divider, LoadingOverlay, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import '@mantine/dates/styles.css';
 
@@ -15,12 +15,23 @@ import { FlightsRepository } from '@/repositories/FlightsRepository';
 const flightsRepository = new FlightsRepository()
 
 export default function App() {
-    const [opened, { toggle }] = useDisclosure();
+    // const [opened, { toggle }] = useDisclosure();
     const [flights, setFlights] = useState([])
+    const [areResultsLoading, setAreResultsLoading] = useState(false)
 
-    async function callSearchAPI(searchFilters: OneWayFlightsSearchFilters) {
-        const foundFlights = await flightsRepository.searchOneWayFlights(searchFilters)
-        setFlights(foundFlights)
+    function handleSearch(searchFilters: OneWayFlightsSearchFilters) {
+        setAreResultsLoading(true)
+
+        flightsRepository.searchOneWayFlights(searchFilters).then(res => {
+            setFlights(res)
+            setAreResultsLoading(false)
+        })
+    }
+
+    function handleSort() {
+        setAreResultsLoading(true)
+
+        setAreResultsLoading(false)
     }
 
     return (
@@ -31,14 +42,19 @@ export default function App() {
         }}>
             <AppShell.Navbar bg='searchPanelColor' id='navbar' p="md">
                 <AppShell.Section grow component={ScrollArea}>
-                    <SearchPanel className={styles.searchPanel} onSearch={callSearchAPI}></SearchPanel>
+                    <SearchPanel className={styles.searchPanel} onSearch={handleSearch}></SearchPanel>
                 </AppShell.Section>
             </AppShell.Navbar>
 
             <AppShell.Main>
                 <SettingsPanel />
 
-                <FlightsPanel flights={flights} />
+                <Divider my="md" />
+
+                <Box pos="relative">
+                    <LoadingOverlay visible={areResultsLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+                    <FlightsPanel flights={flights} />
+                </Box>
             </AppShell.Main>
         </AppShell>
     );

@@ -25,9 +25,9 @@ export default function FlightDetails(
                     <Text>{departureDateTime}</Text>
                 </Stack>
                 <Stack style={{ flexGrow: 1, ...boxStyle }}>
-                    <Group style={{ width: '100%' }}>
+                    <Group w="100%">
                         <Divider size="md" style={{ flexGrow: 1 }} />
-                        <ThemeIcon variant="default" style={{ border: 'none' }}>
+                        <ThemeIcon variant="default" bd="none">
                             <IconPlaneTilt />
                         </ThemeIcon>
                         <Divider size="md" style={{ flexGrow: 1 }} />

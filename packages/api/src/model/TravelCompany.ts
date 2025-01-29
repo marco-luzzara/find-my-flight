@@ -1,3 +1,7 @@
 export enum TravelCompany {
-    Ryanair = 'Ryanair'
+    Ryanair
 }
+
+export const travelCompaniesMap = new Map([
+    [TravelCompany.Ryanair, 'Ryanair']
+])

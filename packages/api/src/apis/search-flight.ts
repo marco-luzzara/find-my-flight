@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyServerOptions } from "fastify";
 import { Flight } from "../model/Flight";
-import { TravelCompany } from "../model/TravelCompany";
+import { TravelCompany, travelCompaniesMap } from "../model/TravelCompany";
 import { FromSchema } from "json-schema-to-ts";
 import { HourInterval } from "../model/base-types";
 import { searchOneWayFlights } from "../implementation/search-flight";
@@ -52,8 +52,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             {
                 type: 'array',
                 items: {
-                    type: 'string',
-                    enum: Object.values(TravelCompany)
+                    enum: Array.from(travelCompaniesMap.keys())
                 }
             }
         }
@@ -75,7 +74,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             departureTimeInterval: new HourInterval(queryParams.departureTimeStart, queryParams.departureTimeEnd),
             maxFlightHours: queryParams.maxFlightHours,
             passengersAge: queryParams.passengersAge,
-            travelCompanies: queryParams.travelCompanies
+            travelCompanies: queryParams.travelCompanies.map(tc => tc as TravelCompany)
         }
 
         return await searchOneWayFlights(searchOneWayParams)

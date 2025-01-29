@@ -5,12 +5,12 @@ import {
     Session
 } from "@findmyflight/external-api-ryanair"
 
-import { Locale } from "../model/base-types";
-import { Flight, getFlightDuration } from "../model/Flight";
-import { SearchOneWayParams } from "../model/SearchParams";
-import { TravelCompany } from "../model/TravelCompany";
-import { TravelCompanyIntegration } from "./travel-company-integrations";
-import { Airport } from "../model/Airport";
+import { Locale } from "../../model/base-types";
+import { Flight, getFlightDuration } from "../../model/Flight";
+import { SearchOneWayParams } from "../../model/SearchParams";
+import { TravelCompany } from "../../model/TravelCompany";
+import { TravelCompanyIntegration } from "../TravelCompanyIntegration";
+import { Airport } from "../../model/Airport";
 import { LogUtils } from '@findmyflight/utils'
 
 const MAX_QUERYABLE_DATES = 7
@@ -21,22 +21,20 @@ const logger = LogUtils.getLogger({
 
 type PassengersCount = { [key in PassengerType]?: number }
 
-export class RyanairIntegration implements TravelCompanyIntegration {
-    readonly session: Session
-    readonly airports: RyanairAirport[]
-    readonly locale: Locale
+export default class RyanairIntegration implements TravelCompanyIntegration {
+    id: string = 'ryanair'
+    label: string = 'Ryanair'
 
-    protected constructor(locale: Locale, session: Session, airports: RyanairAirport[]) {
-        this.locale = locale
-        this.session = session
-        this.airports = airports
-    }
+    session: Session
+    airports: RyanairAirport[]
+    locale: Locale
 
-    static async create(locale: Locale = { languageCode: 'en', BCP47LangCode: 'en-US' }): Promise<RyanairIntegration> {
-        const session = await miscellaneousApi.createSession()
-        const airports = await airportsApi.listAirports(locale.languageCode)
+    async initialize(): Promise<RyanairIntegration> {
+        this.locale = { languageCode: 'en', BCP47LangCode: 'en-US' }
+        this.session = await miscellaneousApi.createSession()
+        this.airports = await airportsApi.listAirports(this.locale.languageCode)
 
-        return new RyanairIntegration(locale, session, airports)
+        return this
     }
 
     public async searchOneWayFlights(params: SearchOneWayParams): Promise<Flight[]> {

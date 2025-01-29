@@ -36,14 +36,17 @@ export default function SearchPanel({ className, onSearch }) {
 
     function handleOnClickSearchButton(e) {
         let areSearchFiltersFilled = true
-        for (let p in searchFilters.current)
+        for (let p in searchFilters.current) {
             if (Array.isArray(searchFilters.current[p]) && searchFilters.current[p].length === 0) {
-                alert('Please fill all the search filters')
                 areSearchFiltersFilled = false
+                break
             }
+        }
 
         if (areSearchFiltersFilled)
             onSearch(searchFilters.current)
+        else
+            alert('Please fill all the search filters')
     }
 
     return (
@@ -122,7 +125,9 @@ export default function SearchPanel({ className, onSearch }) {
                     style={{ marginTop: theme.spacing.xl, marginBottom: theme.spacing.lg }} />
             </Fieldset>
 
-            <TravelCompanySelect onCompaniesSelected={(values: TravelCompany[]) => searchFilters.current.travelCompanies = values} />
+            <TravelCompanySelect onCompaniesSelected={(values: string[]) =>
+                searchFilters.current.travelCompanies = values.map(v => parseInt(v))
+            } />
 
             <Button variant="filled"
                 onClick={e => handleOnClickSearchButton(e)}>Search</Button>

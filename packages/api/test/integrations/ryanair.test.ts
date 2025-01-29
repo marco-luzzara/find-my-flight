@@ -1,9 +1,9 @@
 import { faresApi, Airport as RyanairAirport, PassengerType, airportsApi } from "@findmyflight/external-api-ryanair"
-import { RyanairIntegration, RyanairTypeMapping } from "../../src/integrations/ryanair"
+import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair"
 import { Airport } from "../../src/model/Airport"
 import { HourInterval } from "../../src/model/base-types"
 import { TravelCompany } from "../../src/model/TravelCompany"
-import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
+import { buildIntegration, RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
 
 
 const departureDate = new Date('2024-08-10T00:00:00.000')
@@ -68,7 +68,7 @@ describe('searchOneWayFlights', () => {
             maxFlightHours: 10
         }
 
-        const integration = await RyanairIntegration.create()
+        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
@@ -101,7 +101,7 @@ describe('searchOneWayFlights', () => {
             maxFlightHours: 10
         }
 
-        const integration = await RyanairIntegration.create()
+        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(1)
@@ -137,7 +137,7 @@ describe('searchOneWayFlights', () => {
             maxFlightHours: 10
         }
 
-        const integration = await RyanairIntegration.create()
+        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
@@ -170,7 +170,7 @@ describe('searchOneWayFlights', () => {
             maxFlightHours: 2
         }
 
-        const integration = await RyanairIntegration.create()
+        const integration = await buildIntegration()
 
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
@@ -180,7 +180,7 @@ describe('searchOneWayFlights', () => {
 
 describe('listAirports', () => {
     test('given Ryanair airports, return simple Airport', async () => {
-        const integration = await RyanairIntegration.create()
+        const integration = await buildIntegration()
 
         const airports = await integration.listAirports()
 

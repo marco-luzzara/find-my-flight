@@ -1,14 +1,18 @@
-import { Airport } from "../model/Airport";
-import { Flight } from "../model/Flight";
-import { SearchOneWayParams } from "../model/SearchParams";
-import { TravelCompany } from "../model/TravelCompany";
-import { RyanairIntegration } from "./ryanair";
+import { TravelCompanyIntegration } from "./TravelCompanyIntegration";
 
-export interface TravelCompanyIntegration {
-    searchOneWayFlights(params: SearchOneWayParams): Promise<Flight[]>
-    listAirports(): Promise<Airport[]>
-}
+import { readdir } from 'node:fs/promises'
+import * as path from 'path'
 
-export const travelCompanyIntegrations: Map<TravelCompany, Promise<TravelCompanyIntegration>> = new Map([
-    [TravelCompany.Ryanair, RyanairIntegration.create()]
-])
+const TRAVEL_COMPANIES_IMPL_DIR = 'travel-companies'
+
+export const travelCompanyIntegrationsFn = (async function travelCompanyIntegrationsBuilder() {
+    const modulePaths = await readdir(path.resolve(__dirname, TRAVEL_COMPANIES_IMPL_DIR));
+    const integrations = await Promise.all(modulePaths.map(mp =>
+        import(mp).then(async m => {
+            const integrationClass = m.default
+            const integration = (new integrationClass()) as TravelCompanyIntegration
+            return await integration.initialize()
+        })
+    ))
+    return new Map(integrations.map(int => [int.id, int]))
+})()

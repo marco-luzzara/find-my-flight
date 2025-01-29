@@ -1,4 +1,5 @@
 import { Airport } from "@findmyflight/external-api-ryanair";
+import RyanairIntegration from "../../../src/integrations/travel-companies/ryanair";
 
 export class RyanairAirportFactory {
     /**
@@ -26,4 +27,9 @@ export class RyanairAirportFactory {
             timeZone: 'TimeZone' + seed
         }
     }
+}
+
+export async function buildIntegration(): Promise<RyanairIntegration> {
+    const integration = new RyanairIntegration()
+    return await integration.initialize()
 }

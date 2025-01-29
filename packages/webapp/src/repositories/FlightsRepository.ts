@@ -23,7 +23,7 @@ export class FlightsRepository {
         urlParams.append('maxFlightHours', filters.maxFlightHours.toString())
 
         for (let v of filters.travelCompanies)
-            urlParams.append('travelCompanies', v)
+            urlParams.append('travelCompanies', v.toString())
 
         const response = await fetch(`${configurationManager.apiEndpoint}/flights/search/oneway?${urlParams}`)
         return await response.json()

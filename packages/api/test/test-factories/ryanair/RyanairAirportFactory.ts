@@ -28,8 +28,3 @@ export class RyanairAirportFactory {
         }
     }
 }
-
-export async function buildIntegration(): Promise<RyanairIntegration> {
-    const integration = new RyanairIntegration()
-    return await integration.initialize()
-}

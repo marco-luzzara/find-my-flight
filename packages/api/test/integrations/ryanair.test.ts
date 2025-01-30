@@ -2,9 +2,12 @@ import { faresApi, Airport as RyanairAirport, PassengerType, airportsApi } from 
 import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair"
 import { Airport } from "../../src/model/Airport"
 import { HourInterval } from "../../src/model/base-types"
-import { TravelCompany } from "../../src/model/TravelCompany"
-import { buildIntegration, RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
+import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
 
+async function buildIntegration(): Promise<RyanairIntegration> {
+    const integration = new RyanairIntegration()
+    return await integration.initialize()
+}
 
 const departureDate = new Date('2024-08-10T00:00:00.000')
 const originAirports = [
@@ -55,6 +58,7 @@ beforeEach(() => {
 
 describe('searchOneWayFlights', () => {
     test('given an origin and destination airport, when no route from origin to destination, searchOneWayFlights returns 0 flights', async () => {
+        const integration = await buildIntegration()
         const searchParams = {
             departureDates: [departureDate],
             originCodes: [RyanairTypeMapping.toAirport(originAirports[1]).code],
@@ -64,11 +68,10 @@ describe('searchOneWayFlights', () => {
             ],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 20],
-            travelCompanies: [TravelCompany.Ryanair],
+            travelCompanies: [integration.id],
             maxFlightHours: 10
         }
 
-        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
@@ -90,18 +93,19 @@ describe('searchOneWayFlights', () => {
                     },
                     duration: 60
                 }
-            ]]]))
+            ]]])
+        )
+        const integration = await buildIntegration()
         const searchParams = {
             departureDates: [departureDate],
             originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
             destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
-            travelCompanies: [TravelCompany.Ryanair],
+            travelCompanies: [integration.id],
             maxFlightHours: 10
         }
 
-        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(1)
@@ -126,18 +130,19 @@ describe('searchOneWayFlights', () => {
                     },
                     duration: 60
                 }
-            ]]]))
+            ]]])
+        )
+        const integration = await buildIntegration()
         const searchParams = {
             departureDates: [departureDate],
             originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
             destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(16, 23),
             passengersAge: [2, 10, 20],
-            travelCompanies: [TravelCompany.Ryanair],
+            travelCompanies: [integration.id],
             maxFlightHours: 10
         }
 
-        const integration = await buildIntegration()
         const searchResults = await integration.searchOneWayFlights(searchParams)
 
         expect(searchResults).toHaveLength(0)
@@ -159,18 +164,18 @@ describe('searchOneWayFlights', () => {
                     },
                     duration: 180
                 }
-            ]]]))
+            ]]])
+        )
+        const integration = await buildIntegration()
         const searchParams = {
             departureDates: [departureDate],
             originCodes: [RyanairTypeMapping.toAirport(originAirports[0]).code],
             destinationCodes: [RyanairTypeMapping.toAirport(destinationAirports[0]).code],
             departureTimeInterval: new HourInterval(0, 23),
             passengersAge: [2, 10, 20],
-            travelCompanies: [TravelCompany.Ryanair],
+            travelCompanies: [integration.id],
             maxFlightHours: 2
         }
-
-        const integration = await buildIntegration()
 
         const searchResults = await integration.searchOneWayFlights(searchParams)
 

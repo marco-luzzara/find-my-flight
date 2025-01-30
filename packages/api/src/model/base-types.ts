@@ -1,5 +1,7 @@
 import { apiErrors } from "@findmyflight/external-api-ryanair"
 
+export type TravelCompanyId = string
+
 export class HourInterval {
     start: number
     end: number

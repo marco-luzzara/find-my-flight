@@ -5,10 +5,9 @@ import {
     Session
 } from "@findmyflight/external-api-ryanair"
 
-import { Locale } from "../../model/base-types";
+import { Locale, TravelCompanyId } from "../../model/base-types";
 import { Flight, getFlightDuration } from "../../model/Flight";
 import { SearchOneWayParams } from "../../model/SearchParams";
-import { TravelCompany } from "../../model/TravelCompany";
 import { TravelCompanyIntegration } from "../TravelCompanyIntegration";
 import { Airport } from "../../model/Airport";
 import { LogUtils } from '@findmyflight/utils'
@@ -22,7 +21,7 @@ const logger = LogUtils.getLogger({
 type PassengersCount = { [key in PassengerType]?: number }
 
 export default class RyanairIntegration implements TravelCompanyIntegration {
-    id: string = 'ryanair'
+    id: TravelCompanyId = 'ryanair'
     label: string = 'Ryanair'
 
     session: Session
@@ -84,7 +83,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
                             departureDate: f.departureDate,
                             arrivalDate: f.arrivalDate,
                             price: this.computeTotalPrice(passengersCount, f.priceDetails),
-                            travelCompany: TravelCompany.Ryanair
+                            travelCompany: this.id
                         })), params)
                     )
                 }

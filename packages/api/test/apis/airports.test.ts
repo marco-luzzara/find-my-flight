@@ -1,5 +1,4 @@
 import buildServer from '../../src/buildServer'
-import { TravelCompany } from '../../src/model/TravelCompany'
 import * as travelCompanyModule from '../../src/integrations/travel-company-integrations'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration'
 import { AirportFactory } from '../test-factories/AirportFactory'
@@ -7,7 +6,7 @@ import { AirportFactory } from '../test-factories/AirportFactory'
 // Mock the module because loading the actual integrations is not necessary
 jest.mock('../../src/integrations/travel-company-integrations', () => {
     return {
-        travelCompanyIntegrationsFn: Promise.resolve(new Map())
+        travelCompanyIntegrations: new Map()
     }
 })
 const TEST_COMPANY_ID = 'test-company'
@@ -23,7 +22,7 @@ async function mockTravelCompanyIntegrations(...mockedIntegrations: {
         searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
     }
 }[]) {
-    const mockedMap = await travelCompanyModule.travelCompanyIntegrationsFn
+    const mockedMap = travelCompanyModule.travelCompanyIntegrations
     mockedMap.clear()
 
     mockedIntegrations.forEach(integration =>
@@ -36,13 +35,6 @@ async function mockTravelCompanyIntegrations(...mockedIntegrations: {
         )
     )
 }
-
-beforeEach(() => {
-    // mockedTravelCompanyIntegrationsFn.mockReset()
-    // mockTravelCompanyIntegrations({
-    //     travelCompanyId: 'test-company', mockFns: {}
-    // })
-})
 
 describe('listAirports', () => {
     // TODO: when there are multiple companies

@@ -1,21 +1,21 @@
 'use client'
 
+import { travelCompanyIntegrations } from "@findmyflight/api";
 import { Checkbox, Fieldset, MultiSelect } from "@mantine/core";
-import { TravelCompany, travelCompaniesMap } from '@findmyflight/api';
 import { useState } from "react";
 
-export default function TravelCompanySelect({ onCompaniesSelected }) {
+export default async function TravelCompanySelect({ onCompaniesSelected }) {
     const [selectedCompanies, setSelectedCompanies] = useState([])
-    const allTravelCompanies = Array.from(travelCompaniesMap.keys()).map(tc => tc.toString())
+    const allTravelCompanies = Array.from(travelCompanyIntegrations.keys())
 
     return (
         <Fieldset radius='lg'>
             <MultiSelect
                 label="Travel Companies"
                 placeholder="Select all the travel companies you would choose"
-                data={Array.from(travelCompaniesMap.entries()).map(e => ({
-                    value: e[0].toString(),
-                    label: e[1]
+                data={Array.from(travelCompanyIntegrations.entries()).map(e => ({
+                    value: e[0],
+                    label: e[1].label
                 }))}
                 value={selectedCompanies}
                 onChange={companies => {

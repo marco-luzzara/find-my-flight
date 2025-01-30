@@ -1,4 +1,4 @@
-import { TravelCompany } from "@findmyflight/api"
+import { TravelCompanyId } from "@findmyflight/api"
 
 export type OneWayFlightsSearchFilters = {
     originAirports: string[]
@@ -8,5 +8,5 @@ export type OneWayFlightsSearchFilters = {
     departureTimeStart: number
     departureTimeEnd: number
     maxFlightHours: number
-    travelCompanies: TravelCompany[]
+    travelCompanies: TravelCompanyId[]
 }

@@ -3,7 +3,6 @@ import { Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInp
 import { DatePicker } from '@mantine/dates';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import TravelCompanySelect from './TravelCompanySelect';
-import { TravelCompany } from '@findmyflight/api';
 import PassengersAgeInput from './PassengersAgeInput';
 import { OneWayFlightsSearchFilters } from '@/types/search';
 
@@ -126,7 +125,7 @@ export default function SearchPanel({ className, onSearch }) {
             </Fieldset>
 
             <TravelCompanySelect onCompaniesSelected={(values: string[]) =>
-                searchFilters.current.travelCompanies = values.map(v => parseInt(v))
+                searchFilters.current.travelCompanies = values
             } />
 
             <Button variant="filled"

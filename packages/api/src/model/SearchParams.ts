@@ -1,6 +1,5 @@
 import { Airport } from "./Airport";
-import { DayInterval, HourInterval } from "./base-types";
-import { TravelCompany } from "./TravelCompany";
+import { DayInterval, HourInterval, TravelCompanyId } from "./base-types";
 
 type AirportCode = string
 export type SearchOneWayParams = {
@@ -31,7 +30,7 @@ export type SearchOneWayParams = {
     /**
      * search results can come from these travel companies exclusively
      */
-    travelCompanies: TravelCompany[]
+    travelCompanies: TravelCompanyId[]
 }
 
 export type SearchRoundTripParams = SearchOneWayParams & {

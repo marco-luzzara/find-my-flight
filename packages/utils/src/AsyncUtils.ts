@@ -9,6 +9,12 @@ class WrappedError extends Error {
     }
 }
 
+enum PromiseState {
+    Pending,
+    Fulfilled,
+    Rejected
+}
+
 export default class AsyncUtils {
     /**
      * Returns promises as soon as they are settled (either resolved or rejected). This utility method
@@ -49,6 +55,34 @@ export default class AsyncUtils {
             }
 
             pendingPromises.splice(promiseIndex, 1)
+        }
+    }
+
+    /**
+     * Synchronously wait for a promise to complete.
+     * Extracted from deasync library (https://github.com/Kaciras/deasync/blob/master/index.ts)
+     * **Use only when async programming is not available (top-level code in a CommonJS module).
+     * @param promise 
+     * @returns 
+     */
+    public static awaitSync<T>(promise: Promise<T>): T {
+        let state = PromiseState.Pending;
+        let resultOrError: unknown;
+
+        promise.then(res => {
+            resultOrError = res;
+            state = PromiseState.Fulfilled;
+        }, err => {
+            resultOrError = err;
+            state = PromiseState.Rejected;
+        });
+
+        while (state === PromiseState.Pending) { }
+
+        if (state === PromiseState.Rejected) {
+            throw resultOrError;
+        } else {
+            return resultOrError as T;
         }
     }
 }

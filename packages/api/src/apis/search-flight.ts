@@ -4,8 +4,6 @@ import { FromSchema } from "json-schema-to-ts";
 import { HourInterval } from "../model/base-types";
 import { searchOneWayFlights } from "../implementation/search-flight";
 
-import { travelCompanyIntegrations } from "../integrations/travel-company-integrations";
-
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     const searchOneWayQuerystringSchema = {
         $id: 'SearchOneWayQuerystring',
@@ -52,7 +50,9 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             {
                 type: 'array',
                 items: {
-                    enum: Array.from(travelCompanyIntegrations.keys())
+                    type: 'string'
+                    // TODO: enum or strings?
+                    // enum: ['ryanair']
                 }
             }
         }
@@ -66,6 +66,8 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             querystring: searchOneWayQuerystringSchema
         }
     }, async (request, reply) => {
+        const travelCompanyIntegrations = fastify.travelCompanyIntegrations
+
         const queryParams = request.query
         const searchOneWayParams = {
             originCodes: queryParams.originCodes,
@@ -77,7 +79,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             travelCompanies: queryParams.travelCompanies
         }
 
-        return await searchOneWayFlights(searchOneWayParams)
+        return await searchOneWayFlights(travelCompanyIntegrations, searchOneWayParams)
     })
 }
 

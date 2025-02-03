@@ -1,16 +1,17 @@
 import { LogUtils } from "@findmyflight/utils";
-import { travelCompanyIntegrations } from "../integrations/travel-company-integrations";
 import { Flight } from "../model/Flight";
 import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams";
+import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration";
 
 const logger = LogUtils.getLogger({
     api: searchOneWayFlights.name
 })
 
 export async function searchOneWayFlights(
+    travelCompanyIntegrations: TravelCompanyIntegration[],
     params: SearchOneWayParams,
 ): Promise<Flight[]> {
-    let searchFlightsPromises = Array.from(travelCompanyIntegrations.values())
+    let searchFlightsPromises = travelCompanyIntegrations
         .map(integration => {
             return integration.searchOneWayFlights(params)
         })

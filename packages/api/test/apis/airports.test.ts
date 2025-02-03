@@ -1,39 +1,21 @@
+import { FastifyInstance } from 'fastify'
 import buildServer from '../../src/buildServer'
-import * as travelCompanyModule from '../../src/integrations/travel-company-integrations'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration'
 import { AirportFactory } from '../test-factories/AirportFactory'
 
-// Mock the module because loading the actual integrations is not necessary
-jest.mock('../../src/integrations/travel-company-integrations', () => {
-    return {
-        travelCompanyIntegrations: new Map()
-    }
-})
 const TEST_COMPANY_ID = 'test-company'
-
-const app = buildServer()
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B')]
 
-async function mockTravelCompanyIntegrations(...mockedIntegrations: {
-    travelCompanyId: string,
-    mockFns: {
-        listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
-        searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
-    }
-}[]) {
-    const mockedMap = travelCompanyModule.travelCompanyIntegrations
-    mockedMap.clear()
+function buildMockedServer(...mockedIntegrations: {
+    listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>
+}[]): FastifyInstance {
+    const app = buildServer({}, mockedIntegrations.map(integration => ({
+        id: TEST_COMPANY_ID,
+        listAirports: integration.listAirportsMock ?? jest.fn()
+    } as TravelCompanyIntegration)))
 
-    mockedIntegrations.forEach(integration =>
-        mockedMap.set(
-            integration.travelCompanyId,
-            {
-                listAirports: integration.mockFns.listAirportsMock ?? jest.fn(),
-                searchOneWayFlights: integration.mockFns.searchOneWayFlightsMock ?? jest.fn()
-            } as TravelCompanyIntegration
-        )
-    )
+    return app
 }
 
 describe('listAirports', () => {
@@ -43,11 +25,8 @@ describe('listAirports', () => {
     // })
 
     test('listAirports returns the travel company results', async () => {
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                listAirportsMock: jest.fn().mockResolvedValue(builtinAirports)
-            }
+        const app = buildMockedServer({
+            listAirportsMock: jest.fn().mockResolvedValue(builtinAirports)
         })
 
         const response = await app.inject({
@@ -60,11 +39,8 @@ describe('listAirports', () => {
     })
 
     test('listAirports returns 0 airport if the external api fails', async () => {
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                listAirportsMock: jest.fn().mockRejectedValue(new Error('api fails'))
-            }
+        const app = buildMockedServer({
+            listAirportsMock: jest.fn().mockRejectedValue(new Error('api fails'))
         })
 
         const response = await app.inject({

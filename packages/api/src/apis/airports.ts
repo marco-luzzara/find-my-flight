@@ -6,7 +6,8 @@ export default async function routes(fastify: FastifyInstance, options: FastifyS
     fastify.get<{
         Reply: Airport[]
     }>('/airports', async (request, reply) => {
+        const travelCompanyIntegrations = fastify.travelCompanyIntegrations
         reply.code(200)
-        return await listAirports()
+        return await listAirports(travelCompanyIntegrations)
     })
 }

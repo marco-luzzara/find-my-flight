@@ -1,13 +1,13 @@
 import { AsyncUtils, LogUtils } from "@findmyflight/utils"
-import { travelCompanyIntegrations } from "../integrations/travel-company-integrations"
 import { Airport } from "../model/Airport"
+import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration"
 
 const logger = LogUtils.getLogger({
     api: listAirports.name
 })
 
-export async function listAirports(): Promise<Airport[]> {
-    const listAirportsPromises = Array.from(travelCompanyIntegrations.values())
+export async function listAirports(travelCompanyIntegrations: TravelCompanyIntegration[]): Promise<Airport[]> {
+    const listAirportsPromises = travelCompanyIntegrations
         .map(integration => {
             return integration.listAirports()
         })

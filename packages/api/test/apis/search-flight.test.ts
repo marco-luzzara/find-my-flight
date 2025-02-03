@@ -1,61 +1,43 @@
 import buildServer from '../../src/buildServer'
-import * as travelCompanyModule from '../../src/integrations/travel-company-integrations'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration'
 import { SearchOneWayParams } from '../../src/model/SearchParams'
 import { HourInterval } from '../../src/model/base-types'
 import { Flight } from '../../src/model/Flight'
 import { AirportFactory } from '../test-factories/AirportFactory'
+import { FastifyInstance } from 'fastify'
 
-jest.mock('../../src/integrations/travel-company-integrations', () => {
-    return {
-        travelCompanyIntegrations: new Map()
-    }
-})
 const TEST_COMPANY_ID = 'test-company'
-
-const app = buildServer()
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B'), AirportFactory.build('C')]
 
-async function mockTravelCompanyIntegrations(...mockedIntegrations: {
-    travelCompanyId: string,
-    mockFns: {
-        listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
-        searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
-    }
-}[]) {
-    const mockedMap = travelCompanyModule.travelCompanyIntegrations
-    mockedMap.clear()
+function buildMockedServer(...mockedIntegrations: {
+    listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
+    searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
+}[]): FastifyInstance {
+    const app = buildServer({}, mockedIntegrations.map(integration => ({
+        id: TEST_COMPANY_ID,
+        listAirports: integration.listAirportsMock ?? jest.fn(),
+        searchOneWayFlights: integration.searchOneWayFlightsMock ?? jest.fn()
+    } as TravelCompanyIntegration)))
 
-    mockedIntegrations.forEach(integration =>
-        mockedMap.set(
-            integration.travelCompanyId,
-            {
-                listAirports: integration.mockFns.listAirportsMock ?? jest.fn(),
-                searchOneWayFlights: integration.mockFns.searchOneWayFlightsMock ?? jest.fn()
-            } as TravelCompanyIntegration
-        )
-    )
+    return app
 }
 
 describe('searchOneWayFlights', () => {
     test('searchOneWayFlights with valid params returns the flights', async () => {
-        const searchOneWayFlightsFn =
-            jest.fn().mockResolvedValue({
-                flightNumber: 'FN0001',
-                origin: builtinAirports[0],
-                destination: builtinAirports[1],
-                departureDate: new Date('2024-10-24T09:00:00.000Z'),
-                arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
-                price: 100,
-                travelCompany: TEST_COMPANY_ID
-            })
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                searchOneWayFlightsMock: searchOneWayFlightsFn
-            }
+        const searchOneWayFlightsFn = jest.fn().mockResolvedValue({
+            flightNumber: 'FN0001',
+            origin: builtinAirports[0],
+            destination: builtinAirports[1],
+            departureDate: new Date('2024-10-24T09:00:00.000Z'),
+            arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
+            price: 100,
+            travelCompany: TEST_COMPANY_ID
         })
+        const app = buildMockedServer({
+            searchOneWayFlightsMock: searchOneWayFlightsFn
+        })
+
         const urlParams = new URLSearchParams({
             originCodes: builtinAirports[0].code,
             destinationCodes: builtinAirports[1].code,
@@ -88,21 +70,17 @@ describe('searchOneWayFlights', () => {
     })
 
     test('when searchOneWayFlights with multiple dates and origin airports, then return flights', async () => {
-        const searchOneWayFlightsFn =
-            jest.fn().mockResolvedValue({
-                flightNumber: 'FN0001',
-                origin: builtinAirports[0],
-                destination: builtinAirports[1],
-                departureDate: new Date('2024-10-24T09:00:00.000Z'),
-                arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
-                price: 100,
-                travelCompany: TEST_COMPANY_ID
-            })
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                searchOneWayFlightsMock: searchOneWayFlightsFn
-            }
+        const searchOneWayFlightsFn = jest.fn().mockResolvedValue({
+            flightNumber: 'FN0001',
+            origin: builtinAirports[0],
+            destination: builtinAirports[1],
+            departureDate: new Date('2024-10-24T09:00:00.000Z'),
+            arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
+            price: 100,
+            travelCompany: TEST_COMPANY_ID
+        })
+        const app = buildMockedServer({
+            searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({
             originCodes: builtinAirports[0].code,
@@ -140,11 +118,8 @@ describe('searchOneWayFlights', () => {
 
     test('searchOneWayFlights with missing param returns a validation error', async () => {
         const searchOneWayFlightsFn = jest.fn()
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                searchOneWayFlightsMock: searchOneWayFlightsFn
-            }
+        const app = buildMockedServer({
+            searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({
             // Missing value: originCodes: builtinAirports[0].code,
@@ -169,11 +144,8 @@ describe('searchOneWayFlights', () => {
 
     test('searchOneWayFlights with invalid param returns a validation error', async () => {
         const searchOneWayFlightsFn = jest.fn()
-        await mockTravelCompanyIntegrations({
-            travelCompanyId: TEST_COMPANY_ID,
-            mockFns: {
-                searchOneWayFlightsMock: searchOneWayFlightsFn
-            }
+        const app = buildMockedServer({
+            searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({
             originCodes: builtinAirports[0].code,

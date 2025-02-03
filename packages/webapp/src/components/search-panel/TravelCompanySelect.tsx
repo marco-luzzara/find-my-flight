@@ -1,19 +1,19 @@
 'use client'
 
-import { travelCompanies } from "@findmyflight/api";
+import configurationManager from "@/ConfigurationManager";
 import { Checkbox, Fieldset, MultiSelect } from "@mantine/core";
 import { useState } from "react";
 
 export default function TravelCompanySelect({ onCompaniesSelected }) {
     const [selectedCompanies, setSelectedCompanies] = useState([])
-    const allTravelCompanies = travelCompanies.map(tc => tc.id)
+    const allTravelCompanies = configurationManager.travelCompanies.map(tc => tc.id)
 
     return (
         <Fieldset radius='lg'>
             <MultiSelect
                 label="Travel Companies"
                 placeholder="Select all the travel companies you would choose"
-                data={travelCompanies.map(tc => ({
+                data={configurationManager.travelCompanies.map(tc => ({
                     value: tc.id,
                     label: tc.label
                 }))}

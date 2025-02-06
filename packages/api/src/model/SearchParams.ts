@@ -1,5 +1,4 @@
-import { Airport } from "./Airport";
-import { DayInterval, HourInterval, TravelCompanyId } from "./base-types";
+import { DayInterval, HourInterval, TravelCompanyId } from "./base-types.js";
 
 type AirportCode = string
 export type SearchOneWayParams = {

@@ -4,7 +4,7 @@ JEST_TESTS ?= .*\.test\.(?:t|j)s
 
 compile-api:
 	cd packages/api && \
-		npx tsc -b
+		npx tsc -b tsconfig.json tsconfig.compile.json
 
 start-api: compile-api
 	cd packages/api && \

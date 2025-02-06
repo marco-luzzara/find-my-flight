@@ -1,8 +1,7 @@
-import { faresApi, Airport as RyanairAirport, PassengerType, airportsApi } from "@findmyflight/external-api-ryanair"
-import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair"
-import { Airport } from "../../src/model/Airport"
-import { HourInterval } from "../../src/model/base-types"
-import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory"
+import { faresApi, PassengerType, airportsApi } from "@findmyflight/external-api-ryanair"
+import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair.js"
+import { HourInterval } from "../../src/model/base-types.js"
+import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory.js"
 
 async function buildIntegration(): Promise<RyanairIntegration> {
     const integration = new RyanairIntegration()

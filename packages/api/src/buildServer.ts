@@ -1,9 +1,9 @@
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
-import searchFlightRoutes from './apis/search-flight'
-import airportsRoute from './apis/airports'
+import searchFlightRoutes from './apis/search-flight.js'
+import airportsRoute from './apis/airports.js'
 // import fp from 'fastify-plugin'
-import { TravelCompanyIntegration } from './integrations/TravelCompanyIntegration'
+import { TravelCompanyIntegration } from './integrations/TravelCompanyIntegration.js'
 
 export default function buildServer(opts: FastifyServerOptions = {}, travelCompanyIntegrations: TravelCompanyIntegration[]): FastifyInstance {
     const server = fastify(opts)

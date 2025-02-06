@@ -1,7 +1,7 @@
-import { Airport } from "../model/Airport"
-import { TravelCompanyId } from "../model/base-types"
-import { Flight } from "../model/Flight"
-import { SearchOneWayParams } from "../model/SearchParams"
+import { Airport } from "../model/Airport.js"
+import { TravelCompanyId } from "../model/base-types.js"
+import { Flight } from "../model/Flight.js"
+import { SearchOneWayParams } from "../model/SearchParams.js"
 
 export interface TravelCompanyIntegration {
     id: TravelCompanyId

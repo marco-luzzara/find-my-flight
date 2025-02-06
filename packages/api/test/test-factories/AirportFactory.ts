@@ -1,4 +1,4 @@
-import { Airport } from "../../src/model/Airport"
+import { Airport } from "../../src/model/Airport.js"
 
 export class AirportFactory {
     /**

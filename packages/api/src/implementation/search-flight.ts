@@ -1,7 +1,7 @@
 import { LogUtils } from "@findmyflight/utils";
-import { Flight } from "../model/Flight";
-import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams";
-import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration";
+import { Flight } from "../model/Flight.js";
+import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams.js";
+import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration.js";
 
 const logger = LogUtils.getLogger({
     api: searchOneWayFlights.name

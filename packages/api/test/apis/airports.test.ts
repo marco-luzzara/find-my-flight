@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
-import buildServer from '../../src/buildServer'
-import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration'
-import { AirportFactory } from '../test-factories/AirportFactory'
+import buildServer from '../../src/buildServer.js'
+import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration.js'
+import { AirportFactory } from '../test-factories/AirportFactory.js'
 
 const TEST_COMPANY_ID = 'test-company'
 

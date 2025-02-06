@@ -5,11 +5,11 @@ import {
     Session
 } from "@findmyflight/external-api-ryanair"
 
-import { Locale, TravelCompanyId } from "../../model/base-types";
-import { Flight, getFlightDuration } from "../../model/Flight";
-import { SearchOneWayParams } from "../../model/SearchParams";
-import { TravelCompanyIntegration } from "../TravelCompanyIntegration";
-import { Airport } from "../../model/Airport";
+import { Locale, TravelCompanyId } from "../../model/base-types.js";
+import { Flight, getFlightDuration } from "../../model/Flight.js";
+import { SearchOneWayParams } from "../../model/SearchParams.js";
+import { TravelCompanyIntegration } from "../TravelCompanyIntegration.js";
+import { Airport } from "../../model/Airport.js";
 import { LogUtils } from '@findmyflight/utils'
 
 const MAX_QUERYABLE_DATES = 7

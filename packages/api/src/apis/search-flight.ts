@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyServerOptions } from "fastify";
-import { Flight } from "../model/Flight";
+import { Flight } from "../model/Flight.js";
 import { FromSchema } from "json-schema-to-ts";
-import { HourInterval } from "../model/base-types";
-import { searchOneWayFlights } from "../implementation/search-flight";
+import { HourInterval } from "../model/base-types.js";
+import { searchOneWayFlights } from "../implementation/search-flight.js";
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     const searchOneWayQuerystringSchema = {

@@ -1,6 +1,7 @@
 {
     "name": "@findmyflight/api",
     "version": "1.0.0",
+    "type": "module",
     "description": "APIs for the FindMyFlight application",
     "scripts": {
         "test": "jest"

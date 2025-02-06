@@ -1,5 +1,4 @@
 import { Airport } from "@findmyflight/external-api-ryanair";
-import RyanairIntegration from "../../../src/integrations/travel-companies/ryanair";
 
 export class RyanairAirportFactory {
     /**

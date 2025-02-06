@@ -1,6 +1,6 @@
 import { AsyncUtils, LogUtils } from "@findmyflight/utils"
-import { Airport } from "../model/Airport"
-import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration"
+import { Airport } from "../model/Airport.js"
+import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration.js"
 
 const logger = LogUtils.getLogger({
     api: listAirports.name

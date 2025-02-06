@@ -1,5 +1,5 @@
-import { Airport } from "./Airport"
-import { TravelCompanyId } from "./base-types"
+import { Airport } from "./Airport.js"
+import { TravelCompanyId } from "./base-types.js"
 
 export type Flight = {
     flightNumber: string

@@ -21,7 +21,8 @@ export default function FlightsPanel({ flights }: { flights: Flight[] }) {
                             flightDuration={DateUtils.getDurationFromDates(f.departureDate, f.arrivalDate)}
                             travelCompany={f.travelCompany}
                             destinationAirport={`${f.destination.name} (${f.destination.code})`}
-                            arrivalDateTime={DateUtils.formatFlightDateTime(f.arrivalDate)} />
+                            arrivalDateTime={DateUtils.formatFlightDateTime(f.arrivalDate)}
+                            price={f.price} />
                     ))
                 }
             </FlightsGroup>

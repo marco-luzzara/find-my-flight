@@ -12,7 +12,7 @@ import { TravelCompanyIntegration } from "../TravelCompanyIntegration.js";
 import { Airport } from "../../model/Airport.js";
 import { LogUtils } from '@findmyflight/utils'
 
-const MAX_QUERYABLE_DATES = 7
+const MAX_QUERYABLE_DATES = 6
 
 const logger = LogUtils.getLogger({
     integration: 'Ryanair'

@@ -96,6 +96,7 @@ export async function listAvailableRoundTripFlights(
 
 function createHeaders(session: Session): Headers {
     const headers = new Headers()
+    headers.append('client', 'desktop')
     headers.append('Cookie',
         session.map(cookie => cookie.substring(0, cookie.indexOf(';'))).join('; '))
 

@@ -9,7 +9,8 @@ export default function FlightDetails(
         flightDuration,
         travelCompany,
         destinationAirport,
-        arrivalDateTime
+        arrivalDateTime,
+        price
     }) {
     const theme = useMantineTheme();
     const boxStyle: MantineStyleProp = {
@@ -38,6 +39,11 @@ export default function FlightDetails(
                 <Stack style={boxStyle}>
                     <Text>{destinationAirport}</Text>
                     <Text>{arrivalDateTime}</Text>
+                </Stack>
+                <Divider orientation="vertical" />
+                <Stack style={boxStyle}>
+                    <Text>{flightNumber}</Text>
+                    <Text>{price}€</Text>
                 </Stack>
             </Group>
         </Card >

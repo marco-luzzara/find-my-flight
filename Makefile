@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-JEST_TESTS ?= .*\.test\.(?:t|j)s
+JEST_REGEX ?= .*\.test\.(?:t|j)s
 .PHONY: compile-api start-api compile-webapp start-webapp test clean
 
 compile-api:
@@ -21,7 +21,7 @@ start-webapp: compile-webapp
 		npx next dev -p "$$SERVER_PORT"
 
 test: compile-api compile-webapp
-	npx jest "$(JEST_TESTS)"
+	npx jest "$(JEST_REGEX)"
 
 clean:
 	npx tsc --build --clean

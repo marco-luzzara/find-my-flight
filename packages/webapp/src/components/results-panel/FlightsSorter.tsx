@@ -1,54 +1,77 @@
 import { Flight } from "@findmyflight/api";
+import { DateUtils } from "@findmyflight/utils";
 import { ActionIcon, Button, Fieldset, Group, Select, Stack, Text } from "@mantine/core";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
-import { FlightDataPath } from "next/dist/server/app-render/types";
 import { useReducer, useState } from "react";
 
-type FlightType = Flight
-type FieldMapper = (o: FlightType) => any
+type GroupKeyExtractor = (f: Flight) => any
+type GroupDescriptor = (groupKey: string) => string
+type GroupingData = {
+    // it returns the key used to aggregate the flights under the same
+    // group in the Map object
+    groupKeyExtractor: GroupKeyExtractor
+    // It returns the group description to show starting from the group
+    // key retrieved using groupKeyExtractor
+    groupDescriptor: GroupDescriptor
+}
 
-type SortingField = {
-    name: string,
-    mapping: FieldMapper
+type GroupingField = {
+    label: string
+    groupingData: GroupingData
 }
 type Ordering = 'Ascending' | 'Descending'
-type SortingOption = {
-    field: SortingField,
+export type GroupingOption = {
+    field: GroupingField
     order: Ordering
 }
 
-const ONEWAY_SORTING_FIELDS: ReadonlyMap<string, FieldMapper> = new Map([
-    ['Price', (f: Flight): any => f.price],
-    ['Departure Date', (f: Flight) => f.departureDate],
-    ['Departure Airport', (f: Flight) => f.origin.name],
-    ['Arrival Airport', (f: Flight) => f.destination.name]
-])
+const oneWayGroupingFieldsMapData: [string, GroupingData][] = [
+    // grouping by Price means putting all the price in the same groups and applying
+    // the specified ordering
+    ['Price (Only sort)', { 
+        groupKeyExtractor: (f: Flight) => 0, 
+        groupDescriptor: (groupKey: string) => '' 
+    }],
+    ['Departure Date', { 
+        groupKeyExtractor: (f: Flight) => DateUtils.formatDateAsISO(f.departureDate),
+        groupDescriptor: (groupKey: string) => DateUtils.formatDateLongForm(new Date(groupKey))
+    }],
+    ['Departure Airport', { 
+        groupKeyExtractor: (f: Flight) => f.origin.name, 
+        groupDescriptor: (groupKey: string) => groupKey
+    }],
+    ['Arrival Airport', { 
+        groupKeyExtractor: (f: Flight) => f.destination.name,
+        groupDescriptor: (groupKey: string) => groupKey
+    }]
+]
+const ONEWAY_GROUPING_FIELDS: ReadonlyMap<string, GroupingData> = new Map(oneWayGroupingFieldsMapData)
 
-function getSortingFields(): ReadonlyMap<string, FieldMapper> {
-    return ONEWAY_SORTING_FIELDS
+function getGroupingFields(): ReadonlyMap<string, GroupingData> {
+    return ONEWAY_GROUPING_FIELDS
 }
 
-// function stringedOption(option: GroupSortingOption): string {
+// function stringedOption(option: GroupGroupingOption): string {
 //     return `${option.grouping}-${option.sorting.field}`
 // }
 
-// // TODO: generalize to check for more general validation, like isGroupSortingOptionAcceptable(newOptions)
-// function isGroupSortingOptionAcceptable(
-//     currentOptions: GroupSortingOption[],
-//     newOption: GroupSortingOption
+// // TODO: generalize to check for more general validation, like isGroupGroupingOptionAcceptable(newOptions)
+// function isGroupGroupingOptionAcceptable(
+//     currentOptions: GroupGroupingOption[],
+//     newOption: GroupGroupingOption
 // ): boolean {
 //     let stringedNewOption = stringedOption(newOption)
 //     return !currentOptions.map(opt => stringedOption(opt)).some(strOpt => strOpt === stringedNewOption)
 // }
 
 export default function FlightsSorter({ onSort }) {
-    const [options, dispatch] = useReducer(optionsReducer, [] as SortingOption[])
-    const sortingFields = getSortingFields()
+    const [options, dispatch] = useReducer(optionsReducer, [] as GroupingOption[])
+    const groupingFields = getGroupingFields()
 
     return (
         <Fieldset>
             <Stack align="center">
-                <Text style={{ alignSelf: 'flex-start' }}>Sorting options</Text>
+                <Text style={{ alignSelf: 'flex-start' }}>Group/Sort options</Text>
 
                 {
                     options.map((option, i) => {
@@ -63,8 +86,8 @@ export default function FlightsSorter({ onSort }) {
 
                                 <Select placeholder="Sort by..."
                                     label="Sort by"
-                                    data={Array.from(sortingFields.keys())}
-                                    value={option.field.name}
+                                    data={Array.from(groupingFields.keys())}
+                                    value={option.field.label}
                                     onChange={fieldName => {
                                         dispatch({
                                             type: OptionActionType.FieldChanged,
@@ -99,13 +122,13 @@ export default function FlightsSorter({ onSort }) {
                 }
 
                 <ActionIcon radius="xl" onClick={() => {
-                    const defaultKey = ONEWAY_SORTING_FIELDS.keys().next().value
+                    const defaultKey = groupingFields.keys().next().value
                     dispatch({
                         type: OptionActionType.Added,
                         newOption: {
                             field: {
-                                name: defaultKey,
-                                mapping: ONEWAY_SORTING_FIELDS.get(defaultKey)
+                                label: defaultKey,
+                                groupingData: groupingFields.get(defaultKey)
                             },
                             order: 'Ascending'
                         }
@@ -114,7 +137,7 @@ export default function FlightsSorter({ onSort }) {
                     <IconPlus />
                 </ActionIcon>
 
-                <Button mr="xl" style={{ alignSelf: 'flex-end' }}>Apply</Button>
+                <Button mr="xl" style={{ alignSelf: 'flex-end' }} onClick={ onSort(options) }>Apply</Button>
             </Stack>
         </Fieldset>
     )
@@ -129,7 +152,7 @@ enum OptionActionType {
 
 type OptionAction = {
     type: OptionActionType.Added,
-    newOption: SortingOption
+    newOption: GroupingOption
 } | {
     type: OptionActionType.FieldChanged,
     index: number,
@@ -144,9 +167,9 @@ type OptionAction = {
 }
 
 function optionsReducer(
-    options: SortingOption[],
+    options: GroupingOption[],
     action: OptionAction
-): SortingOption[] {
+): GroupingOption[] {
     const actionType = action.type
     switch (actionType) {
         case OptionActionType.Added: {
@@ -160,8 +183,8 @@ function optionsReducer(
                 if (i === action.index) {
                     return {
                         field: {
-                            name: action.changedField,
-                            mapping: getSortingFields().get(action.changedField)
+                            label: action.changedField,
+                            groupingData: getGroupingFields().get(action.changedField)
                         },
                         order: option.order
                     }

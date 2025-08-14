@@ -1,4 +1,5 @@
-import { differenceInMinutes, format } from "date-fns";
+import { differenceInMinutes, format, Locale } from "date-fns";
+import { enUS } from "date-fns/locale";
 
 export default class DateUtils {
     /**
@@ -21,5 +22,11 @@ export default class DateUtils {
 
     public static formatDateAsISO(d: Date): string {
         return format(d, 'yyyy-MM-dd')
+    }
+
+    public static formatDateLongForm(d: Date, locale: Locale = enUS): string {
+        return format(d, 'EEEE, dd MMMM yyyy', {
+            locale: locale
+        })
     }
 }

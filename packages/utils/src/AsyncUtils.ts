@@ -9,12 +9,6 @@ class WrappedError extends Error {
     }
 }
 
-enum PromiseState {
-    Pending,
-    Fulfilled,
-    Rejected
-}
-
 export default class AsyncUtils {
     /**
      * Returns promises as soon as they are settled (either resolved or rejected). This utility method

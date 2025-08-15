@@ -117,7 +117,7 @@ export default function FlightsPanel({ flights }: { flights: Flight[] }) {
 
     return (
         <>
-            <FlightsSorter onSort={(options) => setSortedFlights(groupAndSortFlights(options, flights)) } />
+            <FlightsSorter handleSort={(options) => setSortedFlights(groupAndSortFlights(options, flights)) } />
             
             <FlightsGroup groupDescription="No sorting">
                 {

@@ -64,7 +64,7 @@ function getGroupingFields(): ReadonlyMap<string, GroupingData> {
 //     return !currentOptions.map(opt => stringedOption(opt)).some(strOpt => strOpt === stringedNewOption)
 // }
 
-export default function FlightsSorter({ onSort }) {
+export default function FlightsSorter({ handleSort }) {
     const [options, dispatch] = useReducer(optionsReducer, [] as GroupingOption[])
     const groupingFields = getGroupingFields()
 
@@ -137,7 +137,7 @@ export default function FlightsSorter({ onSort }) {
                     <IconPlus />
                 </ActionIcon>
 
-                <Button mr="xl" style={{ alignSelf: 'flex-end' }} onClick={ onSort(options) }>Apply</Button>
+                <Button mr="xl" style={{ alignSelf: 'flex-end' }} onClick={ (e) => handleSort(options) }>Apply</Button>
             </Stack>
         </Fieldset>
     )

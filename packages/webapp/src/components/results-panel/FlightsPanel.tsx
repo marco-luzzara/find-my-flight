@@ -1,20 +1,27 @@
 import { Flight } from "@findmyflight/api";
 import FlightDetails from "./FlightDetails";
-import FlightsGroup from "./FlightsGroup";
+import FlightsViewer from "./FlightsViewer";
 import { DateUtils, ArrayUtils } from "@findmyflight/utils";
 import FlightsSorter, { GroupingOption } from "./FlightsSorter";
 import travelCompanies from '../../config-files/travel-companies.json'
 import { useState } from "react";
 
 
-type FlightsList = {
+export type FlightsList = {
     type: 'flights-list'
     content: Flight[]
 }
-type FlightsGroup = {
+
+export type FlightsGroupContainer = {
+    type: 'flights-group-container'
+    groupByField: string
+    content: FlightsGroup[]
+}
+
+export type FlightsGroup = {
     type: 'flights-group'
     description: string
-    content: FlightsList | FlightsGroup[]
+    content: FlightsList | FlightsGroupContainer
 }
 
 
@@ -31,54 +38,56 @@ type FlightsGroup = {
         { "flight": 2 }
     ]
 } |
-[
-    // one grouping option, where each group contain a flights-list
-    {
-        "type": "flights-group",
-        "description": "Departure: Bergamo",
-        "content": {
-            "type": "flights-list",
-            "content": [
-                { "flight": 1 },
-                { "flight": 2 }
-            ]
-        }
-    },
-    // two grouping options
-    {
-        "type": "flights-group",
-        "description": "Departure: Bergamo",
-        "content": [
-            {
-                "type": "flights-group",
-                "description": "Day XXX",
-                "content": {
-                    "type": "flights-list",
-                    "content": [
-                        { "flight": 1 },
-                        { "flight": 2 }
-                    ]
-                }
-            },
-            {
-                "type": "flights-group",
-                "description": "Day YYY",
-                "content": {
-                    "type": "flights-list",
-                    "content": [
-                        { "flight": 1 },
-                        { "flight": 2 }
-                    ]
-                }
+// one grouping option, where each group contain a flights-list
+{
+    "type": "flights-group-container",
+    "groupByField": "Departure Airport"
+    "content": [
+        {
+            "type": "flights-group",
+            "description": "Departure: DDD",
+            "content": {
+                "type": "flights-list",
+                "content": [
+                    { "flight": 1 },
+                    { "flight": 2 }
+                ]
             }
-        ]
-    }
-]
- */
+        }
+    ]
+} |
+{
+    "type": "flights-group-container",
+    "groupByField": "Departure Airport"
+    "content": [
+        {
+            "type": "flights-group",
+            "description": "Departure: DDD",
+            "content": {
+                "type": "flights-group-container",
+                "groupByField": "Departure Date"
+                "content": [
+                    {
+                        "type": "flights-group",
+                        "description": "Day XXX",
+                        "content": {
+                            "type": "flights-list",
+                            "content": [
+                                { "flight": 1 },
+                                { "flight": 2 }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+*/
 function groupAndSortFlights(
     groupingOptions: GroupingOption[], 
     flights: Flight[]
-): FlightsList | FlightsGroup[] {
+): FlightsList | FlightsGroupContainer {
     const groupingOption = groupingOptions.shift()
 
     if (groupingOption === undefined) {
@@ -108,7 +117,11 @@ function groupAndSortFlights(
     
     groupingOptions.unshift(groupingOption)
 
-    return result
+    return {
+        type: 'flights-group-container',
+        groupByField: '',
+        content: result
+    }
 }
 
 
@@ -119,22 +132,7 @@ export default function FlightsPanel({ flights }: { flights: Flight[] }) {
         <>
             <FlightsSorter handleSort={(options) => setSortedFlights(groupAndSortFlights(options, flights)) } />
             
-            <FlightsGroup groupDescription="No sorting">
-                {
-                    flights.map(f => (
-                        <FlightDetails
-                            key={`${f.flightNumber}-${f.departureDate}`}
-                            flightNumber={f.flightNumber}
-                            originAirport={`${f.origin.name} (${f.origin.code})`}
-                            departureDateTime={DateUtils.formatFlightDateTime(f.departureDate)}
-                            flightDuration={DateUtils.getDurationFromDates(f.departureDate, f.arrivalDate)}
-                            travelCompany={travelCompanies.find(tc => tc.id === f.travelCompany)!.label}
-                            destinationAirport={`${f.destination.name} (${f.destination.code})`}
-                            arrivalDateTime={DateUtils.formatFlightDateTime(f.arrivalDate)}
-                            price={f.price} />
-                    ))
-                }
-            </FlightsGroup>
+            <FlightsViewer flights={sortedFlights} />
         </>
     )
 }

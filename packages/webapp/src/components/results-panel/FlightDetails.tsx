@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, Divider, Group, MantineStyleProp, Stack, Text, ThemeIcon, useMantineTheme } from "@mantine/core";
 import { IconPlaneTilt } from "@tabler/icons-react";
 

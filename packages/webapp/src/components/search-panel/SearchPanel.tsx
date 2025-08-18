@@ -33,7 +33,7 @@ export default function SearchPanel({ className, onSearch }) {
             .then(airports => setAirportsData(airports))
     }, [currentDate])
 
-    function handleOnClickSearchButton(e) {
+    function handleSearch() {
         let areSearchFiltersFilled = true
         for (let p in searchFilters.current) {
             if (Array.isArray(searchFilters.current[p]) && searchFilters.current[p].length === 0) {
@@ -129,7 +129,7 @@ export default function SearchPanel({ className, onSearch }) {
             } />
 
             <Button variant="filled"
-                onClick={e => handleOnClickSearchButton(e)}>Search</Button>
+                onClick={e => handleSearch()}>Search</Button>
         </Flex>
     )
 }

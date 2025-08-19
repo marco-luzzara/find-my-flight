@@ -18,9 +18,9 @@
   "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
   "dependencies": {
     "@findmyflight/utils": "^1.0.0",
-    "@mantine/core": "^7.12.2",
-    "@mantine/dates": "^7.12.2",
-    "@mantine/hooks": "^7.12.2",
+    "@mantine/core": "^8.2.5",
+    "@mantine/dates": "^8.2.5",
+    "@mantine/hooks": "^8.2.5",
     "@tabler/icons-react": "^3.17.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
@@ -34,8 +34,8 @@
   "keywords": [],
   "devDependencies": {
     "@findmyflight/api": "^1.0.0",
-    "postcss": "^8.4.47",
-    "postcss-preset-mantine": "^1.17.0",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1"
   }
 }

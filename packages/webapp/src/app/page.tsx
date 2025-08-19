@@ -12,6 +12,7 @@ import { OneWayFlightsSearchFilters } from '@/types/search';
 import { FlightsRepository } from '@/repositories/FlightsRepository';
 import FlightsSorter, { groupAndSortFlights, GroupingOption } from '@/components/results-panel/FlightsSorter';
 import FlightsViewer from '@/components/results-panel/FlightsViewer';
+import FullPageLoadingOverlay from '@/components/FullPageLoadingOverlay';
 
 const flightsRepository = new FlightsRepository()
 
@@ -43,16 +44,18 @@ export default function App() {
                 </AppShell.Section>
             </AppShell.Navbar>
 
+            <FullPageLoadingOverlay isVisible={areResultsLoading}></FullPageLoadingOverlay>
+
             <AppShell.Main>
                 <SettingsPanel />
 
                 <Divider my="md" />
 
-                <FlightsSorter handleSort={sortOptions => setGroupingOptions(sortOptions)}/>
-                <Box pos="relative">
-                    <LoadingOverlay visible={areResultsLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-                    <FlightsViewer flights={sortedFlights} />
-                </Box>
+                <FlightsSorter onSort={sortOptions => setGroupingOptions(sortOptions)}/>
+
+                <Divider my="md" />
+
+                <FlightsViewer flights={sortedFlights} />
             </AppShell.Main>
         </AppShell>
     );

@@ -1,5 +1,5 @@
 import { AirportRepository } from '@/repositories/AirportsRepository';
-import { Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, TagsInput, useMantineTheme, Divider, Button, Space } from '@mantine/core';
+import { Fieldset, Flex, MultiSelect, Text, RangeSlider, Select, Slider, useMantineTheme, Divider, Button, Space } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import TravelCompanySelect from './TravelCompanySelect';
@@ -98,7 +98,7 @@ export default function SearchPanel({ className, onSearch }) {
                 <Divider />
 
                 <DatePicker type="multiple"
-                    onChange={value => searchFilters.current.departureDates = value} />
+                    onChange={value => searchFilters.current.departureDates = value.map(v => new Date(v))} />
 
                 <Text size='sm' style={{ marginTop: theme.spacing.md }}>Departure Time</Text>
 

@@ -97,18 +97,39 @@ export function groupAndSortFlights(
             content: flights
         }
     }
+
+    const sortDirection = groupingOption.order === 'Ascending' ? 1 : -1
+    const groupingData = groupingOption.field.groupingData
+    if (groupingData.onlySort) {
+        const sortByFieldExtractor = groupingData.sortByFieldExtractor
+        return {
+            type: 'flights-list',
+            content: flights.sort((a, b) => {
+                const aValue = sortByFieldExtractor(a)
+                const bValue = sortByFieldExtractor(b)
+                // multiply by direction to invert the result in case of descending ordering
+                return (
+                        typeof(aValue) === 'string' ?
+                        aValue.localeCompare(bValue) :
+                        aValue - bValue
+                    ) * sortDirection
+                })
+        }
+    }
+    else {
+        groupingData.groupDescriptor
+    }
     
     const groups = ArrayUtils.groupBy(flights, groupingOption.field.groupingData.groupKeyExtractor)
 
     const result = Array.from(groups.entries())
         .sort(([groupKeyA, _A], [groupKeyB, _B]) => {
-            const direction = groupingOption.order === 'Ascending' ? 1 : -1
             // multiply by direction to invert the result in case of descending ordering
             return (
                     typeof(groupKeyA) === 'string' ?
                     groupKeyA.localeCompare(groupKeyB) :
                     groupKeyA - groupKeyB
-                ) * direction
+                ) * sortDirection
         })
         .map(([groupKey, groupFlights]) => ({
             type: 'flights-group',
@@ -126,15 +147,19 @@ export function groupAndSortFlights(
 }
 
 
-type GroupKeyExtractor = (f: Flight) => any
-type GroupDescriptor = (groupKey: string) => string
 type GroupingData = {
     // it returns the key used to aggregate the flights under the same
     // group in the Map object
-    groupKeyExtractor: GroupKeyExtractor
+    groupKeyExtractor: (f: Flight) => any,
     // It returns the group description to show starting from the group
     // key retrieved using groupKeyExtractor
-    groupDescriptor: GroupDescriptor
+    groupDescriptor: (groupKey: string) => string;
+    // used to avoid the creation of groups, instead flights are only ordered
+    onlySort: false
+} | {
+    // it returns the field value that the flights must be sorted by
+    sortByFieldExtractor: (f: Flight) => any;
+    onlySort: true
 }
 
 type GroupingField = {
@@ -151,20 +176,23 @@ const oneWayGroupingFieldsMapData: [string, GroupingData][] = [
     // grouping by Price means putting all the price in the same groups and applying
     // the specified ordering
     ['Price (Only sort)', { 
-        groupKeyExtractor: (f: Flight) => 0, 
-        groupDescriptor: (groupKey: string) => '' 
+        onlySort: true,
+        sortByFieldExtractor: (f: Flight) => f.price
     }],
     ['Departure Date', { 
         groupKeyExtractor: (f: Flight) => DateUtils.formatDateAsISO(f.departureDate),
-        groupDescriptor: (groupKey: string) => DateUtils.formatDateLongForm(new Date(groupKey))
+        groupDescriptor: (groupKey: string) => DateUtils.formatDateLongForm(new Date(groupKey)),
+        onlySort: false
     }],
     ['Departure Airport', { 
         groupKeyExtractor: (f: Flight) => f.origin.name, 
-        groupDescriptor: (groupKey: string) => groupKey
+        groupDescriptor: (groupKey: string) => groupKey,
+        onlySort: false
     }],
     ['Arrival Airport', { 
         groupKeyExtractor: (f: Flight) => f.destination.name,
-        groupDescriptor: (groupKey: string) => groupKey
+        groupDescriptor: (groupKey: string) => groupKey,
+        onlySort: false
     }]
 ]
 const ONEWAY_GROUPING_FIELDS: ReadonlyMap<string, GroupingData> = new Map(oneWayGroupingFieldsMapData)
@@ -186,7 +214,7 @@ function getGroupingFields(): ReadonlyMap<string, GroupingData> {
 //     return !currentOptions.map(opt => stringedOption(opt)).some(strOpt => strOpt === stringedNewOption)
 // }
 
-export default function FlightsSorter({ handleSort }) {
+export default function FlightsSorter({ onSort }) {
     const [options, dispatch] = useReducer(optionsReducer, [] as GroupingOption[])
     const groupingFields = getGroupingFields()
 
@@ -206,8 +234,8 @@ export default function FlightsSorter({ handleSort }) {
                                     <IconMinus />
                                 </ActionIcon>
 
-                                <Select placeholder="Sort by..."
-                                    label="Sort by"
+                                <Select placeholder="Group by..."
+                                    label="Group by"
                                     data={Array.from(groupingFields.keys())}
                                     value={option.field.label}
                                     onChange={fieldName => {
@@ -259,7 +287,7 @@ export default function FlightsSorter({ handleSort }) {
                     <IconPlus />
                 </ActionIcon>
 
-                <Button mr="xl" style={{ alignSelf: 'flex-end' }} onClick={ (e) => handleSort(options) }>Apply</Button>
+                <Button mr="xl" style={{ alignSelf: 'flex-end' }} onClick={ (e) => onSort(options) }>Apply</Button>
             </Stack>
         </Fieldset>
     )

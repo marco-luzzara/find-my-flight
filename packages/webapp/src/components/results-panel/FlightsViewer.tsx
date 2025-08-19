@@ -1,12 +1,10 @@
 'use client'
 
-import { Box, Collapse, Text, Container, Group, Stack } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconChevronCompactDown, IconChevronCompactUp } from '@tabler/icons-react';
+import { Container, Stack, Accordion } from "@mantine/core";
 
 import { DateUtils } from "@findmyflight/utils";
 
-import { FlightsGroupContainer, FlightsList, FlightsGroup } from './FlightsPanel'
+import { FlightsGroupContainer, FlightsList, FlightsGroup } from './FlightsSorter'
 import FlightDetails from "./FlightDetails";
 import travelCompanies from '../../config-files/travel-companies.json'
 
@@ -14,30 +12,27 @@ import travelCompanies from '../../config-files/travel-companies.json'
 function FlightsGroupContainerViewer(
     { groups, groupsChain }: { groups: FlightsGroup[], groupsChain: string[] }
 ) {
-    const [collapseOpened, { toggle: toggleCollapse }] = useDisclosure(false);
 
-    return groups.map(group => {
+    const renderedGroups = groups.map(group => {
         const currentGroupsChain = Array.from(groupsChain)
         currentGroupsChain.push(group.description)
         const groupKey = currentGroupsChain.join('_')
 
         return (
-            <Box mx="auto" key={groupKey}>
-                <Group justify="center" w="90%" maw="50vw" gap="1" onClick={e => toggleCollapse()}>
-                    {
-                        collapseOpened ? 
-                        <IconChevronCompactUp stroke={1.5} /> : 
-                        <IconChevronCompactDown stroke={1.5} /> 
-                    }
-                    <Text size="lg">{group.description}</Text>
-                </Group>
-
-                <Collapse in={collapseOpened}>
+            <Accordion.Item key={groupKey} value={group.description}>
+                <Accordion.Control>{group.description}</Accordion.Control>
+                <Accordion.Panel>
                     <RecursiveFlightsViewer flights={group.content} groupsChain={currentGroupsChain}/>
-                </Collapse>
-            </Box>
+                </Accordion.Panel>
+            </Accordion.Item>            
         )
-    });                
+    });
+    
+    return (
+        <Accordion variant="separated" radius="md" chevronPosition="left" chevronIconSize={19}>
+            {renderedGroups}
+        </Accordion>
+    )
 }
 
 

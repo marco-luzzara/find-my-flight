@@ -100,13 +100,13 @@ export function groupAndSortFlights(
 
     const sortDirection = groupingOption.order === 'Ascending' ? 1 : -1
     const groupingData = groupingOption.field.groupingData
-    if (groupingData.onlySort) {
-        const sortByFieldExtractor = groupingData.sortByFieldExtractor
-        return {
+    let result: FlightsList | FlightsGroupContainer
+    if (groupingData.onlySort === true) {
+        result = {
             type: 'flights-list',
             content: flights.sort((a, b) => {
-                const aValue = sortByFieldExtractor(a)
-                const bValue = sortByFieldExtractor(b)
+                const aValue = groupingData.sortByFieldExtractor(a)
+                const bValue = groupingData.sortByFieldExtractor(b)
                 // multiply by direction to invert the result in case of descending ordering
                 return (
                         typeof(aValue) === 'string' ?
@@ -114,36 +114,34 @@ export function groupAndSortFlights(
                         aValue - bValue
                     ) * sortDirection
                 })
-        }
+        } as FlightsList
     }
     else {
-        groupingData.groupDescriptor
-    }
-    
-    const groups = ArrayUtils.groupBy(flights, groupingOption.field.groupingData.groupKeyExtractor)
+        const groups = ArrayUtils.groupBy(flights, groupingData.groupKeyExtractor)
 
-    const result = Array.from(groups.entries())
-        .sort(([groupKeyA, _A], [groupKeyB, _B]) => {
-            // multiply by direction to invert the result in case of descending ordering
-            return (
-                    typeof(groupKeyA) === 'string' ?
-                    groupKeyA.localeCompare(groupKeyB) :
-                    groupKeyA - groupKeyB
-                ) * sortDirection
-        })
-        .map(([groupKey, groupFlights]) => ({
-            type: 'flights-group',
-            description: groupingOption.field.groupingData.groupDescriptor(groupKey),
-            content: groupAndSortFlights(groupingOptions, groupFlights)
-        } as FlightsGroup))
-    
-    groupingOptions.unshift(groupingOption)
-
-    return {
-        type: 'flights-group-container',
-        groupByField: '',
-        content: result
+        result = {
+            type: 'flights-group-container',
+            groupByField: groupingOption.field.label,
+            content: Array.from(groups.entries())
+                .sort(([groupKeyA, _A], [groupKeyB, _B]) => {
+                    // multiply by direction to invert the result in case of descending ordering
+                    return (
+                            typeof(groupKeyA) === 'string' ?
+                            groupKeyA.localeCompare(groupKeyB) :
+                            groupKeyA - groupKeyB
+                        ) * sortDirection
+                })
+                .map(([groupKey, groupFlights]) => ({
+                    type: 'flights-group',
+                    description: groupingData.groupDescriptor(groupKey),
+                    content: groupAndSortFlights(groupingOptions, groupFlights)
+                } as FlightsGroup))
+        } as FlightsGroupContainer
     }
+
+    groupingOptions.unshift(groupingOption);
+
+    return result
 }
 
 
@@ -173,16 +171,16 @@ export type GroupingOption = {
 }
 
 const oneWayGroupingFieldsMapData: [string, GroupingData][] = [
+    ['Departure Date', { 
+        groupKeyExtractor: (f: Flight) => DateUtils.formatDateAsISO(f.departureDate),
+        groupDescriptor: (groupKey: string) => DateUtils.formatDateLongForm(new Date(groupKey)),
+        onlySort: false
+    }],
     // grouping by Price means putting all the price in the same groups and applying
     // the specified ordering
     ['Price (Only sort)', { 
         onlySort: true,
         sortByFieldExtractor: (f: Flight) => f.price
-    }],
-    ['Departure Date', { 
-        groupKeyExtractor: (f: Flight) => DateUtils.formatDateAsISO(f.departureDate),
-        groupDescriptor: (groupKey: string) => DateUtils.formatDateLongForm(new Date(groupKey)),
-        onlySort: false
     }],
     ['Departure Airport', { 
         groupKeyExtractor: (f: Flight) => f.origin.name, 
@@ -316,6 +314,18 @@ type OptionAction = {
     index: number
 }
 
+
+/**
+ * verifies that there is no onlySort field in the options. The only 
+ * exception is for the last option
+ * @param options 
+ * @returns true if the options are valid, false otherwise
+ */
+function areOptionsValid(options: GroupingOption[]): boolean {
+    return !options.slice(0, -1).some(opt => opt.field.groupingData.onlySort)
+}
+
+
 function optionsReducer(
     options: GroupingOption[],
     action: OptionAction
@@ -323,13 +333,20 @@ function optionsReducer(
     const actionType = action.type
     switch (actionType) {
         case OptionActionType.Added: {
-            return [
+            const newOptions = [
                 ...options,
                 action.newOption,
             ]
+
+            if (areOptionsValid(newOptions))
+                return newOptions
+            else {
+                window.alert('Only the last option can be "Sort Only"')
+                return options
+            }
         }
         case OptionActionType.FieldChanged: {
-            return options.map((option, i) => {
+            const newOptions = options.map((option, i) => {
                 if (i === action.index) {
                     return {
                         field: {
@@ -343,6 +360,12 @@ function optionsReducer(
                     return option;
                 }
             })
+            if (areOptionsValid(newOptions))
+                return newOptions
+            else {
+                window.alert('Only the last option can be "Sort Only"')
+                return options
+            }
         }
         case OptionActionType.OrderChanged: {
             return options.map((option, i) => {

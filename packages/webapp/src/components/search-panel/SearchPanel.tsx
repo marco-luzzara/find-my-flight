@@ -57,7 +57,7 @@ export default function SearchPanel({ className, onSearch }) {
             className={className}
         >
             <Fieldset radius='lg'>
-                <Select data={[{ value: 'one-way', label: 'One Way' }]} label='Flight Type' placeholder='Choose the flight type...' />
+                <Select data={[{ value: 'one-way', label: 'One Way' }]} value='one-way' label='Flight Type' placeholder='Choose the flight type...' />
             </Fieldset>
 
             <Fieldset radius='lg'>

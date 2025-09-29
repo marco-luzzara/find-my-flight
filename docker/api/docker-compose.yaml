@@ -1,0 +1,8 @@
+services:
+  api:
+    build:
+      context: ../..
+      target: prod
+      dockerfile: ./docker/api/Dockerfile
+    ports:
+      - "${PORT:-3000}:80"

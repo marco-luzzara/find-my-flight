@@ -1,0 +1,7 @@
+services:
+  api:
+    build:
+      target: devcontainer
+    volumes:
+      - ../..:/workspaces/find-my-flight:cached
+    command: sleep infinity

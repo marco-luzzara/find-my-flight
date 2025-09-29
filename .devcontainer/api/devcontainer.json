@@ -1,0 +1,26 @@
+{
+    "dockerComposeFile": ["../../docker/api/docker-compose.yaml", "../../docker/api/docker-compose.devcontainer.yaml"],
+    "service": "api",
+    "workspaceFolder": "/workspaces/find-my-flight",
+    "postStartCommand": "make api/install",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "[typescript]": {
+                    "editor.defaultFormatter": "vscode.typescript-language-features",
+                    "editor.formatOnSave": true
+                }
+                // "[md]": {
+                //     "editor.defaultFormatter": "esbenp.prettier-vscode",
+                //     "editor.formatOnSave": true
+                // },
+                // "[json]": {
+                //     "editor.defaultFormatter": "esbenp.prettier-vscode",
+                //     "editor.formatOnSave": true
+                // }
+            },
+            "extensions": ["ms-vscode.makefile-tools"]
+        }
+    }
+}

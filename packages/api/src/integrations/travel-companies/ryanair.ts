@@ -10,19 +10,20 @@ import { Flight, getFlightDuration } from "../../model/Flight.js";
 import { SearchOneWayParams } from "../../model/SearchParams.js";
 import { TravelCompanyIntegration } from "../TravelCompanyIntegration.js";
 import { Airport } from "../../model/Airport.js";
-import { LogUtils } from '@findmyflight/utils'
+// import { LogUtils } from '@findmyflight/utils'
+import { InvalidInputError } from "@findmyflight/utils/src/Errors.js";
 
 const MAX_QUERYABLE_DATES = 6
 
-const logger = LogUtils.getLogger({
-    integration: 'Ryanair'
-})
+// const logger = LogUtils.getLogger({
+//     integration: 'Ryanair'
+// })
 
-type PassengersCount = { [key in PassengerType]?: number }
+type PassengersCount = Record<PassengerType, number>
 
 export default class RyanairIntegration implements TravelCompanyIntegration {
     id: TravelCompanyId = 'ryanair'
-    label: string = 'Ryanair'
+    label = 'Ryanair'
 
     session: Session
     airports: RyanairAirport[]
@@ -40,8 +41,11 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
         const passengersCount = this.mapAgesToPassengers(params.passengersAge)
         const flights: Flight[] = []
 
-        for (let originCode of params.originCodes) {
-            const origin = this.airports.filter(a => a.code === originCode).at(0)
+        for (const originCode of params.originCodes) {
+            const origin = this.airports.find(a => a.code === originCode)
+            if (origin === undefined)
+                continue
+
             const destinationAirportCodes = (await airportsApi.listDestinationAirports(
                 originCode,
                 this.locale.languageCode
@@ -50,15 +54,17 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
             const availableDestinationCodes = params.destinationCodes
                 .filter(dCode => destinationAirportCodes.includes(dCode))
 
-            for (let destinationCode of availableDestinationCodes) {
-                const destination = this.airports.filter(a => a.code === destinationCode).at(0)
+            for (const destinationCode of availableDestinationCodes) {
+                const destination = this.airports.find(a => a.code === destinationCode)
+                if (destination === undefined)
+                    continue
 
-                for (let dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
+                for (const dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
                     const newFlights = await faresApi.listAvailableOneWayFlights({
-                        adults: passengersCount[PassengerType.ADULT],
-                        teenagers: passengersCount[PassengerType.TEENAGER],
-                        children: passengersCount[PassengerType.CHILD],
-                        infants: passengersCount[PassengerType.INFANT],
+                        adults: passengersCount.adult,
+                        teenagers: passengersCount.teenager,
+                        children: passengersCount.child,
+                        infants: passengersCount.infant,
                         roundTrip: false,
                         dateOut: dateGroup[0],
                         flexDaysBeforeOut: 0,
@@ -108,7 +114,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
     private getAdjacentDateGroups(dates: Date[]): [Date, number][] {
         if (dates.length === 0)
             return []
-        const groups = []
+        const groups: [Date, number][] = []
 
         const dayInMillis = 60 * 60 * 24 * 1000
 
@@ -164,11 +170,14 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
         const teenagers = ages.filter(age => age >= 12 && age <= 15).length
         const infants = ages.filter(age => age < 2).length
 
+        if (adults === 0)
+            throw new InvalidInputError('adults > 0', 'adults = 0')
+
         return {
-            [PassengerType.ADULT]: adults,
-            [PassengerType.TEENAGER]: teenagers,
-            [PassengerType.CHILD]: children,
-            [PassengerType.INFANT]: infants
+            adult: adults,
+            teenager: teenagers,
+            child: children,
+            infant: infants
         }
     }
 
@@ -182,7 +191,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
     private computeTotalPrice(passengersCount: PassengersCount, priceDetails: PriceDetails): number {
         let totalPrice = 0
 
-        for (let passengerType in passengersCount) {
+        for (const passengerType in passengersCount) {
             totalPrice += (priceDetails[passengerType] ?? 0) * (passengersCount[passengerType] ?? 0)
         }
 

@@ -2,15 +2,16 @@ import { FastifyInstance } from 'fastify'
 import buildServer from '../../src/buildServer.js'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration.js'
 import { AirportFactory } from '../test-factories/AirportFactory.js'
+import { Airport } from '../../src/model/Airport.js'
 
 const TEST_COMPANY_ID = 'test-company'
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B')]
 
-function buildMockedServer(...mockedIntegrations: {
+async function buildMockedServer(...mockedIntegrations: {
     listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>
-}[]): FastifyInstance {
-    const app = buildServer({}, mockedIntegrations.map(integration => ({
+}[]): Promise<FastifyInstance> {
+    const app = await buildServer({}, mockedIntegrations.map(integration => ({
         id: TEST_COMPANY_ID,
         listAirports: integration.listAirportsMock ?? jest.fn()
     } as TravelCompanyIntegration)))
@@ -25,7 +26,7 @@ describe('listAirports', () => {
     // })
 
     test('listAirports returns the travel company results', async () => {
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             listAirportsMock: jest.fn().mockResolvedValue(builtinAirports)
         })
 
@@ -34,12 +35,12 @@ describe('listAirports', () => {
             url: '/airports'
         })
 
-        const airportsList = JSON.parse(response.body)
+        const airportsList = JSON.parse(response.body) as Airport[]
         expect(airportsList).toHaveLength(2)
     })
 
     test('listAirports returns 0 airport if the external api fails', async () => {
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             listAirportsMock: jest.fn().mockRejectedValue(new Error('api fails'))
         })
 
@@ -48,7 +49,7 @@ describe('listAirports', () => {
             url: '/airports'
         })
 
-        const airportsList = JSON.parse(response.body)
+        const airportsList = JSON.parse(response.body) as Airport[]
         expect(airportsList).toHaveLength(0)
     })
 })

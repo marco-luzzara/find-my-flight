@@ -12,12 +12,12 @@ export async function listAirports(travelCompanyIntegrations: TravelCompanyInteg
             return integration.listAirports()
         })
 
-    const airportsMap = new Map()
-    for await (let response of AsyncUtils.getAsSoonAsSettled(listAirportsPromises)) {
+    const airportsMap = new Map<string, Airport>()
+    for await (const response of AsyncUtils.getAsSoonAsSettled(listAirportsPromises)) {
         if (response.isResolved === false)
             logger.error(response.error)
         else {
-            for (let airport of response.result) {
+            for (const airport of response.result) {
                 if (!airportsMap.has(airport.code))
                     airportsMap.set(airport.code, airport)
             }

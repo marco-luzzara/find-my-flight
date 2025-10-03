@@ -1,5 +1,5 @@
 import { Airport } from "./Airport";
-import Currency from "./Currency";
+import { Currency } from "./Currency";
 
 export type ListAvailableFlightsBaseParams = {
     /**

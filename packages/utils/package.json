@@ -18,6 +18,7 @@
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
     "dependencies": {
         "date-fns": "^4.1.0",
+        "envsafe": "^2.0.3",
         "pino": "^9.5.0"
     },
     "main": "dist/index.js",

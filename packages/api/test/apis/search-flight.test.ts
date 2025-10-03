@@ -10,10 +10,10 @@ const TEST_COMPANY_ID = 'test-company'
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B'), AirportFactory.build('C')]
 
-function buildMockedServer(...mockedIntegrations: {
+async function buildMockedServer(...mockedIntegrations: {
     listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
     searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
-}[]): FastifyInstance {
+}[]): Promise<FastifyInstance> {
     const app = buildServer({}, mockedIntegrations.map(integration => ({
         id: TEST_COMPANY_ID,
         listAirports: integration.listAirportsMock ?? jest.fn(),
@@ -34,7 +34,7 @@ describe('searchOneWayFlights', () => {
             price: 100,
             travelCompany: TEST_COMPANY_ID
         })
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
 
@@ -55,7 +55,7 @@ describe('searchOneWayFlights', () => {
         })
 
         expect(response.statusCode).toBe(200)
-        const flights: Flight[] = JSON.parse(response.body)
+        const flights = JSON.parse(response.body) as Flight[]
         expect(flights).toHaveLength(1)
         expect(flights[0].flightNumber).toEqual('FN0001')
         expect(searchOneWayFlightsFn).toHaveBeenCalledWith(expect.objectContaining({
@@ -79,7 +79,7 @@ describe('searchOneWayFlights', () => {
             price: 100,
             travelCompany: TEST_COMPANY_ID
         })
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({
@@ -102,7 +102,7 @@ describe('searchOneWayFlights', () => {
         })
 
         expect(response.statusCode).toBe(200)
-        const flights: Flight[] = JSON.parse(response.body)
+        const flights = JSON.parse(response.body) as Flight[]
         expect(flights).toHaveLength(1)
         expect(flights[0].flightNumber).toEqual('FN0001')
         expect(searchOneWayFlightsFn).toHaveBeenCalledWith(expect.objectContaining({
@@ -118,7 +118,7 @@ describe('searchOneWayFlights', () => {
 
     test('searchOneWayFlights with missing param returns a validation error', async () => {
         const searchOneWayFlightsFn = jest.fn()
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({
@@ -144,7 +144,7 @@ describe('searchOneWayFlights', () => {
 
     test('searchOneWayFlights with invalid param returns a validation error', async () => {
         const searchOneWayFlightsFn = jest.fn()
-        const app = buildMockedServer({
+        const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
         const urlParams = new URLSearchParams({

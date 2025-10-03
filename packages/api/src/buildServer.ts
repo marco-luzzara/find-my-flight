@@ -1,26 +1,22 @@
-import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
+import fastify, { FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
 import searchFlightRoutes from './apis/search-flight.js'
 import airportsRoute from './apis/airports.js'
 // import fp from 'fastify-plugin'
 import { TravelCompanyIntegration } from './integrations/TravelCompanyIntegration.js'
 
-export default function buildServer(opts: FastifyServerOptions = {}, travelCompanyIntegrations: TravelCompanyIntegration[]): FastifyInstance {
+export default async function buildServer(opts: FastifyServerOptions = {}, travelCompanyIntegrations: TravelCompanyIntegration[]) {
     const server = fastify(opts)
-    server.decorate("travelCompanyIntegrations", travelCompanyIntegrations)
-    // server.register(fp(importIntegrations))
-    server.register(searchFlightRoutes)
-    server.register(airportsRoute)
-    // https://github.com/fastify/fastify-cors?tab=readme-ov-file#configuring-cors-asynchronously
-    server.register(cors, (instance) => {
-        return (req, callback) => {
-            const corsOptions = {
-                origin: '*'
-            }
 
-            callback(null, corsOptions)
-        }
+    server.decorate("travelCompanyIntegrations", travelCompanyIntegrations)
+    await server.register(cors, {
+        origin: '*',
+        methods: ['GET']
     })
+
+    // server.register(fp(importIntegrations))
+    await server.register(searchFlightRoutes)
+    await server.register(airportsRoute)
 
     return server
 }

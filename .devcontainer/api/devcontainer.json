@@ -1,7 +1,7 @@
 {
     "dockerComposeFile": ["../../docker/api/docker-compose.yaml", "../../docker/api/docker-compose.devcontainer.yaml"],
     "service": "api",
-    "workspaceFolder": "/workspaces/find-my-flight",
+    "workspaceFolder": "/workspace",
     "postStartCommand": "make api/install",
     "shutdownAction": "stopCompose",
     "customizations": {

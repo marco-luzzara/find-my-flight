@@ -10,7 +10,7 @@ const travelCompanyIntegrations = await (async function getTravelCompanyIntegrat
     return [ryanairIntegration]
 })()
 
-const server = buildServer({
+const server = await buildServer({
     logger: {
         level: 'info'
     }

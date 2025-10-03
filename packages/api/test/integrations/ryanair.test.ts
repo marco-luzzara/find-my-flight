@@ -1,4 +1,4 @@
-import { faresApi, PassengerType, airportsApi } from "@findmyflight/external-api-ryanair"
+import { faresApi, airportsApi } from "@findmyflight/external-api-ryanair"
 import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair.js"
 import { HourInterval } from "../../src/model/base-types.js"
 import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory.js"
@@ -87,8 +87,8 @@ describe('searchOneWayFlights', () => {
                     arrivalDate: new Date('2024-08-10T01:00:00.000'),
                     seatLeft: 4,
                     priceDetails: {
-                        [PassengerType.ADULT]: 40,
-                        [PassengerType.CHILD]: 10
+                        adult: 40,
+                        child: 10
                     },
                     duration: 60
                 }
@@ -124,8 +124,8 @@ describe('searchOneWayFlights', () => {
                     arrivalDate: new Date('2024-08-10T01:00:00.000'),
                     seatLeft: 4,
                     priceDetails: {
-                        [PassengerType.ADULT]: 40,
-                        [PassengerType.CHILD]: 10
+                        adult: 40,
+                        child: 10
                     },
                     duration: 60
                 }
@@ -158,8 +158,8 @@ describe('searchOneWayFlights', () => {
                     arrivalDate: new Date('2024-08-10T03:00:00.000'),
                     seatLeft: 4,
                     priceDetails: {
-                        [PassengerType.ADULT]: 40,
-                        [PassengerType.CHILD]: 10
+                        adult: 40,
+                        child: 10
                     },
                     duration: 180
                 }

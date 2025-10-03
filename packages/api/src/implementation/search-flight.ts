@@ -1,6 +1,6 @@
 import { LogUtils } from "@findmyflight/utils";
 import { Flight } from "../model/Flight.js";
-import { SearchOneWayParams, SearchRoundTripParams } from "../model/SearchParams.js";
+import { SearchOneWayParams } from "../model/SearchParams.js";
 import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration.js";
 
 const logger = LogUtils.getLogger({
@@ -11,12 +11,12 @@ export async function searchOneWayFlights(
     travelCompanyIntegrations: TravelCompanyIntegration[],
     params: SearchOneWayParams,
 ): Promise<Flight[]> {
-    let searchFlightsPromises = travelCompanyIntegrations
+    const searchFlightsPromises = travelCompanyIntegrations
         .map(integration => {
             return integration.searchOneWayFlights(params)
         })
 
-    let flights = (await Promise.allSettled(searchFlightsPromises).then(results => {
+    const flights = (await Promise.allSettled(searchFlightsPromises).then(results => {
         results.filter(r => r.status === 'rejected').forEach(r =>
             logger.error(r.reason)
         )

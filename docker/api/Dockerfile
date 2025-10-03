@@ -13,7 +13,7 @@ EXPOSE 80
 
 FROM base AS devcontainer
 
-RUN apt update && apt install -y make
+RUN apt update && apt install -y make git-all
 
 ENV NODE_ENV=development
 

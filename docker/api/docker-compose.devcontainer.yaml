@@ -3,5 +3,5 @@ services:
     build:
       target: devcontainer
     volumes:
-      - ../..:/workspaces/find-my-flight:cached
+      - ../..:/workspace:cached
     command: sleep infinity

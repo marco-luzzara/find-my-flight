@@ -3,7 +3,7 @@ import ApiEndpointBuilder from "../ApiEndpointBuilder";
 import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
 import { Session } from "../model/base-types";
 import { Country } from "../model/Country";
-import Currency from "../model/Currency";
+import { Currency } from "../model/Currency";
 
 const logger = LogUtils.getLogger({
     api: 'Ryanair miscellaneous API'

@@ -4,7 +4,7 @@ import { FromSchema } from "json-schema-to-ts";
 import { HourInterval } from "../model/base-types.js";
 import { searchOneWayFlights } from "../implementation/search-flight.js";
 
-async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
+export default function routes(fastify: FastifyInstance, _options: FastifyServerOptions) {
     const searchOneWayQuerystringSchema = {
         $id: 'SearchOneWayQuerystring',
         type: 'object',
@@ -79,11 +79,10 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             travelCompanies: queryParams.travelCompanies
         }
 
-        return await searchOneWayFlights(travelCompanyIntegrations, searchOneWayParams)
+        const flights = await searchOneWayFlights(travelCompanyIntegrations, searchOneWayParams)
+        reply.status(200).send(flights)
     })
 }
-
-export default routes;
 
 
 // export async function searchRoundTripFlight(

@@ -30,7 +30,7 @@ export class UninitializedSession extends ApiError {
 }
 
 export class UnexpectedStatusCode extends ApiError {
-    constructor(endpoint: string, response: Response, options: { error?: Error, context?: SerializableDictionary } = {}) {
+    constructor(endpoint: string, response: Response, options: { error?: Error, context: SerializableDictionary } = { context: {} }) {
         options.context['response'] = JSON.stringify(response)
         super(`The API with endpoint ${endpoint} returned an unexpected status code: ${response.status}`, endpoint, options);
     }

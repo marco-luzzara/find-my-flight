@@ -1,9 +1,4 @@
-export enum PassengerType {
-    ADULT,
-    TEENAGER,
-    CHILD,
-    INFANT
-}
+export type PassengerType = 'adult' | 'teenager' | 'child' | 'infant'
 
 export type PriceDetails = { [key in PassengerType]?: number }
 

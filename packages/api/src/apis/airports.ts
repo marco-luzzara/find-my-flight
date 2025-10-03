@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyServerOptions } from "fastify";
 import { listAirports } from "../implementation/airports.js";
 import { Airport } from "../model/Airport.js";
 
-export default async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
+export default function routes(fastify: FastifyInstance, _options: FastifyServerOptions) {
     fastify.get<{
         Reply: Airport[]
     }>('/airports', async (request, reply) => {

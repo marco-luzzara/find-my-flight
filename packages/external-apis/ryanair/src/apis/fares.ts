@@ -183,13 +183,13 @@ function convertFlightDurationToMinutes(flightDuration: string): number {
 function convertFareTypeToPassengerType(fareType: string): PassengerType {
     switch (fareType) {
         case 'ADT':
-            return PassengerType.ADULT
+            return 'adult'
         case 'TEEN':
-            return PassengerType.TEENAGER
+            return 'teenager'
         case 'CHD':
-            return PassengerType.CHILD
+            return 'child'
         case 'INF':
-            return PassengerType.INFANT
+            return 'infant'
         default:
             throw new Error(`Cannot handle passenger type ${fareType}`)
     }

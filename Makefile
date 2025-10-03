@@ -1,16 +1,12 @@
+SHELL=/bin/bash
+
+
+.PHONY: global/install
+global/install:
+	#npm ci
+
+
 -include make-tasks/Makefile.*
-
-
-.PHONY: compile-api
-compile-api:
-	cd packages/api && \
-		npx tsc -b tsconfig.json tsconfig.compile.json
-
-
-.PHONY: start-api
-start-api: compile-api
-	cd packages/api && \
-		npx node dist/app.js
 
 
 .PHONY: compile-webapp

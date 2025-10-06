@@ -1,10 +1,8 @@
-import { listAirports, listDestinationAirports } from "./apis/airports";
-import { listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights } from "./apis/fares";
-import { createSession } from "./apis/miscellaneous";
-import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationError } from "./errors";
-import { Airport } from "./model/Airport";
-import { Cookie, PassengerType, PriceDetails, Session } from "./model/base-types";
-import { Flight } from "./model/Flight";
+import { listAirports, listDestinationAirports } from "./apis/airports.js";
+import { listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights } from "./apis/fares.js";
+import { createSession } from "./apis/miscellaneous.js";
+import { UninitializedSessionError } from "./errors.js";
+import { Cookie, PassengerType, PriceDetails, Session, Airport, Flight } from "./types.js";
 
 export const airportsApi = {
     listAirports, listDestinationAirports
@@ -19,7 +17,7 @@ export const miscellaneousApi = {
 }
 
 export const apiErrors = {
-    ApiUnavailable, UninitializedSession, UnexpectedStatusCode, ValidationError
+    UninitializedSessionError
 }
 
 export { PassengerType }

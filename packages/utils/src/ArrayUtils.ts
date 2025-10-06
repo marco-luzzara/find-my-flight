@@ -1,4 +1,4 @@
-import { UndefinedValueError } from "./Errors";
+import { UndefinedValueError } from "./errors.js";
 
 // https://stackoverflow.com/a/34890276/5587393
 export default class ArrayUtils {

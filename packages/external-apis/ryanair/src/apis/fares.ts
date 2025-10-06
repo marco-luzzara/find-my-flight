@@ -1,12 +1,13 @@
-import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable, UnexpectedStatusCode, UninitializedSession, ValidationError } from "../errors";
-import { PassengerType, PriceDetails, Session } from "../model/base-types";
-import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../model/ListAvailableFlightParams";
-import { FlightSchedule } from "../model/Flight";
-import { LogUtils } from '@findmyflight/utils'
+import pino from "pino";
 
-const logger = LogUtils.getLogger({
-    api: 'Ryanair fares API'
+import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
+import { ApiUnavailableError, GenericUtils, InvalidInputError, UnexpectedStatusCodeError } from "@findmyflight/utils";
+import { PassengerType, PriceDetails, Session, FlightSchedule, ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../types.js";
+import { UninitializedSessionError } from "../errors.js";
+
+
+const logger = pino({
+    name: 'Ryanair fares API'
 })
 
 /**
@@ -18,17 +19,16 @@ const logger = LogUtils.getLogger({
  */
 export async function listAvailableDatesForFare(originCode: string, destinationCode: string): Promise<Date[]> {
     const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originCode, destinationCode)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
 
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint)
     switch (response.status) {
         case 200:
-            const content: Array<string> = await response.json()
+            const content = await response.json() as string[]
             return content.map(elem => new Date(elem))
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
@@ -47,17 +47,16 @@ export async function listAvailableOneWayFlights(
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
     const headers = createHeaders(session)
 
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint, { headers })
+    const response = await GenericUtils.fetch([endpoint, { headers }], logger.debug)
     switch (response.status) {
         case 200:
             return processListAvailableOneWayFlightsResponse(response, params)
         case 409:
-            throw new UninitializedSession(endpoint)
+            throw new UninitializedSessionError(endpoint)
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
@@ -79,17 +78,16 @@ export async function listAvailableRoundTripFlights(
     const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
     const headers = createHeaders(session)
 
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint, { headers })
+    const response = await GenericUtils.fetch([endpoint, { headers }], logger.debug)
     switch (response.status) {
         case 200:
             return processListAvailableRoundTripFlightsResponse(response, params)
         case 409:
-            throw new UninitializedSession(endpoint)
+            throw new UninitializedSessionError(endpoint)
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
@@ -108,7 +106,7 @@ async function processListAvailableOneWayFlightsResponse(
     response: Response,
     params: ListAvailableOneWayFlightsParams
 ): Promise<FlightSchedule> {
-    const content: Array<any> = await response.json()
+    const content = await response.json() as any[]
     const responseTripDates = content['trips'][0]['dates']
 
     return processTripDates(responseTripDates, params.originCode, params.destinationCode)
@@ -122,7 +120,7 @@ async function processListAvailableRoundTripFlightsResponse(
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
 }> {
-    const content: Array<any> = await response.json()
+    const content = await response.json() as any[]
 
     const originToDestTrip = content['trips'][0]['origin'] === params.originCode ?
         content['trips'][0] :
@@ -201,37 +199,37 @@ function validateListAvailableFlightsParams(
     params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
 ) {
     if (params.adults <= 0)
-        throw new ValidationError('adults', params.adults, '>= 1')
+        throw new InvalidInputError('adults >= 1', params.adults)
     if (params.children && params.children < 0)
-        throw new ValidationError('children', params.children, '>= 0')
+        throw new InvalidInputError('children >= 0', params.children)
     if (params.teenagers && params.teenagers < 0)
-        throw new ValidationError('teenagers', params.teenagers, '>= 0')
+        throw new InvalidInputError('teenagers >= 0', params.teenagers)
     if (params.infants && params.infants < 0)
-        throw new ValidationError('infants', params.infants, '>= 0')
+        throw new InvalidInputError('infants >= 0', params.infants)
 
     if (params.dateOut <= new Date())
-        throw new ValidationError('dateOut', params.dateOut, `> ${new Date().toLocaleDateString()}`)
+        throw new InvalidInputError(`dateOut > ${new Date().toLocaleDateString()}`, params.dateOut)
 
     if (params.flexDaysBeforeOut < 0 || params.flexDaysBeforeOut > 6)
-        throw new ValidationError('flexDaysBeforeOut', params.flexDaysBeforeOut, '[0, 6]')
+        throw new InvalidInputError('0 <= flexDaysBeforeOut <= 6', params.flexDaysBeforeOut)
 
     if (params.flexDaysOut < 0 || params.flexDaysOut > 6)
-        throw new ValidationError('flexDaysOut', params.flexDaysOut, '[0, 6]')
+        throw new InvalidInputError('0 <= flexDaysOut <= 6', params.flexDaysOut)
 
     if (params.flexDaysBeforeOut + params.flexDaysOut > 6)
-        throw new ValidationError('flexDaysBeforeOut + flexDaysOut', params.flexDaysBeforeOut + params.flexDaysOut, '[0, 6]')
+        throw new InvalidInputError('0 <= flexDaysBeforeOut + flexDaysOut <= 6', params.flexDaysBeforeOut + params.flexDaysOut)
 
     if (params.roundTrip) {
-        if (params.dateIn <= params.dateOut)
-            throw new ValidationError('dateIn', params.dateIn, `> dateOut`)
+        if (params.dateIn < params.dateOut)
+            throw new InvalidInputError('dateOut <= dateIn', `DateOut(${params.dateOut}) > DateIn(${params.dateIn})`)
 
         if (params.flexDaysBeforeIn < 0 || params.flexDaysBeforeIn > 6)
-            throw new ValidationError('flexDaysBeforeIn', params.flexDaysBeforeIn, '[0, 6]')
+            throw new InvalidInputError('0 <= flexDaysBeforeIn <= 6', params.flexDaysBeforeIn)
 
         if (params.flexDaysIn < 0 || params.flexDaysIn > 6)
-            throw new ValidationError('flexDaysIn', params.flexDaysIn, '[0, 6]')
+            throw new InvalidInputError('0 <= flexDaysIn <= 6', params.flexDaysIn)
 
         if (params.flexDaysBeforeIn + params.flexDaysIn > 6)
-            throw new ValidationError('flexDaysBeforeIn + flexDaysIn', params.flexDaysBeforeIn + params.flexDaysIn, '[0, 6]')
+            throw new InvalidInputError('0 <= flexDaysBeforeIn + flexDaysIn <= 6', params.flexDaysBeforeIn + params.flexDaysIn)
     }
 }

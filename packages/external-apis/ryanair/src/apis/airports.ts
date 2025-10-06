@@ -1,20 +1,22 @@
-import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
-import { Airport } from "../model/Airport";
-import { LogUtils } from '@findmyflight/utils'
+import pino from "pino";
 
-const logger = LogUtils.getLogger({
-    api: 'Ryanair airports API'
+import { ApiUnavailableError, GenericUtils, UnexpectedStatusCodeError } from "@findmyflight/utils";
+
+import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
+import { Airport } from "../types.js";
+
+
+const logger = pino({
+    name: 'Ryanair airports API'
 })
 
 export async function listAirports(languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listAirports(languageLocale)
 
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
     switch (response.status) {
         case 200:
-            const content: Array<any> = await response.json()
+            const content = await response.json() as any[]
             // TODO: use worker threads to convert json to Airport model (almost 7000 json objects)
             // See example here: https://nodejs.org/api/worker_threads.html
             return content.map(elem => ({
@@ -32,21 +34,20 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Airpo
                 timeZone: elem.timeZone
             }));
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
 export async function listDestinationAirports(originAirportCode: string, languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirportCode, languageLocale)
 
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
 
     switch (response.status) {
         case 200:
-            const content: Array<any> = await response.json()
+            const content = await response.json() as any[]
 
             return content.map(elem => ({
                 code: elem.arrivalAirport.code,
@@ -63,8 +64,8 @@ export async function listDestinationAirports(originAirportCode: string, languag
                 timeZone: elem.arrivalAirport.timeZone
             }));
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }

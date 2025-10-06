@@ -1,5 +1,50 @@
-import { Airport } from "./Airport";
-import { Currency } from "./Currency";
+export type Country = {
+    code: string;
+    iso3code: string;
+    name: string;
+    currency: string;
+    defaultAirportCode: string;
+}
+
+export type Currency = {
+    code: string;
+    name: string;
+    symbol: string;
+}
+
+export type Airport = {
+    code: string
+    name: string
+    city: string
+    region: string
+    country: Country
+    timeZone: string
+}
+
+export type PassengerType = 'adult' | 'teenager' | 'child' | 'infant'
+
+export type PriceDetails = { [key in PassengerType]?: number }
+
+export type Cookie = string
+export type Session = Cookie[]
+
+export type Flight = {
+    flightNumber: string
+    originCode: string
+    destinationCode: string
+    departureDate: Date
+    arrivalDate: Date
+    seatLeft?: number
+    infantsLeft?: number
+    priceDetails: PriceDetails
+    duration: number
+}
+
+/**
+ * a map where the key is a stringed date and the value is an array
+ * containing all the flights for the corresponding date
+ */
+export type FlightSchedule = Map<string, Flight[]>
 
 export type ListAvailableFlightsBaseParams = {
     /**

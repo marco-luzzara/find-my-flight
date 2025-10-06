@@ -1,21 +1,20 @@
-import { LogUtils } from "@findmyflight/utils";
-import ApiEndpointBuilder from "../ApiEndpointBuilder";
-import { ApiUnavailable, UnexpectedStatusCode } from "../errors";
-import { Session } from "../model/base-types";
-import { Country } from "../model/Country";
-import { Currency } from "../model/Currency";
+import pino from "pino";
 
-const logger = LogUtils.getLogger({
-    api: 'Ryanair miscellaneous API'
+import { LogUtils, ApiUnavailableError, UnexpectedStatusCodeError, GenericUtils } from "@findmyflight/utils";
+import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
+import { Country, Currency, Session } from "../types.js";
+
+const logger = pino({
+    name: 'Ryanair miscellaneous API'
 })
 
 export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {
     const endpoint = ApiEndpointBuilder.listCountries(languageLocale)
-    const response = await fetch(endpoint)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
 
     switch (response.status) {
         case 200:
-            const content: Array<Country> = await response.json()
+            const content = await response.json() as Country[]
             // TODO: use worker threads to convert json to Country model
             // See example here: https://nodejs.org/api/worker_threads.html
             return content.map(elem => ({
@@ -26,19 +25,20 @@ export async function listCountries(languageLocale: string = 'en'): Promise<Arra
                 defaultAirportCode: elem.defaultAirportCode
             }));
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
+
 export async function listCurrencies(): Promise<Currency[]> {
     const endpoint = ApiEndpointBuilder.listCurrencies()
-    const response = await fetch(endpoint)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
 
     switch (response.status) {
         case 200:
-            const content: { [k: string]: any } = await response.json()
+            const content = await response.json() as { [k: string]: Currency }
 
             return Object.values(content).map(elem => ({
                 code: elem.code,
@@ -46,25 +46,24 @@ export async function listCurrencies(): Promise<Currency[]> {
                 symbol: elem.symbol
             }));
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }
 
+
 export async function createSession(): Promise<Session> {
     const endpoint = ApiEndpointBuilder.createSession()
-
-    logger.debug(`HTTP GET ${endpoint}`)
-    const response = await fetch(endpoint)
+    const response = await GenericUtils.fetch([endpoint], logger.debug)
 
     switch (response.status) {
         case 200:
             const cookies = response.headers.getSetCookie()
             return cookies
         case 500:
-            throw new ApiUnavailable(endpoint)
+            throw new ApiUnavailableError(endpoint)
         default:
-            throw new UnexpectedStatusCode(endpoint, response)
+            throw new UnexpectedStatusCodeError(endpoint, response.status)
     }
 }

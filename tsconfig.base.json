@@ -2,7 +2,10 @@
     "compilerOptions": {
         "incremental": true,
         "composite": true,
-        "target": "ES6",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "lib": ["ES2023"],
+        "target": "es2023",
         "allowJs": true,
         "declaration": true,
         "declarationMap": true,

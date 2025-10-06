@@ -1,13 +1,16 @@
 import pino from 'pino';
-import { env } from './envs';
+
 
 export default class LogUtils {
-    public static getLogger(metaProperties?: { [key: string]: any }) {
-        const logLevel = ['test', 'development'].includes(env.NODE_ENV) ? 'debug' : 'info'
+    public static async logWithPerf<T>(fn: () => Promise<T>, logFn: pino.LogFn, message: string): Promise<T> {
+        logFn(`BEGIN - ${message}`)
 
-        return pino({
-            level: logLevel,
-            base: metaProperties ?? {}
-        })
+        const begin = performance.now()
+        const result = await fn()
+        const end = performance.now()
+
+        logFn(`END (${end - begin} ms) - ${message}`)
+
+        return result
     }
 }

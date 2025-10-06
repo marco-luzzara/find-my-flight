@@ -1,6 +1,7 @@
 {
     "name": "@findmyflight/external-api-ryanair",
     "version": "1.0.0",
+    "type": "module",
     "description": "Ryanair APIs",
     "scripts": {
         "test": "jest"
@@ -17,7 +18,8 @@
     },
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
     "dependencies": {
-        "@findmyflight/utils": "^1.0.0"
+        "@findmyflight/utils": "^1.0.0",
+        "pino": "^10.0.0"
     },
     "main": "dist/index.js",
     "directories": {

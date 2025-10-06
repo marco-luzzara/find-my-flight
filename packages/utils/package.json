@@ -1,9 +1,11 @@
 {
     "name": "@findmyflight/utils",
     "version": "1.0.0",
+    "type": "module",
     "description": "Common utils for the FindMyFlight project",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "build": "npx tsc -b tsconfig.json"
     },
     "repository": {
         "type": "git",
@@ -19,7 +21,7 @@
     "dependencies": {
         "date-fns": "^4.1.0",
         "envsafe": "^2.0.3",
-        "pino": "^9.5.0"
+        "pino": "^10.0.0"
     },
     "main": "dist/index.js",
     "directories": {

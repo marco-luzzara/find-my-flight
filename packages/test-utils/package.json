@@ -1,9 +1,10 @@
 {
     "name": "@findmyflight/test-utils",
     "version": "1.0.0",
+    "type": "module",
     "description": "Test utilities for the other FindMyFlight workspaces",
     "scripts": {
-        "test": "jest"
+        "build": "npx tsc -b tsconfig.json"
     },
     "repository": {
         "type": "git",

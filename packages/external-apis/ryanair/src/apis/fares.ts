@@ -2,7 +2,7 @@ import pino from "pino";
 
 import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
 import { ApiUnavailableError, GenericUtils, InvalidInputError, UnexpectedStatusCodeError } from "@findmyflight/utils";
-import { PassengerType, PriceDetails, Session, FlightSchedule, ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../types.js";
+import { PassengerType, PriceDetails, Session, FlightSchedule, ListOneWayFlightsParams, ListRoundTripFlightsParams } from "../types.js";
 import { UninitializedSessionError } from "../errors.js";
 
 
@@ -11,16 +11,21 @@ const logger = pino({
 })
 
 /**
- * List the available dates for the flights from origin to destination. In the returned dates,
+ * List the dates for the flights from origin to destination. In the returned dates,
  * Ryanair has the schedule ready.
  * @param origin 
  * @param destination 
  * @returns The dates for the scheduled flights
  */
-export async function listAvailableDatesForFare(originCode: string, destinationCode: string): Promise<Date[]> {
-    const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originCode, destinationCode)
+export async function listDatesForFare(originCode: string, destinationCode: string): Promise<Date[]> {
+    const endpoint = ApiEndpointBuilder.listDatesForFare(originCode, destinationCode)
     const response = await GenericUtils.fetch([endpoint], logger.debug)
 
+    return await processListDatesForFare(endpoint, response)
+}
+
+
+export async function processListDatesForFare(endpoint: string, response: Response) {
     switch (response.status) {
         case 200:
             const content = await response.json() as string[]
@@ -34,23 +39,33 @@ export async function listAvailableDatesForFare(originCode: string, destinationC
 
 
 /**
- * List the available one-way flights (from origin to destination)
+ * List the one-way flights (from origin to destination)
  * @param params 
  * @param session The `Session` retrieved after calling `createSession()` 
  */
-export async function listAvailableOneWayFlights(
-    params: ListAvailableOneWayFlightsParams,
+export async function listOneWayFlights(
+    params: ListOneWayFlightsParams,
     session: Session
 ): Promise<FlightSchedule> {
-    validateListAvailableFlightsParams(params)
+    validateListFlightsParams(params)
 
-    const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
+    const endpoint = ApiEndpointBuilder.listFlights(params)
     const headers = createHeaders(session)
 
     const response = await GenericUtils.fetch([endpoint, { headers }], logger.debug)
+    
+    return await processListOneWayFlights(endpoint, response, params)
+}
+
+
+export async function processListOneWayFlights(
+    endpoint: string, 
+    response: Response,
+    params: ListOneWayFlightsParams
+) {
     switch (response.status) {
         case 200:
-            return processListAvailableOneWayFlightsResponse(response, params)
+            return await processListOneWayFlightsContent(response, params)
         case 409:
             throw new UninitializedSessionError(endpoint)
         case 500:
@@ -62,26 +77,36 @@ export async function listAvailableOneWayFlights(
 
 
 /**
- * List the available round-trip flights (from origin to destination and vice-versa)
+ * List the round-trip flights (from origin to destination and vice-versa)
  * @param params 
  * @param session The `Session` retrieved after calling `createSession()` 
  */
-export async function listAvailableRoundTripFlights(
-    params: ListAvailableRoundTripFlightsParams,
+export async function listRoundTripFlights(
+    params: ListRoundTripFlightsParams,
     session: Session
 ): Promise<{
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
 }> {
-    validateListAvailableFlightsParams(params)
+    validateListFlightsParams(params)
 
-    const endpoint = ApiEndpointBuilder.listAvailableFlights(params)
+    const endpoint = ApiEndpointBuilder.listFlights(params)
     const headers = createHeaders(session)
 
     const response = await GenericUtils.fetch([endpoint, { headers }], logger.debug)
+    
+    return await processListRoundTripFlights(endpoint, response, params)
+}
+
+
+export async function processListRoundTripFlights(
+    endpoint: string, 
+    response: Response,
+    params: ListRoundTripFlightsParams
+) {
     switch (response.status) {
         case 200:
-            return processListAvailableRoundTripFlightsResponse(response, params)
+            return await processListRoundTripFlightsContent(response, params)
         case 409:
             throw new UninitializedSessionError(endpoint)
         case 500:
@@ -102,9 +127,9 @@ function createHeaders(session: Session): Headers {
 }
 
 
-async function processListAvailableOneWayFlightsResponse(
+async function processListOneWayFlightsContent(
     response: Response,
-    params: ListAvailableOneWayFlightsParams
+    params: ListOneWayFlightsParams
 ): Promise<FlightSchedule> {
     const content = await response.json() as any[]
     const responseTripDates = content['trips'][0]['dates']
@@ -113,9 +138,9 @@ async function processListAvailableOneWayFlightsResponse(
 }
 
 
-async function processListAvailableRoundTripFlightsResponse(
+async function processListRoundTripFlightsContent(
     response: Response,
-    params: ListAvailableRoundTripFlightsParams
+    params: ListRoundTripFlightsParams
 ): Promise<{
     fromOrigin: FlightSchedule,
     fromDestination: FlightSchedule
@@ -195,8 +220,8 @@ function convertFareTypeToPassengerType(fareType: string): PassengerType {
 
 
 // TODO: tests?
-function validateListAvailableFlightsParams(
-    params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
+function validateListFlightsParams(
+    params: ListOneWayFlightsParams | ListRoundTripFlightsParams
 ) {
     if (params.adults <= 0)
         throw new InvalidInputError('adults >= 1', params.adults)

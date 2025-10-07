@@ -10,10 +10,21 @@ const logger = pino({
     name: 'Ryanair airports API'
 })
 
+
+/**
+ * list the available airports
+ * @param languageLocale 
+ * @returns 
+ */
 export async function listAirports(languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listAirports(languageLocale)
-
     const response = await GenericUtils.fetch([endpoint], logger.debug)
+    
+    return await processListAirports(endpoint, response)
+}
+
+
+export async function processListAirports(endpoint: string, response: Response) {
     switch (response.status) {
         case 200:
             const content = await response.json() as any[]
@@ -40,11 +51,22 @@ export async function listAirports(languageLocale: string = 'en'): Promise<Airpo
     }
 }
 
+
+/**
+ * List the airports for which there is at least one fare from the origin airport
+ * @param originAirportCode 
+ * @param languageLocale 
+ * @returns 
+ */
 export async function listDestinationAirports(originAirportCode: string, languageLocale: string = 'en'): Promise<Airport[]> {
     const endpoint = ApiEndpointBuilder.listDestinationAirports(originAirportCode, languageLocale)
-
     const response = await GenericUtils.fetch([endpoint], logger.debug)
 
+    return await processListDestinationAirports(endpoint, response)
+}
+
+
+export async function processListDestinationAirports(endpoint: string, response: Response) {
     switch (response.status) {
         case 200:
             const content = await response.json() as any[]

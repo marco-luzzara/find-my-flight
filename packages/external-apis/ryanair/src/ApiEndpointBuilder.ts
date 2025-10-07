@@ -1,7 +1,8 @@
 import { format } from "date-fns"
-import { Airport } from "./model/Airport"
-import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "./model/ListAvailableFlightParams"
+
 import { DateUtils } from "@findmyflight/utils"
+
+import { ListOneWayFlightsParams, ListRoundTripFlightsParams } from "./types.js"
 
 export default class ApiEndpointBuilder {
     // ******** AIRPORTS ********
@@ -30,12 +31,12 @@ export default class ApiEndpointBuilder {
 
     // ******** FARES ********
 
-    public static listAvailableDatesForFare(originAirportCode: string, destinationAirportCode: string): string {
+    public static listDatesForFare(originAirportCode: string, destinationAirportCode: string): string {
         return `https://www.ryanair.com/api/farfnd/v4/oneWayFares/${originAirportCode}/${destinationAirportCode}/availabilities`
     }
 
-    public static listAvailableFlights(
-        params: ListAvailableOneWayFlightsParams | ListAvailableRoundTripFlightsParams
+    public static listFlights(
+        params: ListOneWayFlightsParams | ListRoundTripFlightsParams
     ): string {
         const baseParams = {
             'ADT': params.adults,

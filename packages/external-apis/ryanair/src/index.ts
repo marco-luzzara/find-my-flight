@@ -1,5 +1,5 @@
 import { listAirports, listDestinationAirports } from "./apis/airports.js";
-import { listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights } from "./apis/fares.js";
+import { listDatesForFare, listOneWayFlights, listRoundTripFlights } from "./apis/fares.js";
 import { createSession } from "./apis/miscellaneous.js";
 import { UninitializedSessionError } from "./errors.js";
 import { Cookie, PassengerType, PriceDetails, Session, Airport, Flight } from "./types.js";
@@ -9,7 +9,7 @@ export const airportsApi = {
 }
 
 export const faresApi = {
-    listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights
+    listDatesForFare, listOneWayFlights, listRoundTripFlights
 }
 
 export const miscellaneousApi = {

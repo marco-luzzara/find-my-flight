@@ -6,7 +6,7 @@ const config: JestConfigWithTsJest = {
         "^.+\\.ts?$": [
             "ts-jest",
             {
-                useESM: true,
+                useESM: true
             },
         ],
     },

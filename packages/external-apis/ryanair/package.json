@@ -4,7 +4,8 @@
     "type": "module",
     "description": "Ryanair APIs",
     "scripts": {
-        "test": "jest"
+        "build": "npx tsc -b tsconfig.json",
+        "test": "npx tsc -b tsconfig.compile.json && jest"
     },
     "repository": {
         "type": "git",
@@ -20,6 +21,9 @@
     "dependencies": {
         "@findmyflight/utils": "^1.0.0",
         "pino": "^10.0.0"
+    },
+    "devDependencies": {
+        "@findmyflight/test-utils": "^1.0.0"
     },
     "main": "dist/index.js",
     "directories": {

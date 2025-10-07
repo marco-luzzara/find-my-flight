@@ -13,9 +13,6 @@
         "test/**/*.ts"
     ],
     "compilerOptions": {
-        "noEmit": true,
-        "target": "ESNext",
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext"
+        "noEmit": true
     }
 }

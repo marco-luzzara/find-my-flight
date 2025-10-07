@@ -1,6 +1,6 @@
 import pino from "pino";
 
-import { LogUtils, ApiUnavailableError, UnexpectedStatusCodeError, GenericUtils } from "@findmyflight/utils";
+import { ApiUnavailableError, UnexpectedStatusCodeError, GenericUtils } from "@findmyflight/utils";
 import ApiEndpointBuilder from "../ApiEndpointBuilder.js";
 import { Country, Currency, Session } from "../types.js";
 
@@ -8,10 +8,24 @@ const logger = pino({
     name: 'Ryanair miscellaneous API'
 })
 
-export async function listCountries(languageLocale: string = 'en'): Promise<Array<Country>> {
+
+/**
+ * List the countries
+ * @param languageLocale 
+ * @returns 
+ */
+export async function listCountries(languageLocale: string = 'en'): Promise<Country[]> {
     const endpoint = ApiEndpointBuilder.listCountries(languageLocale)
     const response = await GenericUtils.fetch([endpoint], logger.debug)
 
+    return await processListCountries(endpoint, response)
+}
+
+
+export async function processListCountries(
+    endpoint: string, 
+    response: Response
+) {
     switch (response.status) {
         case 200:
             const content = await response.json() as Country[]
@@ -32,10 +46,22 @@ export async function listCountries(languageLocale: string = 'en'): Promise<Arra
 }
 
 
+/**
+ * List the currencies used to show flights' prices
+ * @returns 
+ */
 export async function listCurrencies(): Promise<Currency[]> {
     const endpoint = ApiEndpointBuilder.listCurrencies()
     const response = await GenericUtils.fetch([endpoint], logger.debug)
 
+    return await processListCurrencies(endpoint, response)
+}
+
+
+export async function processListCurrencies(
+    endpoint: string, 
+    response: Response
+) {
     switch (response.status) {
         case 200:
             const content = await response.json() as { [k: string]: Currency }
@@ -53,10 +79,22 @@ export async function listCurrencies(): Promise<Currency[]> {
 }
 
 
+/**
+ * create a session (set the cookies) necessary for the search APIs
+ * @returns 
+ */
 export async function createSession(): Promise<Session> {
     const endpoint = ApiEndpointBuilder.createSession()
     const response = await GenericUtils.fetch([endpoint], logger.debug)
 
+    return processCreateSession(endpoint, response)
+}
+
+
+export function processCreateSession(
+    endpoint: string, 
+    response: Response
+) {
     switch (response.status) {
         case 200:
             const cookies = response.headers.getSetCookie()

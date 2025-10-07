@@ -46,7 +46,7 @@ export type Flight = {
  */
 export type FlightSchedule = Map<string, Flight[]>
 
-export type ListAvailableFlightsBaseParams = {
+export type ListFlightsBaseParams = {
     /**
      * age >= 16
      */
@@ -83,11 +83,11 @@ export type ListAvailableFlightsBaseParams = {
     flexDaysOut: number;
 }
 
-export type ListAvailableOneWayFlightsParams = ListAvailableFlightsBaseParams & {
+export type ListOneWayFlightsParams = ListFlightsBaseParams & {
     roundTrip: false;
 }
 
-export type ListAvailableRoundTripFlightsParams = ListAvailableFlightsBaseParams & {
+export type ListRoundTripFlightsParams = ListFlightsBaseParams & {
     roundTrip: true;
     dateIn: Date;
     /**

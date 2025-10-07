@@ -1,15 +1,17 @@
-import ApiEndpointBuilder from "../../src/ApiEndpointBuilder"
-import { listAirports, listDestinationAirports } from "../../src/apis/airports"
-import { ApiUnavailable } from "../../src/errors"
-import { API_SAVED_RESPONSES } from "../test-utils/constants"
-import { MockUtils } from "../test-utils/mock"
+import { ApiUnavailableError } from "@findmyflight/utils"
+
+import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
+import { processListAirports, processListDestinationAirports } from "../../src/apis/airports.js"
+import { API_SAVED_RESPONSES } from "../constants.js"
+import { MockUtils } from "@findmyflight/test-utils"
+
 
 describe('listAirports', () => {
     test('listAirports should return list of airports', async () => {
         const endpoint = ApiEndpointBuilder.listAirports('en')
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/airports/list-airports/ok.json`)
+        const response = await MockUtils.mockFetchResponseFromFile(200, `${API_SAVED_RESPONSES}/airports/list-airports/ok.json`)
 
-        const airports = await listAirports('en')
+        const airports = await processListAirports(endpoint, response)
 
         expect(airports.length).toEqual(3)
         expect(airports[1].code).toEqual('AAR')
@@ -17,10 +19,10 @@ describe('listAirports', () => {
 
     test('when HTTP request fails, then listAirports returns ApiUnavailable', async () => {
         const endpoint = ApiEndpointBuilder.listAirports('en')
-        await MockUtils.mockHttpGet(endpoint, '', 500)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listAirports('en')).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListAirports(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })
@@ -28,9 +30,9 @@ describe('listAirports', () => {
 describe('listDestinationAirports', () => {
     test('listDestinationAirports should return list of airports', async () => {
         const endpoint = ApiEndpointBuilder.listDestinationAirports('AAA', 'en')
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/airports/list-destination-airports/ok.json`)
+        const response = await MockUtils.mockFetchResponseFromFile(200, `${API_SAVED_RESPONSES}/airports/list-destination-airports/ok.json`)
 
-        const airports = await listDestinationAirports('AAA', 'en')
+        const airports = await processListDestinationAirports(endpoint, response)
 
         expect(airports.length).toEqual(3)
         expect(airports[1].code).toEqual('AGA')
@@ -38,10 +40,10 @@ describe('listDestinationAirports', () => {
 
     test('when HTTP request fails, then listDestinationAirports returns ApiUnavailable', async () => {
         const endpoint = ApiEndpointBuilder.listDestinationAirports('AAA', 'en')
-        await MockUtils.mockHttpGet(endpoint, '', 500)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listDestinationAirports('AAA', 'en')).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListDestinationAirports(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })

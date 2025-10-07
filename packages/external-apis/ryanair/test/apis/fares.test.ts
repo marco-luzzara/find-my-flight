@@ -1,11 +1,11 @@
-import ApiEndpointBuilder from "../../src/ApiEndpointBuilder"
-import { listAvailableDatesForFare, listAvailableOneWayFlights, listAvailableRoundTripFlights } from "../../src/apis/fares"
-import { ApiUnavailable, UninitializedSession } from "../../src/errors"
-import { Airport } from "../../src/model/Airport"
-import { Session } from "../../src/model/base-types"
-import { ListAvailableOneWayFlightsParams, ListAvailableRoundTripFlightsParams } from "../../src/model/ListAvailableFlightParams"
-import { API_SAVED_RESPONSES } from "../test-utils/constants"
-import { MockUtils } from "../test-utils/mock"
+import { ApiUnavailableError } from "@findmyflight/utils"
+import { MockUtils } from "@findmyflight/test-utils"
+
+import { processListDatesForFare, processListOneWayFlights, processListRoundTripFlights } from '../../src/apis/fares.js'
+import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
+import { API_SAVED_RESPONSES } from "../constants.js"
+import { UninitializedSessionError } from "../../src/errors.js"
+import { ListOneWayFlightsParams, ListRoundTripFlightsParams, Session } from "../../src/types.js"
 
 const originAirportCode = 'AAA'
 const destinationAirportCode = 'BBB'
@@ -14,33 +14,34 @@ describe('listAvailableDatesForFare', () => {
     const originAirportCode = 'AAA'
     const destinationAirportCode = 'BBB'
 
-    test('listAvailableDatesForFare should return list of Dates', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirportCode, destinationAirportCode)
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-dates-for-fare/ok.json`)
+    test('listDatesForFare should return list of Dates', async () => {
+        const endpoint = ApiEndpointBuilder.listDatesForFare(originAirportCode, destinationAirportCode)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/fares/list-available-dates-for-fare/ok.json`)
 
-        const dates = await listAvailableDatesForFare(originAirportCode, destinationAirportCode)
+        const dates = await processListDatesForFare(endpoint, response)
 
         expect(dates.length).toEqual(3)
         expect(dates[1]).toEqual(new Date('2024-07-23'))
     })
 
-    test('when HTTP request fails, then listAvailableDatesForFare returns ApiUnavailable', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableDatesForFare(originAirportCode, destinationAirportCode)
-        await MockUtils.mockHttpGet(endpoint, '', 500)
+    test('when HTTP request fails, then listDatesForFare returns ApiUnavailableError', async () => {
+        const endpoint = ApiEndpointBuilder.listDatesForFare(originAirportCode, destinationAirportCode)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listAvailableDatesForFare(originAirportCode, destinationAirportCode)).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListDatesForFare(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })
 
-describe('listAvailableFlights', () => {
+describe('listFlights', () => {
     let dateOut = new Date()
     dateOut.setDate(dateOut.getDate() + 1)
     const session: Session = [
         "cookie1=test_val"
     ]
-    const oneWayParams: ListAvailableOneWayFlightsParams = {
+    const oneWayParams: ListOneWayFlightsParams = {
         adults: 1,
         dateOut,
         originCode: originAirportCode,
@@ -52,7 +53,7 @@ describe('listAvailableFlights', () => {
     }
     const dateIn = new Date()
     dateIn.setDate(dateIn.getDate() + 2)
-    const roundTripParams: ListAvailableRoundTripFlightsParams = {
+    const roundTripParams: ListRoundTripFlightsParams = {
         adults: 1,
         dateOut,
         originCode: originAirportCode,
@@ -67,11 +68,12 @@ describe('listAvailableFlights', () => {
     }
 
 
-    test('when one way trip, listAvailableFlights should return a valid FlightSchedule', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/one-way-ok.json`)
+    test('when one way trip, listFlights should return a valid FlightSchedule', async () => {
+        const endpoint = ApiEndpointBuilder.listFlights(oneWayParams)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/fares/list-available-flights/one-way-ok.json`)
 
-        const flightSchedule = await listAvailableOneWayFlights(oneWayParams, session)
+        const flightSchedule = await processListOneWayFlights(endpoint, response, oneWayParams)
 
         expect(flightSchedule.size).toEqual(3)
         expect(flightSchedule.get('2024-07-29T00:00:00.000')!.length).toEqual(0)
@@ -79,21 +81,23 @@ describe('listAvailableFlights', () => {
         expect(flightSchedule.get('2024-07-31T00:00:00.000')!.length).toEqual(2)
     })
 
-    test('when one way trip has not any seat available, listAvailableFlights should return nothing', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/fare-with-no-left-seat.json`)
+    test('when one way trip has not any seat available, listFlights should return nothing', async () => {
+        const endpoint = ApiEndpointBuilder.listFlights(oneWayParams)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/fares/list-available-flights/fare-with-no-left-seat.json`)
 
-        const flightSchedule = await listAvailableOneWayFlights(oneWayParams, session)
+        const flightSchedule = await processListOneWayFlights(endpoint, response, oneWayParams)
 
         expect(flightSchedule.size).toEqual(1)
         expect(flightSchedule.get('2024-11-01T00:00:00.000')!.length).toEqual(0)
     })
 
-    test('when round trip, listAvailableFlights should return 2 FlightSchedules', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableFlights(roundTripParams)
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/round-trip-ok.json`)
+    test('when round trip, listFlights should return 2 FlightSchedules', async () => {
+        const endpoint = ApiEndpointBuilder.listFlights(roundTripParams)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/fares/list-available-flights/round-trip-ok.json`)
 
-        const flightSchedules = await listAvailableRoundTripFlights(roundTripParams, session)
+        const flightSchedules = await processListRoundTripFlights(endpoint, response, roundTripParams)
 
         expect(flightSchedules.fromOrigin.size).toEqual(3)
         expect(flightSchedules.fromOrigin.get('2024-07-30T00:00:00.000')!.length).toEqual(1)
@@ -101,21 +105,21 @@ describe('listAvailableFlights', () => {
         expect(flightSchedules.fromDestination.get('2024-08-20T00:00:00.000')!.length).toEqual(2)
     })
 
-    test('when HTTP request fails, then listAvailableFlights returns ApiUnavailable', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
-        await MockUtils.mockHttpGet(endpoint, '', 500)
+    test('when HTTP request fails, then listFlights returns ApiUnavailableError', async () => {
+        const endpoint = ApiEndpointBuilder.listFlights(oneWayParams)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listAvailableOneWayFlights(oneWayParams, session)).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListOneWayFlights(endpoint, response, oneWayParams)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 
-    test('when Session is not provided, then listAvailableFlights returns UninitializedSession', async () => {
-        const endpoint = ApiEndpointBuilder.listAvailableFlights(oneWayParams)
-        await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/fares/list-available-flights/missing-session-409.json`, 409)
+    test('when Session is not provided, then listFlights returns UninitializedSession', async () => {
+        const endpoint = ApiEndpointBuilder.listFlights(oneWayParams)
+        const response = await MockUtils.mockFetchResponse(409)
 
-        return await expect(listAvailableOneWayFlights(oneWayParams, session)).rejects.toEqual(
-            new UninitializedSession(endpoint)
+        return await expect(processListOneWayFlights(endpoint, response, oneWayParams)).rejects.toEqual(
+            new UninitializedSessionError(endpoint)
         )
     })
 })

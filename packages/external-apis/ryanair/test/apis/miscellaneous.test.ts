@@ -1,9 +1,9 @@
-import ApiEndpointBuilder from "../../src/ApiEndpointBuilder"
-import { createSession, listCountries, listCurrencies } from "../../src/apis/miscellaneous"
-import { ApiUnavailable, UnexpectedStatusCode } from "../../src/errors"
-import { API_SAVED_RESPONSES } from "../test-utils/constants"
-import { MockUtils } from "../test-utils/mock"
-import * as fs from 'node:fs'
+import { ApiUnavailableError } from "@findmyflight/utils"
+import { MockUtils } from "@findmyflight/test-utils"
+
+import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
+import { processCreateSession, processListCountries, processListCurrencies } from "../../src/apis/miscellaneous.js"
+import { API_SAVED_RESPONSES } from "../constants.js"
 
 let fetchMock: jest.Mock = jest.fn()
 
@@ -15,19 +15,20 @@ describe('listCountries', () => {
     const endpoint = ApiEndpointBuilder.listCountries('en')
 
     test('listCountries should return list of countries', async () => {
-        fetchMock = await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/miscellaneous/list-countries/ok.json`)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/miscellaneous/list-countries/ok.json`)
 
-        const countries = await listCountries('en')
+        const countries = await processListCountries(endpoint, response)
 
         expect(countries.length).toEqual(3)
         expect(countries[1].name).toEqual('United Kingdom')
     })
 
     test('when HTTP request fails, then listCountries returns ApiUnavailable', async () => {
-        fetchMock = await MockUtils.mockHttpGet(endpoint, '', 500)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listCountries('en')).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListCountries(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })
@@ -35,9 +36,10 @@ describe('listCountries', () => {
 describe('listCurrencies', () => {
     test('listCurrencies should return list of currencies', async () => {
         const endpoint = ApiEndpointBuilder.listCurrencies()
-        fetchMock = await MockUtils.mockHttpGet(endpoint, `${API_SAVED_RESPONSES}/miscellaneous/list-currencies/ok.json`)
+        const response = await MockUtils.mockFetchResponseFromFile(200,
+            `${API_SAVED_RESPONSES}/miscellaneous/list-currencies/ok.json`)
 
-        const currencies = await listCurrencies()
+        const currencies = await processListCurrencies(endpoint, response)
 
         expect(currencies.length).toEqual(3)
         expect(currencies[1].name).toEqual('Australian Dollar')
@@ -45,10 +47,10 @@ describe('listCurrencies', () => {
 
     test('when HTTP request fails, then listCurrencies returns ApiUnavailable', async () => {
         const endpoint = ApiEndpointBuilder.listCurrencies()
-        fetchMock = await MockUtils.mockHttpGet(endpoint, '', 500)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(listCurrencies()).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processListCurrencies(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })
@@ -57,22 +59,10 @@ describe('createSession', () => {
     const endpoint = ApiEndpointBuilder.createSession()
 
     test('createSession should return list of session cookies', async () => {
-        global.fetch = fetchMock
-        fetchMock.mockImplementationOnce(url => {
-            if (url !== endpoint)
-                return Promise.reject(`Mocked \`fetch\` expects an endpoint (${endpoint}) that has not been called`)
+        const response = await MockUtils.mockFetchResponseWithHeader(200,
+            `${API_SAVED_RESPONSES}/miscellaneous/create-session/cookies`)
 
-            return Promise.resolve({
-                status: 200,
-                headers: {
-                    getSetCookie: () =>
-                        fs.readFileSync(`${API_SAVED_RESPONSES}/miscellaneous/create-session/cookies`)
-                            .toString().split('\n')
-                }
-            } as Response)
-        })
-
-        const cookies = await createSession()
+        const cookies = processCreateSession(endpoint, response)
 
         expect(cookies.length).toEqual(3)
         expect(cookies[0]).toMatch(/fr-correlation-id=fr-correlation-id-cookie;.*/)
@@ -81,10 +71,10 @@ describe('createSession', () => {
     })
 
     test('when HTTP request fails, then createSession returns ApiUnavailable', async () => {
-        fetchMock = await MockUtils.mockHttpGet(endpoint, '', 500)
+        const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(createSession()).rejects.toEqual(
-            new ApiUnavailable(endpoint)
+        return await expect(processCreateSession(endpoint, response)).rejects.toEqual(
+            new ApiUnavailableError(endpoint)
         )
     })
 })

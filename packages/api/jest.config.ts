@@ -1,8 +1,8 @@
-import type { JestConfigWithTsJest } from "ts-jest";
-import baseConfig from '../../jest.config.base-esm'
+import type { Config } from 'jest';
+import { createJsWithTsEsmPreset } from 'ts-jest'
 
-const config: JestConfigWithTsJest = {
-    ...(baseConfig as JestConfigWithTsJest)
+const config: Config = {
+    ...createJsWithTsEsmPreset()
 };
 
 export default config;

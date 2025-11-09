@@ -1,10 +1,11 @@
-import { LogUtils } from "@findmyflight/utils";
+import pino from "pino";
+
 import { Flight } from "../model/Flight.js";
 import { SearchOneWayParams } from "../model/SearchParams.js";
 import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration.js";
 
-const logger = LogUtils.getLogger({
-    api: searchOneWayFlights.name
+const logger = pino({
+    name: searchOneWayFlights.name
 })
 
 export async function searchOneWayFlights(

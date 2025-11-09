@@ -28,9 +28,8 @@ USER node
 COPY . .
 
 RUN <<EOF
-    cd packages/api
-    npm ci --include=dev
-    npm run build
+    npm ci --include=dev --workspace="packages/api" --include-workspace-root=true
+    cd packages/api && npm run build
 EOF
 
 # ******************************************
@@ -42,9 +41,8 @@ USER node
 COPY . .
 
 RUN <<EOF
-    cd packages/api
-    npm ci --omit=dev
-    mkdir -p dist
+    npm ci --omit=dev --workspace="packages/api" --include-workspace-root=true
+    mkdir -p packages/api/dist
 EOF
 
 COPY --from=builder /usr/src/app/packages/api/dist ./packages/api/dist

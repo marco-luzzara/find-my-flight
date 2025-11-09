@@ -1,3 +1,3 @@
 import * as path from 'path'
 
-export const API_SAVED_RESPONSES = path.resolve(__dirname, './saved-responses')
+export const API_SAVED_RESPONSES = path.resolve(import.meta.dirname, './saved-responses')

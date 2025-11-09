@@ -136,9 +136,10 @@ describe('searchOneWayFlights', () => {
             method: 'GET',
             url: '/flights/search/oneway?' + urlParams.toString()
         })
+        const responseContent = response.json<{ message: string }>()
 
         expect(response.statusCode).toBe(400)
-        expect(response.json().message).toBe("querystring must have required property 'originCodes'")
+        expect(responseContent.message).toBe("querystring must have required property 'originCodes'")
         expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
     })
 
@@ -162,9 +163,10 @@ describe('searchOneWayFlights', () => {
             method: 'GET',
             url: '/flights/search/oneway?' + urlParams.toString()
         })
+        const responseContent = response.json<{ message: string }>()
 
         expect(response.statusCode).toBe(400)
-        expect(response.json().message).toBe("querystring/passengersAge/0 must be number")
+        expect(responseContent.message).toBe("querystring/passengersAge/0 must be number")
         expect(searchOneWayFlightsFn).toHaveBeenCalledTimes(0)
     })
 })

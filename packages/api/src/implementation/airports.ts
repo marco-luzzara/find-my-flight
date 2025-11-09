@@ -1,9 +1,11 @@
-import { AsyncUtils, LogUtils } from "@findmyflight/utils"
+import pino from "pino"
+
+import { AsyncUtils } from "@findmyflight/utils"
 import { Airport } from "../model/Airport.js"
 import { TravelCompanyIntegration } from "../integrations/TravelCompanyIntegration.js"
 
-const logger = LogUtils.getLogger({
-    api: listAirports.name
+const logger = pino({
+    name: listAirports.name
 })
 
 export async function listAirports(travelCompanyIntegrations: TravelCompanyIntegration[]): Promise<Airport[]> {

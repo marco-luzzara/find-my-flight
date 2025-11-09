@@ -1,11 +1,5 @@
 SHELL=/bin/bash
 
-
-.PHONY: global/install
-global/install:
-	#npm ci
-
-
 -include make-tasks/Makefile.*
 
 
@@ -25,7 +19,7 @@ start-webapp: compile-webapp
 
 .PHONY: test
 test: compile-api compile-webapp
-	npx jest "$(JEST_REGEX)"
+	NODE_OPTIONS="$$NODE_OPTIONS --experimental-vm-modules" npx jest "$(JEST_REGEX)"
 
 
 .PHONY: clean

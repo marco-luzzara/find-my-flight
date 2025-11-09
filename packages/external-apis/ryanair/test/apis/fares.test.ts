@@ -1,11 +1,11 @@
 import { ApiUnavailableError } from "@findmyflight/utils"
 import { MockUtils } from "@findmyflight/test-utils"
 
-import { processListDatesForFare, processListOneWayFlights, processListRoundTripFlights } from '../../src/apis/fares.js'
-import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
-import { API_SAVED_RESPONSES } from "../constants.js"
-import { UninitializedSessionError } from "../../src/errors.js"
-import { ListOneWayFlightsParams, ListRoundTripFlightsParams, Session } from "../../src/types.js"
+import { processListDatesForFare, processListOneWayFlights, processListRoundTripFlights } from '../../src/apis/fares.ts'
+import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.ts"
+import { API_SAVED_RESPONSES } from "../constants.ts"
+import { UninitializedSessionError } from "../../src/errors.ts"
+import { ListOneWayFlightsParams, ListRoundTripFlightsParams, Session } from "../../src/types.ts"
 
 const originAirportCode = 'AAA'
 const destinationAirportCode = 'BBB'

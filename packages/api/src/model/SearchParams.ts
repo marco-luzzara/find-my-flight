@@ -47,7 +47,7 @@ export type SearchRoundTripParams = SearchOneWayParams & {
      */
     sameOriginAirport: boolean
     /**
-     * The range of days from the start flight to the end flight. `IntegerInterval(4, 7)` means 
+     * The range of days from the start flight to the end flight. `DayInterval(4, 7)` means 
      * that the number of days from the start flight to the return flight can range between 4 and 7
      */
     daysRange: DayInterval

@@ -1,22 +1,30 @@
 SHELL=/bin/bash
 JEST_REGEX ?= .*\.test\.(?:t|j)s
 NPM_WORKSPACE_NAME := @findmyflight/api
-PRJ_FOLDER := packages/api
 
+include make-tasks/Makefile.common.mk
 
-.PHONY: api/install
-api/install: global/install
+# ------------------ BEGIN DEV
+.PHONY: api/dev-install
+api/dev-install:
+	$(check-dev-env)
 	npm ci --include=dev --workspace="${NPM_WORKSPACE_NAME}" --include-workspace-root=true
 
 
-.PHONY: api/build
-api/build:
+.PHONY: api/dev-build
+api/dev-build:
+	$(check-dev-env)
 	npm run build --workspace="${NPM_WORKSPACE_NAME}"
-	cd ${PRJ_FOLDER} && npx eslint src/ test/
 
 
+.PHONY: api/dev-run
+api/dev-run: api/dev-build
+	$(check-dev-env)
+	npm run start --workspace="${NPM_WORKSPACE_NAME}"
+# ------------------ END DEV
+
+# ------------------ BEGIN PROD
 .PHONY: api/run
-api/run: api/build
-	cd ${PRJ_FOLDER} && \
-		npx node dist/app.js
-        
+api/run:
+	docker compose -f docker/api/docker-compose.yaml up --build -d
+# ------------------ END PROD

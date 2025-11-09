@@ -1,6 +1,6 @@
 import { ApiUnavailableError } from "@findmyflight/utils"
 
-import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
+import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.ts"
 import { processListAirports, processListDestinationAirports } from "../../src/apis/airports.js"
 import { API_SAVED_RESPONSES } from "../constants.js"
 import { MockUtils } from "@findmyflight/test-utils"

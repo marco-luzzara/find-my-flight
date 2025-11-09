@@ -34,7 +34,7 @@ jest.mock('@findmyflight/external-api-ryanair', () => {
             createSession: jest.fn().mockResolvedValue([])
         },
         faresApi: {
-            listAvailableOneWayFlights: jest.fn()
+            listOneWayFlights: jest.fn()
         },
 
     }
@@ -51,7 +51,7 @@ const mockedFaresApi = faresApi as jest.Mocked<typeof faresApi>
 
 
 beforeEach(() => {
-    mockedFaresApi.listAvailableOneWayFlights.mockClear()
+    mockedFaresApi.listOneWayFlights.mockClear()
 });
 
 
@@ -77,7 +77,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given an origin and destination airport, when there is 1 route, searchOneWayFlights returns 1 flights', async () => {
-        mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
+        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
@@ -114,7 +114,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given a route from origin to destination airport, when the departure time is not in hour interval, searchOneWayFlights returns 0 flights', async () => {
-        mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
+        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
@@ -148,7 +148,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given a route from origin to destination airport, when the flight duration is above max, searchOneWayFlights returns 0 flights', async () => {
-        mockedFaresApi.listAvailableOneWayFlights.mockResolvedValue(new Map([
+        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',

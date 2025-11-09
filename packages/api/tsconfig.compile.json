@@ -13,6 +13,7 @@
         "test/**/*.ts"
     ],
     "compilerOptions": {
-        "noEmit": true
+        "noEmit": true,
+        "allowImportingTsExtensions": true
     }
 }

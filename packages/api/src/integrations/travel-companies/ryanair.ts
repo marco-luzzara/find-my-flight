@@ -10,8 +10,7 @@ import { Flight, getFlightDuration } from "../../model/Flight.js";
 import { SearchOneWayParams } from "../../model/SearchParams.js";
 import { TravelCompanyIntegration } from "../TravelCompanyIntegration.js";
 import { Airport } from "../../model/Airport.js";
-// import { LogUtils } from '@findmyflight/utils'
-import { InvalidInputError } from "@findmyflight/utils/src/Errors.js";
+import { InvalidInputError } from "@findmyflight/utils/src/errors.js";
 
 const MAX_QUERYABLE_DATES = 6
 
@@ -60,7 +59,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
                     continue
 
                 for (const dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
-                    const newFlights = await faresApi.listAvailableOneWayFlights({
+                    const newFlights = await faresApi.listOneWayFlights({
                         adults: passengersCount.adult,
                         teenagers: passengersCount.teenager,
                         children: passengersCount.child,

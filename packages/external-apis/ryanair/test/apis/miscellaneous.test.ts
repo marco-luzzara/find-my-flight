@@ -5,12 +5,6 @@ import ApiEndpointBuilder from "../../src/ApiEndpointBuilder.js"
 import { processCreateSession, processListCountries, processListCurrencies } from "../../src/apis/miscellaneous.js"
 import { API_SAVED_RESPONSES } from "../constants.js"
 
-let fetchMock: jest.Mock = jest.fn()
-
-beforeEach(() => {
-    fetchMock.mockClear();
-});
-
 describe('listCountries', () => {
     const endpoint = ApiEndpointBuilder.listCountries('en')
 
@@ -73,8 +67,7 @@ describe('createSession', () => {
     test('when HTTP request fails, then createSession returns ApiUnavailable', async () => {
         const response = await MockUtils.mockFetchResponse(500)
 
-        return await expect(processCreateSession(endpoint, response)).rejects.toEqual(
-            new ApiUnavailableError(endpoint)
-        )
+        expect(() => processCreateSession(endpoint, response))
+            .toThrow(ApiUnavailableError)
     })
 })

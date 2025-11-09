@@ -9,10 +9,11 @@
         }
     ],
     "include": [
-        "src/**/*.ts",
-        "test/**/*.ts"
+        "src/**/*.ts"
     ],
     "compilerOptions": {
-        "noEmit": true
+        "noEmit": true,
+        "rootDir": ".",
+        "isolatedModules": true
     }
 }

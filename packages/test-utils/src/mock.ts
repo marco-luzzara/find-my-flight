@@ -46,7 +46,7 @@ export class MockUtils {
         // @ts-ignore
         return {
             status: statusCode,
-            json: async () => Promise.resolve(body)
+            json: async () => Promise.resolve(JSON.parse(body))
         } as Response
     }
 
@@ -56,7 +56,9 @@ export class MockUtils {
         // @ts-ignore
         return {
             status: statusCode,
-            getSetCookie: () => headerContent
+            headers: {
+                getSetCookie: () => headerContent
+            }
         } as Response
     }
 }

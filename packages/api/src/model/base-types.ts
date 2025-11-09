@@ -1,4 +1,4 @@
-import { apiErrors } from "@findmyflight/external-api-ryanair"
+import { InvalidInputError } from "@findmyflight/utils"
 
 export type TravelCompanyId = string
 
@@ -8,13 +8,13 @@ export class HourInterval {
 
     constructor(start: number, end: number) {
         if (start > end)
-            throw new apiErrors.ValidationError('start', start, `start >= ${end}`)
+            throw new InvalidInputError(`start <= ${end}`, start)
 
         if (start < 0)
-            throw new apiErrors.ValidationError('start', start, `start >= 0`)
+            throw new InvalidInputError('start >= 0', start)
 
         if (end > 24)
-            throw new apiErrors.ValidationError('end', start, `end <= 24`)
+            throw new InvalidInputError('end <= 24', end)
 
         this.start = start
         this.end = end
@@ -31,10 +31,10 @@ export class DayInterval {
 
     constructor(start: number, end: number) {
         if (start > end)
-            throw new apiErrors.ValidationError('start', start, `start >= ${end}`)
+            throw new InvalidInputError(`start <= ${end}`, start)
 
         if (start < 0)
-            throw new apiErrors.ValidationError('start', start, `start >= 0`)
+            throw new InvalidInputError(`start >= 0`, start)
 
         this.start = start
         this.end = end

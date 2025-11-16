@@ -5,8 +5,6 @@ FROM node:${NODE_VERSION}-bookworm-slim AS base
 
 WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
-
 EXPOSE 80
 
 # ******************************************
@@ -35,6 +33,8 @@ EOF
 # ******************************************
 
 FROM base AS prod
+
+ENV NODE_ENV=production
 
 USER node
 

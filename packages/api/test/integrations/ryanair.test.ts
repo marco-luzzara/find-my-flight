@@ -1,3 +1,4 @@
+import { jest, test, expect, describe, beforeEach } from '@jest/globals';
 import { apis } from "@findmyflight/external-api-ryanair"
 import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair.js"
 import { HourInterval } from "../../src/model/base-types.js"
@@ -18,17 +19,18 @@ const destinationAirports = [
 
 const mockedApis = {
     airports: {
-        listAirports: jest.fn().mockResolvedValue(
+        listAirports: jest.fn<typeof apis.airports.listAirports>().mockResolvedValue(
             originAirports.concat(destinationAirports)
         ),
-        listDestinationAirports: jest.fn().mockImplementation(
-            (originAirportCode: string) => Promise.resolve(
-                originAirportCode === originAirports[0].code ? destinationAirports : []
+        listDestinationAirports: jest
+            .fn<typeof apis.airports.listDestinationAirports>().mockImplementation(
+                (originAirportCode: string) => Promise.resolve(
+                    originAirportCode === originAirports[0].code ? destinationAirports : []
+                )
             )
-        )
     } as jest.Mocked<typeof apis.airports>,
     miscellaneous: {
-        createSession: jest.fn().mockResolvedValue([])
+        createSession: jest.fn<typeof apis.miscellaneous.createSession>().mockResolvedValue([])
     } as jest.Mocked<typeof apis.miscellaneous>,
     fares: {
         listOneWayFlights: jest.fn(),

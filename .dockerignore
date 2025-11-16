@@ -2,4 +2,5 @@
 .vscode/
 node_modules/
 packages/webapp/node_modules/
+packages/**/dist/
 packages/webapp/.next/

@@ -24,7 +24,9 @@ api/dev-run: api/dev-build
 # ------------------ END DEV
 
 # ------------------ BEGIN PROD
+# Parameters: \
+PORT: the port exposed on the host for the server
 .PHONY: api/run
 api/run:
-	docker compose -f docker/api/docker-compose.yaml up --build -d
+	PORT=${PORT} docker compose -f docker/api/docker-compose.yaml up --build -d
 # ------------------ END PROD

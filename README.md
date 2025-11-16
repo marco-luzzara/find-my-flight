@@ -14,6 +14,8 @@ To run the API server:
 make api/run
 ```
 
+It exposes the server to port 3000, if not specified otherwise by setting the variable `PORT`.
+
 ---
 
 ## WebApp
@@ -41,4 +43,12 @@ Run all the tests available in the project with:
 
 ```bash
 make test
+```
+
+---
+
+## Clean
+
+```bash
+make clean
 ```

@@ -10,7 +10,7 @@ import { Flight, getFlightDuration } from "../../model/Flight.js";
 import { SearchOneWayParams } from "../../model/SearchParams.js";
 import { TravelCompanyIntegration } from "../TravelCompanyIntegration.js";
 import { Airport } from "../../model/Airport.js";
-import { InvalidInputError } from "@findmyflight/utils/src/errors.js";
+import { InvalidInputError } from "@findmyflight/utils";
 
 const MAX_QUERYABLE_DATES = 6
 

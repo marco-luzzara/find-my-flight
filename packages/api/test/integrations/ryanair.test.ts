@@ -1,12 +1,7 @@
-import { faresApi, airportsApi } from "@findmyflight/external-api-ryanair"
+import { apis } from "@findmyflight/external-api-ryanair"
 import RyanairIntegration, { RyanairTypeMapping } from "../../src/integrations/travel-companies/ryanair.js"
 import { HourInterval } from "../../src/model/base-types.js"
 import { RyanairAirportFactory } from "../test-factories/ryanair/RyanairAirportFactory.js"
-
-async function buildIntegration(): Promise<RyanairIntegration> {
-    const integration = new RyanairIntegration()
-    return await integration.initialize()
-}
 
 const departureDate = new Date('2024-08-10T00:00:00.000')
 const originAirports = [
@@ -21,37 +16,35 @@ const destinationAirports = [
     RyanairAirportFactory.build('D')
 ]
 
-jest.mock('@findmyflight/external-api-ryanair', () => {
-    const originalModule = jest.requireActual<typeof import('@findmyflight/external-api-ryanair')>('@findmyflight/external-api-ryanair');
+const mockedApis = {
+    airports: {
+        listAirports: jest.fn().mockResolvedValue(
+            originAirports.concat(destinationAirports)
+        ),
+        listDestinationAirports: jest.fn().mockImplementation(
+            (originAirportCode: string) => Promise.resolve(
+                originAirportCode === originAirports[0].code ? destinationAirports : []
+            )
+        )
+    } as jest.Mocked<typeof apis.airports>,
+    miscellaneous: {
+        createSession: jest.fn().mockResolvedValue([])
+    } as jest.Mocked<typeof apis.miscellaneous>,
+    fares: {
+        listOneWayFlights: jest.fn(),
+        listDatesForFare: jest.fn(),
+        listRoundTripFlights: jest.fn()
+    } as jest.Mocked<typeof apis.fares>
+}
 
-    return {
-        ...originalModule,
-        airportsApi: {
-            listAirports: jest.fn(),
-            listDestinationAirports: jest.fn()
-        },
-        miscellaneousApi: {
-            createSession: jest.fn().mockResolvedValue([])
-        },
-        faresApi: {
-            listOneWayFlights: jest.fn()
-        },
-
-    }
-})
-
-const mockedAirportsApi = airportsApi as jest.Mocked<typeof airportsApi>
-mockedAirportsApi.listAirports.mockResolvedValue(originAirports.concat(destinationAirports))
-// the first airport is connected with both C and D, the second is connected to none
-mockedAirportsApi.listDestinationAirports.mockImplementation((originAirportCode: string) =>
-    Promise.resolve(originAirportCode === originAirports[0].code ? destinationAirports : [])
-)
-
-const mockedFaresApi = faresApi as jest.Mocked<typeof faresApi>
+async function buildIntegration(): Promise<RyanairIntegration> {
+    const integration = new RyanairIntegration()
+    return await integration.initialize(mockedApis)
+}
 
 
 beforeEach(() => {
-    mockedFaresApi.listOneWayFlights.mockClear()
+    mockedApis.fares.listOneWayFlights.mockClear()
 });
 
 
@@ -77,7 +70,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given an origin and destination airport, when there is 1 route, searchOneWayFlights returns 1 flights', async () => {
-        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
+        mockedApis.fares.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
@@ -114,7 +107,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given a route from origin to destination airport, when the departure time is not in hour interval, searchOneWayFlights returns 0 flights', async () => {
-        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
+        mockedApis.fares.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',
@@ -148,7 +141,7 @@ describe('searchOneWayFlights', () => {
     })
 
     test('given a route from origin to destination airport, when the flight duration is above max, searchOneWayFlights returns 0 flights', async () => {
-        mockedFaresApi.listOneWayFlights.mockResolvedValue(new Map([
+        mockedApis.fares.listOneWayFlights.mockResolvedValue(new Map([
             ['2024-08-10T00:00:00.000', [
                 {
                     flightNumber: '1111',

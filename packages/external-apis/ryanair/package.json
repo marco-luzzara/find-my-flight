@@ -20,7 +20,7 @@
     "homepage": "https://github.com/marco-luzzara/ryanair-power-search#readme",
     "dependencies": {
         "@findmyflight/utils": "^1.0.0",
-        "pino": "^10.0.0"
+        "pino": "^10.1.0"
     },
     "devDependencies": {
         "@findmyflight/test-utils": "^1.0.0",

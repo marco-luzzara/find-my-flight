@@ -2,7 +2,7 @@
     "dockerComposeFile": ["../../docker/api/docker-compose.yaml", "../../docker/api/docker-compose.devcontainer.yaml"],
     "service": "api",
     "workspaceFolder": "/workspace",
-    "postStartCommand": "make api/install",
+    "postStartCommand": "make api/dev-install",
     "shutdownAction": "stopCompose",
     "customizations": {
         "vscode": {

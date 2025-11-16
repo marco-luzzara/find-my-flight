@@ -1,20 +1,21 @@
+import { jest, test, expect, describe } from '@jest/globals';
 import { FastifyInstance } from 'fastify'
 import buildServer from '../../src/buildServer.js'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration.js'
 import { AirportFactory } from '../test-factories/AirportFactory.js'
 import { Airport } from '../../src/model/Airport.js'
-
-const TEST_COMPANY_ID = 'test-company'
+import { TCIntegrationFactory } from '../test-factories/TCIntegrationFactory.js';
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B')]
 
 async function buildMockedServer(...mockedIntegrations: {
     listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>
 }[]): Promise<FastifyInstance> {
-    const app = await buildServer({}, mockedIntegrations.map(integration => ({
-        id: TEST_COMPANY_ID,
-        listAirports: integration.listAirportsMock ?? jest.fn()
-    } as TravelCompanyIntegration)))
+    const app = await buildServer({}, mockedIntegrations.map((integration, i) =>
+        TCIntegrationFactory.buildMock(i, {
+            listAirports: integration.listAirportsMock
+        }))
+    )
 
     return app
 }
@@ -27,7 +28,8 @@ describe('listAirports', () => {
 
     test('listAirports returns the travel company results', async () => {
         const app = await buildMockedServer({
-            listAirportsMock: jest.fn().mockResolvedValue(builtinAirports)
+            listAirportsMock: jest.fn<TravelCompanyIntegration['listAirports']>()
+                .mockResolvedValue(builtinAirports)
         })
 
         const response = await app.inject({
@@ -41,7 +43,8 @@ describe('listAirports', () => {
 
     test('listAirports returns 0 airport if the external api fails', async () => {
         const app = await buildMockedServer({
-            listAirportsMock: jest.fn().mockRejectedValue(new Error('api fails'))
+            listAirportsMock: jest.fn<TravelCompanyIntegration['listAirports']>()
+                .mockRejectedValue(new Error('api fails'))
         })
 
         const response = await app.inject({

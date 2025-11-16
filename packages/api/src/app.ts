@@ -1,6 +1,3 @@
-import dotenv from "dotenv"
-dotenv.config()
-
 import buildServer from './buildServer.js'
 import { TravelCompanyIntegration } from "./integrations/TravelCompanyIntegration.js"
 import RyanairIntegration from "./integrations/travel-companies/ryanair.js"

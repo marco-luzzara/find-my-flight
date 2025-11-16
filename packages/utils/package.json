@@ -20,7 +20,7 @@
     "dependencies": {
         "date-fns": "^4.1.0",
         "envsafe": "^2.0.3",
-        "pino": "^10.0.0"
+        "pino": "^10.1.0"
     },
     "main": "dist/index.js",
     "directories": {

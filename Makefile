@@ -18,8 +18,8 @@ start-webapp: compile-webapp
 
 
 .PHONY: test
-test: compile-api compile-webapp
-	NODE_OPTIONS="$$NODE_OPTIONS --experimental-vm-modules" npx jest "$(JEST_REGEX)"
+test: api/dev-build #compile-webapp
+	NODE_OPTIONS="$$NODE_OPTIONS --experimental-vm-modules" npx jest --detectOpenHandles "$(JEST_REGEX)"
 
 
 .PHONY: clean

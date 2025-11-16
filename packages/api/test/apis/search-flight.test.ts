@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import buildServer from '../../src/buildServer.js'
 import { TravelCompanyIntegration } from '../../src/integrations/TravelCompanyIntegration.js'
 import { SearchOneWayParams } from '../../src/model/SearchParams.js'
@@ -5,35 +6,36 @@ import { HourInterval } from '../../src/model/base-types.js'
 import { Flight } from '../../src/model/Flight.js'
 import { AirportFactory } from '../test-factories/AirportFactory.js'
 import { FastifyInstance } from 'fastify'
+import { TCIntegrationFactory } from '../test-factories/TCIntegrationFactory.js'
 
-const TEST_COMPANY_ID = 'test-company'
+const TEST_COMPANY_ID = '0'
 
 const builtinAirports = [AirportFactory.build('A'), AirportFactory.build('B'), AirportFactory.build('C')]
 
 async function buildMockedServer(...mockedIntegrations: {
-    listAirportsMock?: jest.Mocked<TravelCompanyIntegration['listAirports']>,
     searchOneWayFlightsMock?: jest.Mocked<TravelCompanyIntegration['searchOneWayFlights']>
 }[]): Promise<FastifyInstance> {
-    const app = buildServer({}, mockedIntegrations.map(integration => ({
-        id: TEST_COMPANY_ID,
-        listAirports: integration.listAirportsMock ?? jest.fn(),
-        searchOneWayFlights: integration.searchOneWayFlightsMock ?? jest.fn()
-    } as TravelCompanyIntegration)))
+    const app = await buildServer({}, mockedIntegrations.map((integration, i) =>
+        TCIntegrationFactory.buildMock(i, {
+            searchOneWayFlights: integration.searchOneWayFlightsMock
+        }))
+    )
 
     return app
 }
 
 describe('searchOneWayFlights', () => {
     test('searchOneWayFlights with valid params returns the flights', async () => {
-        const searchOneWayFlightsFn = jest.fn().mockResolvedValue({
-            flightNumber: 'FN0001',
-            origin: builtinAirports[0],
-            destination: builtinAirports[1],
-            departureDate: new Date('2024-10-24T09:00:00.000Z'),
-            arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
-            price: 100,
-            travelCompany: TEST_COMPANY_ID
-        })
+        const searchOneWayFlightsFn = jest
+            .fn<TravelCompanyIntegration['searchOneWayFlights']>().mockResolvedValue([{
+                flightNumber: 'FN0001',
+                origin: builtinAirports[0],
+                destination: builtinAirports[1],
+                departureDate: new Date('2024-10-24T09:00:00.000Z'),
+                arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
+                price: 100,
+                travelCompany: TEST_COMPANY_ID
+            }])
         const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
@@ -70,15 +72,16 @@ describe('searchOneWayFlights', () => {
     })
 
     test('when searchOneWayFlights with multiple dates and origin airports, then return flights', async () => {
-        const searchOneWayFlightsFn = jest.fn().mockResolvedValue({
-            flightNumber: 'FN0001',
-            origin: builtinAirports[0],
-            destination: builtinAirports[1],
-            departureDate: new Date('2024-10-24T09:00:00.000Z'),
-            arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
-            price: 100,
-            travelCompany: TEST_COMPANY_ID
-        })
+        const searchOneWayFlightsFn = jest
+            .fn<TravelCompanyIntegration['searchOneWayFlights']>().mockResolvedValue([{
+                flightNumber: 'FN0001',
+                origin: builtinAirports[0],
+                destination: builtinAirports[1],
+                departureDate: new Date('2024-10-24T09:00:00.000Z'),
+                arrivalDate: new Date('2024-10-24T11:00:00.000Z'),
+                price: 100,
+                travelCompany: TEST_COMPANY_ID
+            }])
         const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
@@ -117,7 +120,8 @@ describe('searchOneWayFlights', () => {
     })
 
     test('searchOneWayFlights with missing param returns a validation error', async () => {
-        const searchOneWayFlightsFn = jest.fn()
+        const searchOneWayFlightsFn = jest
+            .fn<TravelCompanyIntegration['searchOneWayFlights']>()
         const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })
@@ -144,7 +148,8 @@ describe('searchOneWayFlights', () => {
     })
 
     test('searchOneWayFlights with invalid param returns a validation error', async () => {
-        const searchOneWayFlightsFn = jest.fn()
+        const searchOneWayFlightsFn = jest
+            .fn<TravelCompanyIntegration['searchOneWayFlights']>()
         const app = await buildMockedServer({
             searchOneWayFlightsMock: searchOneWayFlightsFn
         })

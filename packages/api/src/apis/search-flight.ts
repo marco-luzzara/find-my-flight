@@ -4,7 +4,11 @@ import { FromSchema } from "json-schema-to-ts";
 import { HourInterval } from "../model/base-types.js";
 import { searchOneWayFlights } from "../implementation/search-flight.js";
 
-export default function routes(fastify: FastifyInstance, _options: FastifyServerOptions) {
+/* eslint-disable-next-line @typescript-eslint/require-await */
+export default async function routes(
+    fastify: FastifyInstance,
+    _options: FastifyServerOptions
+) {
     const searchOneWayQuerystringSchema = {
         $id: 'SearchOneWayQuerystring',
         type: 'object',

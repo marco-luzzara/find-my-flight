@@ -1,5 +1,5 @@
 import {
-    Airport as RyanairAirport, airportsApi, faresApi, miscellaneousApi,
+    Airport as RyanairAirport, apis,
     PassengerType,
     PriceDetails,
     Session
@@ -19,19 +19,30 @@ const MAX_QUERYABLE_DATES = 6
 // })
 
 type PassengersCount = Record<PassengerType, number>
+type RyanAirAPIs = typeof apis
 
 export default class RyanairIntegration implements TravelCompanyIntegration {
     id: TravelCompanyId = 'ryanair'
     label = 'Ryanair'
 
+    apis: RyanAirAPIs
     session: Session
     airports: RyanairAirport[]
     locale: Locale
 
-    async initialize(): Promise<RyanairIntegration> {
+    /**
+     * The initializer has been parameterized for testing purposes.
+     * Mocking with ESModules is still experimental and unstable.
+     * initialize() must be called without any arguments, as dependencies
+     * are set by default
+     * @returns 
+     */
+    async initialize(rawApis?: RyanAirAPIs): Promise<RyanairIntegration> {
         this.locale = { languageCode: 'en', BCP47LangCode: 'en-US' }
-        this.session = await miscellaneousApi.createSession()
-        this.airports = await airportsApi.listAirports(this.locale.languageCode)
+
+        this.apis = rawApis ?? apis
+        this.session = await this.apis.miscellaneous.createSession()
+        this.airports = await this.apis.airports.listAirports(this.locale.languageCode)
 
         return this
     }
@@ -45,7 +56,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
             if (origin === undefined)
                 continue
 
-            const destinationAirportCodes = (await airportsApi.listDestinationAirports(
+            const destinationAirportCodes = (await this.apis.airports.listDestinationAirports(
                 originCode,
                 this.locale.languageCode
             )).map(a => a.code)
@@ -59,7 +70,7 @@ export default class RyanairIntegration implements TravelCompanyIntegration {
                     continue
 
                 for (const dateGroup of this.getAdjacentDateGroups(params.departureDates)) {
-                    const newFlights = await faresApi.listOneWayFlights({
+                    const newFlights = await this.apis.fares.listOneWayFlights({
                         adults: passengersCount.adult,
                         teenagers: passengersCount.teenager,
                         children: passengersCount.child,

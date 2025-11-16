@@ -4,16 +4,22 @@ import { createSession } from "./apis/miscellaneous.js";
 import { UninitializedSessionError } from "./errors.js";
 import { Cookie, PassengerType, PriceDetails, Session, Airport, Flight } from "./types.js";
 
-export const airportsApi = {
+const airportsApi = {
     listAirports, listDestinationAirports
 }
 
-export const faresApi = {
+const faresApi = {
     listDatesForFare, listOneWayFlights, listRoundTripFlights
 }
 
-export const miscellaneousApi = {
+const miscellaneousApi = {
     createSession
+}
+
+export const apis = {
+    airports: airportsApi,
+    fares: faresApi,
+    miscellaneous: miscellaneousApi
 }
 
 export const apiErrors = {

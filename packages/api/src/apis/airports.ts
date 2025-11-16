@@ -2,7 +2,11 @@ import { FastifyInstance, FastifyServerOptions } from "fastify";
 import { listAirports } from "../implementation/airports.js";
 import { Airport } from "../model/Airport.js";
 
-export default function routes(fastify: FastifyInstance, _options: FastifyServerOptions) {
+/* eslint-disable-next-line @typescript-eslint/require-await */
+export default async function routes(
+    fastify: FastifyInstance,
+    _options: FastifyServerOptions
+) {
     fastify.get<{
         Reply: Airport[]
     }>('/airports', async (request, reply) => {
